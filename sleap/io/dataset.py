@@ -480,13 +480,10 @@ class Labels(MutableSequence):
 
         if len(self.nodes) == 0:
             self.nodes = list(
-                set().union(
-                    {node for skeleton in self.skeletons for node in skeleton.nodes}
-                )
+                set([node for skeleton in self.skeletons for node in skeleton.nodes])
             )
 
         if merge:
-
             # remove duplicate skeletons during merge
             skeletons = [self.skeletons[0]]
             for lf in self.labels:
@@ -503,13 +500,11 @@ class Labels(MutableSequence):
 
             # updates nodes after removing duplicate skeletons
             self.nodes = list(
-                set().union(
-                    {node for skeleton in self.skeletons for node in skeleton.nodes}
-                )
+                set([node for skeleton in self.skeletons for node in skeleton.nodes])
             )
 
         # Ditto for tracks, a pattern is emerging here
-        if merge or len(self.tracks) == 0:
+        if len(self.tracks) == 0:
             # Get tracks from any Instances or PredictedInstances
             other_tracks = {
                 instance.track
@@ -531,13 +526,11 @@ class Labels(MutableSequence):
             )
 
             # Get list of other tracks not already in track list
-            # new_tracks = list(other_tracks - set(self.tracks))
-            new_tracks = []
-            if not self.tracks:
-                new_tracks = list(other_tracks)
-            else:
-                for t in other_tracks:
-                    for track in self.tracks:
+            new_tracks = list(other_tracks - set(self.tracks))
+            if self.tracks and merge:
+                new_tracks = [self.tracks[0]]
+                for track in other_tracks:
+                    for t in new_tracks:
                         if not track.matches(t):
                             new_tracks.append(t)
 
@@ -1929,9 +1922,7 @@ class Labels(MutableSequence):
         # We shouldn't have to do this here, but for some reason we're missing nodes
         # which are in the skeleton but don't have points (in the first instance?).
         self.nodes = list(
-            set().union(
-                {node for skeleton in self.skeletons for node in skeleton.nodes}
-            )
+            set([node for skeleton in self.skeletons for node in skeleton.nodes])
         )
 
         # Register some unstructure hooks since we don't want complete deserialization
