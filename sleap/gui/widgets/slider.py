@@ -388,11 +388,8 @@ class VideoSlider(QtWidgets.QGraphicsView):
         except (TypeError, ValueError):
             raise ValueError(f"x position must be a number, got {x}")
 
-        # Only if center=True, adjust by half the handle width.
-        if center:
-            val -= self.handle.rect().width() / 2.0
-
         # Proceed with arithmetic only after we have a valid float.
+        val = x
         val /= self._slider_width
         val *= max(1, self._val_max - self._val_min)
         val += self._val_min
