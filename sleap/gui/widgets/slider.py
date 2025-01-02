@@ -379,6 +379,9 @@ class VideoSlider(QtWidgets.QGraphicsView):
         Returns:
             Slider value (frame index).
         """
+        if x is None:
+            raise ValueError("x position cannot be None")
+
         val = x
         val /= self._slider_width
         val *= max(1, self._val_max - self._val_min)
@@ -389,7 +392,10 @@ class VideoSlider(QtWidgets.QGraphicsView):
     @property
     def _slider_width(self) -> float:
         """Returns visual width of slider."""
-        return self.box_rect.width()
+        width = self.box_rect.width()
+        if width <= 0:
+            return 1.0
+        return width
 
     @property
     def slider_visible_value_range(self) -> float:
