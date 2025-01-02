@@ -54,9 +54,7 @@ def test_slider(qtbot, centered_pair_predictions):
         (1000, 1200, 0, 0, 1000),  # Above maximum
     ],
 )
-def test_toVal(
-    qtbot, slider_width, x_value, handle_width, min_value, max_value
-):
+def test_toVal(qtbot, slider_width, x_value, handle_width, min_value, max_value):
     """
     Merged test that checks the slider value transformation for both:
     1) center=True (handle offset subtracted).
@@ -102,9 +100,9 @@ def test_toVal(
     # Now call the actual function with the specified center setting.
     actual_val = slider._toVal(x_value)
 
-    assert actual_val == expected_val, (
-        f"For x={x_value}, handle_width={actual_handle_width}, slider_width={slider_width}, "
-    )
+    assert (
+        actual_val == expected_val
+    ), f"For x={x_value}, handle_width={actual_handle_width}, slider_width={slider_width}, "
 
 
 def test_slider_width_property(qtbot):
@@ -164,4 +162,3 @@ def test_toVal_invalid_input(qtbot, invalid_value, expected_error_msg):
 
         # Verify the exact error message
         assert str(excinfo.value) == expected_error_msg
-
