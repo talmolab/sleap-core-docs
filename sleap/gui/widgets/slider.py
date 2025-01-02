@@ -403,8 +403,6 @@ class VideoSlider(QtWidgets.QGraphicsView):
     def _slider_width(self) -> float:
         """Returns visual width of slider."""
         width = self.box_rect.width()
-        if width <= 0:
-            return 1.0
         return width
 
     @property
