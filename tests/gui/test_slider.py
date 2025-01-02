@@ -45,7 +45,7 @@ def test_slider(qtbot, centered_pair_predictions):
 @pytest.mark.parametrize(
     "slider_width, x_value, handle_width, min_value, max_value",
     [
-        # ---- Cases from test_toVal (center=False) ----
+        # ---- Cases from test_toVal ----
         (1000, 500, 0, 0, 1000),  # Midpoint w/o centering
         (800, 400, 0, 0, 800),
         (1500, 750, 0, 100, 1200),
