@@ -483,7 +483,7 @@ class Labels(MutableSequence):
                 set([node for skeleton in self.skeletons for node in skeleton.nodes])
             )
 
-        if merge:
+        if self.skeletons and merge:
             # remove duplicate skeletons during merge
             skeletons = [self.skeletons[0]]
             for lf in self.labels:
@@ -532,7 +532,7 @@ class Labels(MutableSequence):
                 for track in other_tracks:
                     for t in new_tracks:
                         if not track.matches(t):
-                            new_tracks.append(t)
+                            new_tracks.append(track)
 
             # Sort the new tracks by spawned on and then name
             new_tracks.sort(key=lambda t: (t.spawned_on, t.name))
