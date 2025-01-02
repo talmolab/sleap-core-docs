@@ -43,24 +43,19 @@ def test_slider(qtbot, centered_pair_predictions):
 
 
 @pytest.mark.parametrize(
-    "slider_width, x_value, handle_width, min_value, max_value, center",
+    "slider_width, x_value, handle_width, min_value, max_value",
     [
-        # ---- Cases from test_toVal_center_true (center=True) ----
-        (1000, 500, 10, 0, 1000, True),
-        (1000, 0, 10, 0, 1000, True),  # Minimum x
-        (1000, 1000, 10, 0, 1000, True),  # Maximum x
-        (500, 250, 5, 100, 200, True),  # Different min/max
         # ---- Cases from test_toVal (center=False) ----
-        (1000, 500, 0, 0, 1000, False),  # Midpoint w/o centering
-        (800, 400, 0, 0, 800, False),
-        (1500, 750, 0, 100, 1200, False),
-        (2000, 1000, 0, 50, 1950, False),
-        (1000, -100, 0, 0, 1000, False),  # Below minimum
-        (1000, 1200, 0, 0, 1000, False),  # Above maximum
+        (1000, 500, 0, 0, 1000),  # Midpoint w/o centering
+        (800, 400, 0, 0, 800),
+        (1500, 750, 0, 100, 1200),
+        (2000, 1000, 0, 50, 1950),
+        (1000, -100, 0, 0, 1000),  # Below minimum
+        (1000, 1200, 0, 0, 1000),  # Above maximum
     ],
 )
 def test_toVal(
-    qtbot, slider_width, x_value, handle_width, min_value, max_value, center
+    qtbot, slider_width, x_value, handle_width, min_value, max_value
 ):
     """
     Merged test that checks the slider value transformation for both:
@@ -97,9 +92,7 @@ def test_toVal(
 
     # Manually compute the expected slider value.
     # If center=True, subtract half the handle width.
-    offset = actual_handle_width / 2.0 if center else 0.0
-
-    val = float(x_value) - offset
+    val = float(x_value)
     effective_width = max(1.0, slider_width)  # Prevent zero-division
     val /= effective_width
     val *= max(1, max_value - min_value)
@@ -107,11 +100,10 @@ def test_toVal(
     expected_val = round(val)
 
     # Now call the actual function with the specified center setting.
-    actual_val = slider._toVal(x_value, center=center)
+    actual_val = slider._toVal(x_value)
 
     assert actual_val == expected_val, (
         f"For x={x_value}, handle_width={actual_handle_width}, slider_width={slider_width}, "
-        f"center={center} => expected {expected_val}, but got {actual_val}."
     )
 
 
