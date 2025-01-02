@@ -123,7 +123,7 @@ def test_slider_width_property(qtbot):
     slider.box_rect.setWidth(0)
     assert (
         slider._slider_width == 0
-    ), "Expected _slider_width to be 1 when box_rect width is 0"
+    ), "Expected _slider_width to be 0 when box_rect width is 0"
 
     slider.box_rect.setWidth(10000)
     assert (
