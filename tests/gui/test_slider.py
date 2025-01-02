@@ -154,11 +154,11 @@ def test_toVal_invalid_input(qtbot, invalid_value, expected_error_msg):
         None
     """
     # We use tqdm to track progress across multiple invalid inputs (optional).
-    for _ in range(1):
-        slider = VideoSlider(min=0, max=1000, val=15)
 
-        with pytest.raises(ValueError) as excinfo:
-            slider._toVal(invalid_value)
+    slider = VideoSlider(min=0, max=1000, val=15)
 
-        # Verify the exact error message
-        assert str(excinfo.value) == expected_error_msg
+    with pytest.raises(ValueError) as excinfo:
+        slider._toVal(invalid_value)
+
+    # Verify the exact error message
+    assert str(excinfo.value) == expected_error_msg
