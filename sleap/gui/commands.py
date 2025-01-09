@@ -3785,7 +3785,7 @@ class TriangulateSession(EditCommand):
 
         # Update or create/insert ("upsert") instance points
         frame_group.upsert_points(
-            points=points_reprojected,
+            points_3d=points_reprojected,
             instance_groups=instance_groups,
             exclude_complete=True,
         )
