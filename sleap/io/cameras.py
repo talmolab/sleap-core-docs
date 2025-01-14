@@ -915,21 +915,8 @@ class InstanceGroup:
         points_reprojected[out_of_bounds_x, 0] = np.nan
         points_reprojected[out_of_bounds_y, 1] = np.nan
 
-        # Update points for each `InstanceGroup`
-        for ig_idx, instance_group in enumerate(instance_groups):
-            # Ensure that `InstanceGroup`s is in this `FrameGroup`
-            self._raise_if_instance_group_not_in_frame_group(
-                instance_group=instance_group
-            )
-            # Update points for the instance group
-            instance_group.points = points_reprojected[ig_idx]
-
-        # If no `Camcorder`s specified, then update `Instance`s for all `CameraCluster`
-        if cams_to_include is None:
-            cams_to_include = self.camera_cluster.cameras
-
         # Check that correct shape was passed in
-        n_views, n_nodes, _ = points_3d.shape
+        n_views, n_nodes, _ = points_reprojected.shape
         assert n_views == len(cams_to_include), (
             f"Number of views in `points` ({n_views}) does not match the number of "
             f"Camcorders in `cams_to_include` ({len(cams_to_include)})."
@@ -953,13 +940,13 @@ class InstanceGroup:
             if not isinstance(instance, PredictedInstance):
                 instance_oks = compute_oks(
                     gt_points[cam_idx, :, :],
-                    points_3d[cam_idx, :, :],
+                    points_reprojected[cam_idx, :, :],
                 )
                 oks_scores[cam_idx] = instance_oks
 
             # Update the points for the instance
             instance.update_points(
-                points=points_3d[cam_idx, :, :], exclude_complete=exclude_complete
+                points=points_reprojected[cam_idx, :, :], exclude_complete=exclude_complete
             )
 
         # Update the score for the InstanceGroup to be the average OKS score
