@@ -847,22 +847,25 @@ class InstanceGroup:
 
     def update_points(
         self,
-        points_3d: np.ndarray,
-        instance_groups: List['InstanceGroup'],
+        points: np.ndarray,
+        projection_bounds: np.ndarray,
         cams_to_include: Optional[List[Camcorder]] = None,
         exclude_complete: bool = True,
+        excluded_views: Optional[List[str]] = None,
     ):
         """Update the points in the `Instance` for the specified `Camcorder`s.
 
         Args:
-            points: Numpy array of shape (M, N, 2) where M is the number of views, N is
-                the number of Nodes, and 2 is for x, y.
+            points: Numpy array of shape (N, 3) N is
+                the number of Nodes, and 3 is for x, y, z.
+            projections_bounds: Numpy array of shape (M, 2) where M is the number of views
             cams_to_include: List of `Camcorder`s to include in the update. The order of
                 the `Camcorder`s in the list should match the order of the views in the
                 `points` array. If None, then all `Camcorder`s in the `CameraCluster`
                 are included. Default is None.
             exclude_complete: If True, then do not update points that are marked as
                 complete. Default is True.
+            excluded_views: List of `Camcorder` names to exclude from the update.
         """
         # Ensure we are working with a float array
         points_3d = points_3d.astype(float)
