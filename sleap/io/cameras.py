@@ -894,18 +894,18 @@ class InstanceGroup:
 
         # Reproject 3D points into 2D points for each camera view
         pts_reprojected = reproject(
-            points_3d,
-            calib=self.session.camera_cluster,
-            excluded_views=self.excluded_views,
+            np.expand_dims(points, axis=(0, 1)),  # M=include x N x 3
+            calib=self.camera_cluster,
+            excluded_views=excluded_views,
         )  # M=include x F=1 x T x N x 2
 
         # Squeeze back to the original shape
-        points_reprojected = np.squeeze(pts_reprojected, axis=1)  # M=include x TxNx2
+        points_reprojected = np.squeeze(pts_reprojected, axis=(1, 2))  # M=include x Nx2
 
         # Get projection bounds (based on video height/width)
-        bounds = self.session.projection_bounds
-        bounds_expanded_x = bounds[:, None, None, 0]
-        bounds_expanded_y = bounds[:, None, None, 1]
+        bounds = projection_bounds  #TODO: make sure projection bounds are the shape they need to be in update points
+        bounds_expanded_x = bounds[:, None, 0]
+        bounds_expanded_y = bounds[:, None, 1]
 
         # Create masks for out-of-bounds x and y coordinates
         out_of_bounds_x = (points_reprojected[..., 0] < 0) | (points_reprojected[..., 0] > bounds_expanded_x)
