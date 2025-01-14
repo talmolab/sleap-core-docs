@@ -868,22 +868,29 @@ class InstanceGroup:
             excluded_views: List of `Camcorder` names to exclude from the update.
         """
         # Ensure we are working with a float array
-        points_3d = points_3d.astype(float)
+        points = points.astype(float)
 
-        # Check if points are 3D
-        is_3d = points_3d.shape[-1] == 3
-        if not is_3d:
-            raise ValueError("Expected 3D points with shape (M, T, N, 3).")
-        
         # Check that the correct shape was passed in
-        n_views, n_instances, n_nodes, n_coords = points_3d.shape
-        assert n_views == len(
-            self.cams_to_include
-        ), f"Expected {len(self.cams_to_include)} views, got {n_views}."
-        assert n_instances == len(
-            instance_groups
-        ), f"Expected {len(instance_groups)} instances, got {n_instances}."
-        assert n_coords == 3, f"Expected 3 coordinates, got {n_coords}."
+        points = points.squeeze()  # N x 3
+        n_nodes, n_coords = points.shape
+        if n_coords != 3:
+            raise ValueError(
+                f"Expected 3 coordinates in `points`, got {n_coords}."
+            )
+        
+        # If no `Camcorder`s specified, then update `Instance`s for all `CameraCluster`
+        if cams_to_include is None:
+            cams_to_include = self.camera_cluster.cameras
+        
+        if excluded_views is None:
+            excluded_views = ()
+        
+        if len(cams_to_include) + len(excluded_views) != len(self.camera_cluster):
+            raise ValueError(
+                f"The number of `Camcorder`s to include {len(cams_to_include)} plus the number of `Camcorder`s "
+                f"to exclude {len(excluded_views)} does not match the number of `Camcorder`s in the "
+                f"`CameraCluster` {len(self.camera_cluster)}."
+            )
 
         # Reproject 3D points into 2D points for each camera view
         pts_reprojected = reproject(
