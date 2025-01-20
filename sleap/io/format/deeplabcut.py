@@ -20,6 +20,7 @@ import numpy as np
 import pandas as pd
 
 from typing import List, Optional, Dict, Tuple
+from pathlib import Path
 
 from sleap import Labels, Video, Skeleton
 from sleap.instance import Instance, LabeledFrame, Point, Track
@@ -99,9 +100,8 @@ class LabelsDeepLabCutCsvAdaptor(Adaptor):
         # the image filenames in the csv may not match where the user has them
         # so we'll change the directory to match where the user has the csv
         def fix_img_path(img_dir, img_filename):
+            img_filename = (Path(img_dir) / Path(img_filename).name).as_posix()
             img_filename = img_filename.replace("\\", "/")
-            img_filename = os.path.basename(img_filename)
-            img_filename = os.path.join(img_dir, img_filename)
             return img_filename
 
         def get_shape(filename):
@@ -110,6 +110,7 @@ class LabelsDeepLabCutCsvAdaptor(Adaptor):
             img = cv2.imread(filename)
             return img.shape[:2]
 
+        # Fix image paths to match the CSV directory.
         filenames = list(map(lambda f: fix_img_path(image_dir, f), filenames))
 
         # Group by shape.
@@ -122,14 +123,21 @@ class LabelsDeepLabCutCsvAdaptor(Adaptor):
 
         # Create videos for each shape group.
         videos = []
-        video_inds = []
-        frame_inds = []
+        inds_by_img = {}
         for video_ind, (shape, img_fns) in enumerate(imgs_by_shape.items()):
             videos.append(
                 Video.from_image_filenames(img_fns, height=shape[0], width=shape[1])
             )
-            video_inds.extend([video_ind] * len(img_fns))
-            frame_inds.extend(range(len(img_fns)))
+            for fidx, img_fn in enumerate(img_fns):
+                inds_by_img[img_fn] = (video_ind, fidx)
+
+        # Return videos and indices in the input ordering.
+        video_inds = []
+        frame_inds = []
+        for filename in filenames:
+            video_ind, frame_ind = inds_by_img[filename]
+            video_inds.append(video_ind)
+            frame_inds.append(frame_ind)
 
         return videos, video_inds, frame_inds
 
