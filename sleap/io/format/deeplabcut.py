@@ -113,31 +113,37 @@ class LabelsDeepLabCutCsvAdaptor(Adaptor):
         # Fix image paths to match the CSV directory.
         filenames = list(map(lambda f: fix_img_path(image_dir, f), filenames))
 
-        # Group by shape.
-        shapes = list(map(get_shape, filenames))
-        imgs_by_shape = {}
-        for filename, shape in zip(filenames, shapes):
-            if shape not in imgs_by_shape:
-                imgs_by_shape[shape] = []
-            imgs_by_shape[shape].append(filename)
+        try:
+            # Group by shape.
+            shapes = list(map(get_shape, filenames))
+            imgs_by_shape = {}
+            for filename, shape in zip(filenames, shapes):
+                if shape not in imgs_by_shape:
+                    imgs_by_shape[shape] = []
+                imgs_by_shape[shape].append(filename)
 
-        # Create videos for each shape group.
-        videos = []
-        inds_by_img = {}
-        for video_ind, (shape, img_fns) in enumerate(imgs_by_shape.items()):
-            videos.append(
-                Video.from_image_filenames(img_fns, height=shape[0], width=shape[1])
-            )
-            for fidx, img_fn in enumerate(img_fns):
-                inds_by_img[img_fn] = (video_ind, fidx)
+            # Create videos for each shape group.
+            videos = []
+            inds_by_img = {}
+            for video_ind, (shape, img_fns) in enumerate(imgs_by_shape.items()):
+                videos.append(
+                    Video.from_image_filenames(img_fns, height=shape[0], width=shape[1])
+                )
+                for fidx, img_fn in enumerate(img_fns):
+                    inds_by_img[img_fn] = (video_ind, fidx)
 
-        # Return videos and indices in the input ordering.
-        video_inds = []
-        frame_inds = []
-        for filename in filenames:
-            video_ind, frame_ind = inds_by_img[filename]
-            video_inds.append(video_ind)
-            frame_inds.append(frame_ind)
+            # Return videos and indices in the input ordering.
+            video_inds = []
+            frame_inds = []
+            for filename in filenames:
+                video_ind, frame_ind = inds_by_img[filename]
+                video_inds.append(video_ind)
+                frame_inds.append(frame_ind)
+        except:
+            # If we couldn't group by shape, create a single video for all images.
+            videos = [Video.from_image_filenames(filenames)]
+            video_inds = [0] * len(filenames)
+            frame_inds = list(range(len(filenames)))
 
         return videos, video_inds, frame_inds
 
