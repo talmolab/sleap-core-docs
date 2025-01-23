@@ -902,6 +902,29 @@ class InstanceGroup:
         # Squeeze back to the original shape
         points_reprojected = np.squeeze(pts_reprojected, axis=(1, 2))  # M=include x Nx2
 
+        # Update the points for each `Instance` in the `InstanceGroup` using 2d points
+        self.update_points_from_2d(
+            points_reprojected=points_reprojected,
+            projection_bounds=projection_bounds,
+            cams_to_include=cams_to_include,
+            exclude_complete=exclude_complete,
+        )
+
+    def update_points_from_2d(
+        self,
+        points_reprojected: np.ndarray,
+        projection_bounds: np.ndarray,
+        cams_to_include: Optional[List[Camcorder]] = None,
+        exclude_complete: bool = True,
+    ):
+
+        # Ensure we are working with a float array
+        points_reprojected = points_reprojected.astype(np.float64)
+
+        # If no `Camcorder`s specified, then update `Instance`s for all `CameraCluster`
+        if cams_to_include is None:
+            cams_to_include = self.camera_cluster.cameras
+
         # Get projection bounds (based on video height/width)
         bounds = projection_bounds  #TODO: make sure projection bounds are the shape they need to be in update points
         bounds_expanded_x = bounds[:, None, 0]
