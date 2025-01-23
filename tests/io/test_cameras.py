@@ -790,7 +790,7 @@ def test_instance_group_update_points_from_2d(
     )
     assert np.all(instance_group.numpy(invisible_as_nan=False) == value)
 
-    # Test `upsert_points` (all out of bound, none updated)
+    # Test `update_points_from_2d` (all out of bound, none updated)
     min_bound = projection_bounds.min()
     prev_value = value
     oob_value = 5000
@@ -805,7 +805,7 @@ def test_instance_group_update_points_from_2d(
     assert np.any(instance_group.numpy(invisible_as_nan=False) == oob_value) == False
     assert np.all(instance_group.numpy(invisible_as_nan=False) == prev_value)
 
-    # Test `upsert_points` (some out of bound, some updated)
+    # Test `update_points_from_2d` (some out of bound, some updated)
     value = 200
     oob_value = 5000
     assert oob_value > min_bound
@@ -829,7 +829,7 @@ def test_instance_group_update_points_from_2d(
     )  # Not updated
     assert np.all(instance_group_numpy[~oob_mask_1d_expanded] == value)  # Updated
 
-    # Test `upsert_points` (between x,y bounds, some out of bound, some updated)
+    # Test `update_points_from_2d` (between x,y bounds, some out of bound, some updated)
     value = 300
     points = np.full((n_cameras, n_nodes, n_coords), value)
     # Reset the points to all in bounds
