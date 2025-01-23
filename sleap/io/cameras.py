@@ -2373,12 +2373,13 @@ class FrameGroup:
             self.create_and_add_missing_instances(instance_group=instance_group)
 
             # Update points for each `Instance` in `InstanceGroup`
-            instance_points = points[:, ig_idx, :, :]  # M x N x 2
+            instance_points = points[ig_idx, :, :]  # N x 3
             instance_group.update_points(
                 points=instance_points,
                 cams_to_include=self.cams_to_include,
+                excluded_views=self.excluded_views,
                 exclude_complete=exclude_complete,
-                bounds=bounds,
+                projection_bounds=bounds,
             )
 
     def _raise_if_instance_not_in_instance_group(self, instance: Instance):
