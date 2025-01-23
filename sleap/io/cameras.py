@@ -941,11 +941,14 @@ class InstanceGroup:
         points_reprojected[out_of_bounds_y, 1] = np.nan
 
         # Check that correct shape was passed in
-        n_views, n_nodes, _ = points_reprojected.shape
-        assert n_views == len(cams_to_include), (
-            f"Number of views in `points` ({n_views}) does not match the number of "
-            f"Camcorders in `cams_to_include` ({len(cams_to_include)})."
-        )
+        n_views, n_nodes, n_coords = points_reprojected.shape
+        if n_views != len(cams_to_include):
+            raise ValueError(
+                f"Number of views in `points` ({n_views}) does not match the number of "
+                f"Camcorders in `cams_to_include` ({len(cams_to_include)})."
+            )
+        if n_coords != 2:
+            raise ValueError(f"Expected 2 coordinates in `points`, got {n_coords}.")
 
         # Calculate OKS scores for the points
         gt_points = self.numpy(
