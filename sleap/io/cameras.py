@@ -916,6 +916,23 @@ class InstanceGroup:
         exclude_complete: bool = True,
     ):
 
+        # Check that correct shape was passed in
+        points_shape = points_reprojected.shape
+        try:
+            n_views, n_nodes, n_coords = points_reprojected.shape
+            if n_views != len(cams_to_include):
+                raise ValueError(
+                    f"Number of views in `points` ({n_views}) does not match the number"
+                    f" of Camcorders in `cams_to_include` ({len(cams_to_include)})."
+                )
+            if n_coords != 2:
+                raise ValueError(f"Expected 2 coordinates in `points`, got {n_coords}.")
+        except ValueError as e:
+            raise ValueError(
+                f"Expected `points_reprojected` to be of shape (M, N, 2), got "
+                f"{points_shape}.\n\n{e}"
+            )
+
         # Ensure we are working with a float array
         points_reprojected = points_reprojected.astype(np.float64)
 
@@ -939,16 +956,6 @@ class InstanceGroup:
         # Replace out-of-bounds x and y coordinates with nan
         points_reprojected[out_of_bounds_x, 0] = np.nan
         points_reprojected[out_of_bounds_y, 1] = np.nan
-
-        # Check that correct shape was passed in
-        n_views, n_nodes, n_coords = points_reprojected.shape
-        if n_views != len(cams_to_include):
-            raise ValueError(
-                f"Number of views in `points` ({n_views}) does not match the number of "
-                f"Camcorders in `cams_to_include` ({len(cams_to_include)})."
-            )
-        if n_coords != 2:
-            raise ValueError(f"Expected 2 coordinates in `points`, got {n_coords}.")
 
         # Calculate OKS scores for the points
         gt_points = self.numpy(
