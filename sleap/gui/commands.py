@@ -3772,20 +3772,10 @@ class TriangulateSession(EditCommand):
             calib=session.camera_cluster,
             excluded_views=frame_group.excluded_views,
         )  # F x T x N x 3
-
-        # Reproject onto all views
-        pts_reprojected = reproject(
-            points_3d,
-            calib=session.camera_cluster,
-            excluded_views=frame_group.excluded_views,
-        )  # M=include x F=1 x T x N x 2
-
-        # Sqeeze back to the original shape
-        points_reprojected = np.squeeze(pts_reprojected, axis=1)  # M=include x TxNx2
-
         # Update or create/insert ("upsert") instance points
+
         frame_group.upsert_points(
-            points_3d=points_reprojected,
+            points=points_3d,
             instance_groups=instance_groups,
             exclude_complete=True,
         )
