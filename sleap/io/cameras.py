@@ -874,17 +874,15 @@ class InstanceGroup:
         points = points.squeeze()  # N x 3
         n_nodes, n_coords = points.shape
         if n_coords != 3:
-            raise ValueError(
-                f"Expected 3 coordinates in `points`, got {n_coords}."
-            )
-        
+            raise ValueError(f"Expected 3 coordinates in `points`, got {n_coords}.")
+
         # If no `Camcorder`s specified, then update `Instance`s for all `CameraCluster`
         if cams_to_include is None:
             cams_to_include = self.camera_cluster.cameras
-        
+
         if excluded_views is None:
             excluded_views = ()
-        
+
         if len(cams_to_include) + len(excluded_views) != len(self.camera_cluster):
             raise ValueError(
                 f"The number of `Camcorder`s to include {len(cams_to_include)} plus the number of `Camcorder`s "
@@ -926,13 +924,17 @@ class InstanceGroup:
             cams_to_include = self.camera_cluster.cameras
 
         # Get projection bounds (based on video height/width)
-        bounds = projection_bounds  #TODO: make sure projection bounds are the shape they need to be in update points
+        bounds = projection_bounds  # TODO: make sure projection bounds are the shape they need to be in update points
         bounds_expanded_x = bounds[:, None, 0]
         bounds_expanded_y = bounds[:, None, 1]
 
         # Create masks for out-of-bounds x and y coordinates
-        out_of_bounds_x = (points_reprojected[..., 0] < 0) | (points_reprojected[..., 0] > bounds_expanded_x)
-        out_of_bounds_y = (points_reprojected[..., 1] < 0) | (points_reprojected[..., 1] > bounds_expanded_y)
+        out_of_bounds_x = (points_reprojected[..., 0] < 0) | (
+            points_reprojected[..., 0] > bounds_expanded_x
+        )
+        out_of_bounds_y = (points_reprojected[..., 1] < 0) | (
+            points_reprojected[..., 1] > bounds_expanded_y
+        )
 
         # Replace out-of-bounds x and y coordinates with nan
         points_reprojected[out_of_bounds_x, 0] = np.nan
@@ -969,7 +971,8 @@ class InstanceGroup:
 
             # Update the points for the instance
             instance.update_points(
-                points=points_reprojected[cam_idx, :, :], exclude_complete=exclude_complete
+                points=points_reprojected[cam_idx, :, :],
+                exclude_complete=exclude_complete,
             )
 
         # Update the score for the InstanceGroup to be the average OKS score
