@@ -2351,16 +2351,6 @@ class FrameGroup:
 
         # Get projection bounds (based on video height/width)
         bounds = self.session.projection_bounds
-        bounds_expanded_x = bounds[:, None, None, 0]
-        bounds_expanded_y = bounds[:, None, None, 1]
-
-        # Create masks for out-of-bounds x and y coordinates
-        out_of_bounds_x = (points[..., 0] < 0) | (points[..., 0] > bounds_expanded_x)
-        out_of_bounds_y = (points[..., 1] < 0) | (points[..., 1] > bounds_expanded_y)
-
-        # Replace out-of-bounds x and y coordinates with nan
-        points[out_of_bounds_x, 0] = np.nan
-        points[out_of_bounds_y, 1] = np.nan
 
         # Update points for each `InstanceGroup`
         for ig_idx, instance_group in enumerate(instance_groups):
