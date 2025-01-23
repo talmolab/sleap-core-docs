@@ -1087,6 +1087,22 @@ def test_frame_group(
     assert labeled_frame in frame_group.session.labels.labeled_frames
 
 
+def test_frame_group_upsert_points(
+    multiview_min_session_frame_groups: Labels,
+): 
+    # Define Initial 3D point array
+    ...
+
+    # Call upsert points to update all instance groups
+    ...
+
+    # Now get 2D points from all instance groups
+    ...
+
+    # Triangulate 2D points to see if the match initial 3D point array
+    ...
+
+
 def test_cameras_are_not_sorted():
     """Test that cameras are not sorted in `RecordingSession`.
 
