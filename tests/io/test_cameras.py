@@ -829,6 +829,50 @@ def test_instance_group_update_points_from_2d(
     )  # Not updated
     assert np.all(instance_group_numpy[~oob_mask_1d_expanded] == value)  # Updated
 
+    # Test `upsert_points` (between x,y bounds, some out of bound, some updated)
+    value = 300
+    points = np.full((n_cameras, n_nodes, n_coords), value)
+    # Reset the points to all in bounds
+    instance_group.update_points_from_2d(
+        points_reprojected=points,
+        projection_bounds=projection_bounds,
+        cams_to_include=cams_to_include,
+        exclude_complete=False,
+    )
+    assert np.all(instance_group.numpy(invisible_as_nan=False) == value)
+    # Add some out of bounds points
+    prev_value = value
+    value = 400
+    points = np.full((n_cameras, n_nodes, n_coords), value)
+    max_bound = projection_bounds.max()
+    oob_value = max_bound - 1
+    assert oob_value < max_bound and oob_value > min_bound
+    oob_mask = np.random.choice([True, False], size=(n_cameras, n_nodes, n_coords))
+    points[oob_mask] = oob_value
+    instance_group.update_points_from_2d(
+        points_reprojected=points,
+        projection_bounds=projection_bounds,
+        cams_to_include=cams_to_include,
+        exclude_complete=False,
+    )
+    # Get the logical or for either x or y being out of bounds
+    bound_x, bound_y = projection_bounds[:, 0].min(), projection_bounds[:, 1].min()
+    oob_mask_x = np.where(points[:, :, 0] > bound_x, True, False)
+    oob_mask_y = np.where(points[:, :, 1] > bound_y, True, False)
+    oob_mask_1d = np.logical_or(oob_mask_x, oob_mask_y)
+    oob_mask_1d_expanded = np.expand_dims(oob_mask_1d, axis=-1)
+    oob_mask_1d_expanded = np.broadcast_to(oob_mask_1d_expanded, oob_mask.shape)
+    instance_group_numpy = instance_group.numpy(invisible_as_nan=False)
+    assert np.any(instance_group_numpy[:, :, 0] > bound_x) == False
+    assert np.any(instance_group_numpy[:, :, 1] > bound_y) == False
+    assert np.all(
+        instance_group_numpy[oob_mask_1d_expanded] == prev_value
+    )  # Not updated
+    oob_value_mask = np.logical_and(~oob_mask_1d_expanded, oob_mask)
+    value_mask = np.logical_and(~oob_mask_1d_expanded, ~oob_mask)
+    assert np.all(instance_group_numpy[oob_value_mask] == oob_value)  # Updated to oob
+    assert np.all(instance_group_numpy[value_mask] == value)  # Updated to value
+
 
 def test_frame_group(
     multiview_min_session_labels: Labels, multiview_min_session_frame_groups: Labels
