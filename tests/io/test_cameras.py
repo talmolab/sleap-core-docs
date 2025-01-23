@@ -805,6 +805,30 @@ def test_instance_group_update_points_from_2d(
     assert np.any(instance_group.numpy(invisible_as_nan=False) == oob_value) == False
     assert np.all(instance_group.numpy(invisible_as_nan=False) == prev_value)
 
+    # Test `upsert_points` (some out of bound, some updated)
+    value = 200
+    oob_value = 5000
+    assert oob_value > min_bound
+    oob_mask = np.random.choice([True, False], size=(n_cameras, n_nodes, n_coords))
+    points = np.full((n_cameras, n_nodes, n_coords), value)
+    points[oob_mask] = oob_value
+    instance_group.update_points_from_2d(
+        points_reprojected=points,
+        projection_bounds=projection_bounds,
+        cams_to_include=cams_to_include,
+        exclude_complete=False,
+    )
+    # Get the logical or for either x or y being out of bounds
+    oob_mask_1d = np.any(oob_mask, axis=-1)  # Collapse last axis
+    oob_mask_1d_expanded = np.expand_dims(oob_mask_1d, axis=-1)
+    oob_mask_1d_expanded = np.broadcast_to(oob_mask_1d_expanded, oob_mask.shape)
+    instance_group_numpy = instance_group.numpy(invisible_as_nan=False)
+    assert np.any(instance_group_numpy > min_bound) == False
+    assert np.all(
+        instance_group_numpy[oob_mask_1d_expanded] == prev_value
+    )  # Not updated
+    assert np.all(instance_group_numpy[~oob_mask_1d_expanded] == value)  # Updated
+
 
 def test_frame_group(
     multiview_min_session_labels: Labels, multiview_min_session_frame_groups: Labels
