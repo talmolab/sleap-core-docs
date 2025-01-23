@@ -790,6 +790,21 @@ def test_instance_group_update_points_from_2d(
     )
     assert np.all(instance_group.numpy(invisible_as_nan=False) == value)
 
+    # Test `upsert_points` (all out of bound, none updated)
+    min_bound = projection_bounds.min()
+    prev_value = value
+    oob_value = 5000
+    assert oob_value > min_bound
+    points = np.full((n_cameras, n_nodes, n_coords), oob_value)
+    instance_group.update_points_from_2d(
+        points_reprojected=points,
+        projection_bounds=projection_bounds,
+        cams_to_include=cams_to_include,
+        exclude_complete=False,
+    )
+    assert np.any(instance_group.numpy(invisible_as_nan=False) == oob_value) == False
+    assert np.all(instance_group.numpy(invisible_as_nan=False) == prev_value)
+
 
 def test_frame_group(
     multiview_min_session_labels: Labels, multiview_min_session_frame_groups: Labels
