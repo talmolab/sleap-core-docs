@@ -1090,18 +1090,42 @@ def test_frame_group(
 def test_frame_group_upsert_points(
     multiview_min_session_frame_groups: Labels,
 ): 
+    from sleap_anipose import reproject, triangulate
     # Define Initial 3D point array
-    ...
+    labels = multiview_min_session_frame_groups
+    session: RecordingSession = labels.sessions[0]
+    frame_idx = 0
+    frame_group = session.frame_groups[frame_idx]
+    instance_group = frame_group.instance_groups[0]
 
-    # Call upsert points to update all instance groups
-    ...
+    n_cameras = len(frame_group.cams_to_include)
+    n_nodes = len(frame_group.session.labels.skeleton.nodes)
+    n_coords = 3
+    value = 100
+    points = np.full((n_cameras, n_nodes, n_coords), value)
+
+    frame_group.upsert_points(
+        points=points, instance_groups=frame_group.instance_groups, exclude_complete=False
+    )  
 
     # Now get 2D points from all instance groups
-    ...
+    instance_group_2d_points = []
+    for instance_group in frame_group.instance_groups:
+        points_2d = instance_group.numpy(invisible_as_nan=True)
+        instance_group_2d_points.append(points_2d)
+
+    for points_2d in instance_group_2d_points:
+        assert points_2d.shape[1:] == (n_nodes, 2)  # Shape matches nodes × 2D coordinates
 
     # Triangulate 2D points to see if the match initial 3D point array
-    ...
+    triangulated_points = triangulate(
+        p2d=np.array(points_2d),
+        calib=session.camera_cluster,
+        excluded_views=frame_group.excluded_views,
+    )
 
+    assert triangulated_points.shape == (1, n_nodes, n_coords)
+    assert np.allclose(triangulated_points[0], points, atol=1e-2)
 
 def test_cameras_are_not_sorted():
     """Test that cameras are not sorted in `RecordingSession`.
