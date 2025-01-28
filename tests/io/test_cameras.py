@@ -1098,34 +1098,30 @@ def test_frame_group_upsert_points(
     frame_group = session.frame_groups[frame_idx]
     instance_group = frame_group.instance_groups[0]
 
-    n_cameras = len(frame_group.cams_to_include)
+    n_instances = len(frame_group.instance_groups)
     n_nodes = len(frame_group.session.labels.skeleton.nodes)
     n_coords = 3
     value = 100
-    points = np.full((n_cameras, n_nodes, n_coords), value)
+    points = np.full((n_instances, n_nodes, n_coords), value)
+    points[:, :, :-1] = -80
+    points[:, :, -1] = 1100
 
     frame_group.upsert_points(
         points=points, instance_groups=frame_group.instance_groups, exclude_complete=False
     )  
 
-    # Now get 2D points from all instance groups
-    instance_group_2d_points = []
-    for instance_group in frame_group.instance_groups:
-        points_2d = instance_group.numpy(invisible_as_nan=True)
-        instance_group_2d_points.append(points_2d)
-
-    for points_2d in instance_group_2d_points:
-        assert points_2d.shape[1:] == (n_nodes, 2)  # Shape matches nodes × 2D coordinates
-
     # Triangulate 2D points to see if the match initial 3D point array
+    frame_group_numpy = frame_group.numpy(invisible_as_nan=False)
+    frame_group_numpy = np.expand_dims(frame_group_numpy, axis=1)
     triangulated_points = triangulate(
-        p2d=np.array(points_2d),
+        p2d=frame_group_numpy,
         calib=session.camera_cluster,
         excluded_views=frame_group.excluded_views,
     )
 
-    assert triangulated_points.shape == (1, n_nodes, n_coords)
-    assert np.allclose(triangulated_points[0], points, atol=1e-2)
+    triangulated_points = np.squeeze(triangulated_points, axis=0)
+    assert triangulated_points.shape == points.shape
+    assert np.allclose(triangulated_points, points, atol=1e-2)
 
 def test_cameras_are_not_sorted():
     """Test that cameras are not sorted in `RecordingSession`.
