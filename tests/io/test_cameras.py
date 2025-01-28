@@ -1092,8 +1092,9 @@ def test_frame_group(
 
 def test_frame_group_upsert_points(
     multiview_min_session_frame_groups: Labels,
-): 
+):
     from sleap_anipose import reproject, triangulate
+
     # Define Initial 3D point array
     labels = multiview_min_session_frame_groups
     session: RecordingSession = labels.sessions[0]
@@ -1110,8 +1111,10 @@ def test_frame_group_upsert_points(
     points[:, :, -1] = 1100
 
     frame_group.upsert_points(
-        points=points, instance_groups=frame_group.instance_groups, exclude_complete=False
-    )  
+        points=points,
+        instance_groups=frame_group.instance_groups,
+        exclude_complete=False,
+    )
 
     # Triangulate 2D points to see if the match initial 3D point array
     frame_group_numpy = frame_group.numpy(invisible_as_nan=False)
@@ -1125,6 +1128,7 @@ def test_frame_group_upsert_points(
     triangulated_points = np.squeeze(triangulated_points, axis=0)
     assert triangulated_points.shape == points.shape
     assert np.allclose(triangulated_points, points, atol=1e-2)
+
 
 def test_cameras_are_not_sorted():
     """Test that cameras are not sorted in `RecordingSession`.
