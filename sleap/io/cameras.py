@@ -891,7 +891,7 @@ class InstanceGroup:
             )
 
         self.triangulation = points
-        
+
         # Reproject 3D points into 2D points for each camera view
         pts_reprojected = reproject(
             np.expand_dims(points, axis=(0, 1)),  # M=include x N x 3
@@ -2377,10 +2377,10 @@ class FrameGroup:
         ordering of the first dimension (I) in `points`.
 
         Args:
-            points: Numpy array of shape (I, N, 3) where I is the number of Instance 
-            groups, N is the number of Nodes, and 3 is for x, y, z. 
-            instance_groups: List of `InstanceGroup` objects to update points for. 
-            exclude_complete: If True, then only update points that are not marked as 
+            points: Numpy array of shape (I, N, 3) where I is the number of Instance
+            groups, N is the number of Nodes, and 3 is for x, y, z.
+            instance_groups: List of `InstanceGroup` objects to update points for.
+            exclude_complete: If True, then only update points that are not marked as
             complete. Default is True.
         """
         points_shape = points.shape
@@ -2396,7 +2396,7 @@ class FrameGroup:
                 "where I is the number of Instance groups and N is the number of Nodes."
                 f"\n{e}"
             )
-        
+
         # Ensure we are working with a float array
         points = points.astype(float)
 
