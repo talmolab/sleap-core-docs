@@ -890,6 +890,8 @@ class InstanceGroup:
                 f"`CameraCluster` {len(self.camera_cluster)}."
             )
 
+        self.triangulation = points
+        
         # Reproject 3D points into 2D points for each camera view
         pts_reprojected = reproject(
             np.expand_dims(points, axis=(0, 1)),  # M=include x N x 3
