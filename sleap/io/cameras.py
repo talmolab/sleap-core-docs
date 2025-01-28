@@ -2372,14 +2372,14 @@ class FrameGroup:
         Included cams are specified by `FrameGroup.cams_to_include`.
 
         The ordering of the `InstanceGroup`s in `instance_groups` should match the
-        ordering of the second dimension (T) in `points`.
+        ordering of the first dimension (I) in `points`.
 
         Args:
-            points: Numpy array of shape (M, T, N, 2) where M is the number of views, T
-                is the number of Tracks, N is the number of Nodes, and 2 is for x, y.
-            instance_groups: List of `InstanceGroup` objects to update points for.
-            exclude_complete: If True, then only update points that are not marked as
-                complete. Default is True.
+            points: Numpy array of shape (I, N, 3) where I is the number of Instance 
+            groups, N is the number of Nodes, and 3 is for x, y, z. 
+            instance_groups: List of `InstanceGroup` objects to update points for. 
+            exclude_complete: If True, then only update points that are not marked as 
+            complete. Default is True.
         """
 
         # Ensure we are working with a float array
