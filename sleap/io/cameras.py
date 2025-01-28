@@ -2381,7 +2381,20 @@ class FrameGroup:
             exclude_complete: If True, then only update points that are not marked as 
             complete. Default is True.
         """
-
+        points_shape = points.shape
+        try:
+            num_instance_groups, num_nodes, num_dims = points_shape
+            if num_instance_groups != len(instance_groups):
+                raise ValueError()
+            if num_dims != 3:
+                raise ValueError()
+        except ValueError as e:
+            raise ValueError(
+                f"Expected points to have shape (I, N, 3) but got shape {points_shape} "
+                "where I is the number of Instance groups and N is the number of Nodes."
+                f"\n{e}"
+            )
+        
         # Ensure we are working with a float array
         points = points.astype(float)
 
