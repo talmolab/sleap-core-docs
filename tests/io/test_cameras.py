@@ -721,20 +721,23 @@ def test_instance_group(
     for inst in instance_group.instances[:2]:
         lf = inst.frame
         labels.remove_instance(lf, inst)
+    points = np.full((n_nodes, 3), 72317)
     instance_group.update_points(
-        points=np.full((n_nodes, 3), 72317),
+        points=points,
         projection_bounds=projection_bounds,
         exclude_complete=False,
     )
+    np.testing.assert_equal(instance_group.triangulation, points)
     for inst in instance_group.instances:
         if isinstance(inst, PredictedInstance):
             assert inst.score == instance_group.score
     prev_score = instance_group.score
     instance_group.update_points(
-        points=np.full((n_nodes, 3), 72317),
+        points=points,
         projection_bounds=projection_bounds,
         exclude_complete=False,
     )
+    np.testing.assert_equal(instance_group.triangulation, points)
     for inst in instance_group.instances:
         if isinstance(inst, PredictedInstance):
             assert inst.score == instance_group.score
