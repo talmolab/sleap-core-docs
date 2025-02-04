@@ -917,7 +917,25 @@ class InstanceGroup:
         projection_bounds: np.ndarray,
         cams_to_include: Optional[List[Camcorder]] = None,
         exclude_complete: bool = True,
-    ):
+    ) -> None:
+        """Update the points in the `Instance` for the specified `Camcorder`s.
+
+        Args:
+            points_reprojected: Numpy array of shape (M, N, 2) where M is the number of
+                views, N is the number of Nodes, and 2 is for x, y.
+            projection_bounds: Numpy array of shape (M, 2) where M is the number of
+                views and 2 is for the height and width of the video.
+            cams_to_include: List of `Camcorder`s to include in the update. The order of
+                the `Camcorder`s in the list should match the order of the views in the
+                `points` array. If None, then all `Camcorder`s in the `CameraCluster`
+                are included. Default is None.
+            exclude_complete: If True, then do not update points that are marked as
+                complete. Default is True.
+        """
+
+        # If no `Camcorder`s specified, then update `Instance`s for all `CameraCluster`
+        if cams_to_include is None:
+            cams_to_include = self.camera_cluster.cameras
 
         # Check that correct shape was passed in
         points_shape = points_reprojected.shape
