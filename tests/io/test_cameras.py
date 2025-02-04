@@ -716,6 +716,29 @@ def test_instance_group(
 
     projection_bounds = np.full((len(instance_group.camera_cluster), 2), np.nan)
     # Test `update_points` method
+
+    # Test should fail since n_coords != 3
+    points = np.full((n_nodes, 2), 72317)
+    with pytest.raises(ValueError):
+        instance_group.update_points(
+            points=points,
+            projection_bounds=projection_bounds,
+            exclude_complete=True,
+        )
+
+    # Test should fail since len(cams_to_include) + len(excluded_views) !=
+    # len(self.camera_cluster)
+    points = np.full((n_nodes, 3), 72317)
+    cams_to_include, excluded_views = [], ()
+    with pytest.raises(ValueError):
+        instance_group.update_points(
+            points=points,
+            projection_bounds=projection_bounds,
+            exclude_complete=True,
+            cams_to_include=cams_to_include,
+            excluded_views=excluded_views,
+        )
+
     assert not np.all(instance_group.numpy(invisible_as_nan=False) == 72317)
     # Remove some Instances to "expose" underlying PredictedInstances
     for inst in instance_group.instances[:2]:
