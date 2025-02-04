@@ -799,6 +799,39 @@ def test_instance_group_update_points_from_2d(
     frame_group = session.frame_groups[frame_idx]
     instance_group = frame_group.instance_groups[0]
 
+    # Call should fail since n_views != len(cams_to_include)
+    points_reprojected = np.full((0, 1, 1), 0)
+    projection_bounds = frame_group.session.projection_bounds
+    cams_to_include = frame_group.cams_to_include
+    with pytest.raises(ValueError):
+        instance_group.update_points_from_2d(
+            points_reprojected=points_reprojected,
+            projection_bounds=projection_bounds,
+            exclude_complete=True,
+            cams_to_include=cams_to_include,
+        )
+
+    # Call should fail since n_coords != 2
+    points_reprojected = np.full((len(cams_to_include), 1, 1), 0)
+    with pytest.raises(ValueError):
+        instance_group.update_points_from_2d(
+            points_reprojected=points_reprojected,
+            projection_bounds=projection_bounds,
+            exclude_complete=True,
+            cams_to_include=cams_to_include,
+        )
+
+    # Verify that points were updated for all cameras in the camera cluster
+    n_nodes = len(frame_group.session.labels.skeleton.nodes)
+    points_reprojected = np.random.rand(len(session.camera_cluster.cameras), n_nodes, 2)
+    projection_bounds = np.array([[1000, 1000]] * len(session.camera_cluster.cameras))
+    instance_group.update_points_from_2d(
+        points_reprojected=points_reprojected,
+        projection_bounds=projection_bounds,
+        cams_to_include=None,
+        exclude_complete=False,
+    )
+
     # Test `update_points_from_2d` (all in bounds, all updated)
     n_cameras = len(frame_group.cams_to_include)
     n_instance_groups = 1
