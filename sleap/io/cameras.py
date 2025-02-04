@@ -957,10 +957,6 @@ class InstanceGroup:
         # Ensure we are working with a float array
         points_reprojected = points_reprojected.astype(np.float64)
 
-        # If no `Camcorder`s specified, then update `Instance`s for all `CameraCluster`
-        if cams_to_include is None:
-            cams_to_include = self.camera_cluster.cameras
-
         # Get projection bounds (based on video height/width)
         bounds = projection_bounds  # TODO: make sure projection bounds are the shape they need to be in update points
         bounds_expanded_x = bounds[:, None, 0]
