@@ -1172,6 +1172,25 @@ def test_frame_group_upsert_points(
         exclude_complete=False,
     )
 
+    # Call should fail since num_instance_groups != len(instance_groups)
+    instance_groups = frame_group.instance_groups
+    points_incorrect_shape = np.full((len(instance_groups) + 1, 2, 3), 0)
+    with pytest.raises(ValueError):
+        frame_group.upsert_points(
+            points=points_incorrect_shape,
+            instance_groups=instance_groups,
+            exclude_complete=False,
+        )
+
+    # Call should fail since num_dims != 3
+    points_incorrect_shape = np.full((len(instance_groups), 2, 2), 0)
+    with pytest.raises(ValueError):
+        frame_group.upsert_points(
+            points=points_incorrect_shape,
+            instance_groups=instance_groups,
+            exclude_complete=False,
+        )
+
     # Triangulate 2D points to see if the match initial 3D point array
     frame_group_numpy = frame_group.numpy(invisible_as_nan=False)
     frame_group_numpy = np.expand_dims(frame_group_numpy, axis=1)
