@@ -885,9 +885,10 @@ class InstanceGroup:
 
         if len(cams_to_include) + len(excluded_views) != len(self.camera_cluster):
             raise ValueError(
-                f"The number of `Camcorder`s to include {len(cams_to_include)} plus the number of `Camcorder`s "
-                f"to exclude {len(excluded_views)} does not match the number of `Camcorder`s in the "
-                f"`CameraCluster` {len(self.camera_cluster)}."
+                f"The number of `Camcorder`s to include {len(cams_to_include)} plus "
+                f"the number of `Camcorder`s to exclude {len(excluded_views)} does not "
+                f"match the number of `Camcorder`s in the `CameraCluster` "
+                f"{len(self.camera_cluster)}."
             )
 
         self.triangulation = points
