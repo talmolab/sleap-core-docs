@@ -587,6 +587,7 @@ class SessionsDock(DockWidget):
         self.sessions_model_type = SessionsTableModel
         self.camera_model_type = CamerasTableModel
         self.unlinked_videos_model_type = VideosTableModel
+        self.camera_groups_model_type = CameraGroupsTableModel
         super().__init__(
             name="Sessions",
             main_window=main_window,
@@ -594,6 +595,7 @@ class SessionsDock(DockWidget):
                 self.sessions_model_type,
                 self.camera_model_type,
                 self.unlinked_videos_model_type,
+                self.camera_groups_model_type,
             ],
             tab_with=tab_with,
         )
