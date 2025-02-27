@@ -628,6 +628,8 @@ class SessionsDock(DockWidget):
             hb, "Unlink Video", main_window.commands.unlink_video_from_camera
         )
 
+        self.add_button(hb, "Add to Group", self._add_camera_to_group)
+
         hbw = QWidget()
         hbw.setLayout(hb)
         return hbw
