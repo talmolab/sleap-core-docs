@@ -695,11 +695,15 @@ class SessionsDock(DockWidget):
         self.unlinked_videos_model = self.unlinked_videos_model_type(
             items=main_window.state["selected_session"], context=main_window.commands
         )
+        self.camera_groups_model = self.camera_groups_model_type(
+            items=main_window.state.get("camera_groups", []), context=main_window.commands
+        )
 
         self.model = {
             "sessions_model": self.sessions_model,
             "camera_model": self.camera_model,
             "unlink_videos_model": self.unlinked_videos_model,
+            "camera_groups_model": self.camera_groups_model,
         }
         return self.model
 
