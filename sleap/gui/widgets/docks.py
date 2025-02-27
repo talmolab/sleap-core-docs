@@ -746,10 +746,15 @@ class SessionsDock(DockWidget):
             "selected_session", self.main_window.update_unlinked_videos_model
         )
 
+        self.main_window.state.connect(
+            "camera_groups", self._update_camera_groups_model
+        )
+    
         self.table = {
             "sessions_table": self.sessions_table,
             "camera_table": self.camera_table,
             "unlinked_videos_table": self.unlinked_videos_table,
+            "camera_groups_table": self.camera_groups_table,
         }
         return self.table
 
