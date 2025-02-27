@@ -634,6 +634,46 @@ class SessionsDock(DockWidget):
         hbw.setLayout(hb)
         return hbw
 
+    def _add_camera_to_group(self):
+        """Add the selected camera to a group."""
+        camera = self.main_window.state.get("camera")
+        if not camera:
+            QMessageBox.information(
+                self.main_window,
+                "No Camera Selected",
+                "Please select a camera to add to a group."
+            )
+            return
+        
+        # Get available groups
+        if not self.main_window.state.get("camera_groups") or len(self.main_window.state["camera_groups"]) == 0:
+            reply = QMessageBox.question(
+                self.main_window,
+                "No Groups",
+                "No camera groups exist. Would you like to create one?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.Yes
+            )
+            if reply == QMessageBox.Yes:
+                self._create_camera_group()
+            return
+        
+        # Show group selection dialog
+        group_names = [group.name for group in self.main_window.state["camera_groups"]]
+        selected_name, ok = QInputDialog.getItem(
+            self.main_window, 
+            "Select Group", 
+            "Choose a group to add the camera to:", 
+            group_names, 
+            0, 
+            False
+        )
+        
+        if ok and selected_name:
+            selected_idx = group_names.index(selected_name)
+            selected_group = self.main_window.state["camera_groups"][selected_idx]
+            self.main_window.commands.addCameraToGroup(camera, selected_group)
+
     def create_video_link_button(self) -> QWidget:
         main_window = self.main_window
 
