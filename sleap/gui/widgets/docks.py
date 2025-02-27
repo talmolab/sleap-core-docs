@@ -20,6 +20,8 @@ from qtpy.QtWidgets import (
     QTabWidget,
     QVBoxLayout,
     QWidget,
+    QInputDialog,
+    QMessageBox,
 )
 
 from sleap.gui.dataviews import (
@@ -34,6 +36,7 @@ from sleap.gui.dataviews import (
     CamerasTableModel,
     SessionsTableModel,
     InstanceGroupTableModel,
+    CameraGroupsTableModel,
 )
 from sleap.io.cameras import RecordingSession, FrameGroup, InstanceGroup
 from sleap.gui.dialogs.formbuilder import YamlFormWidget
