@@ -683,6 +683,40 @@ class CamerasTableModel(GenericTableModel):
         video = obj.get_video(item)
         return {"camera": item.name, "video": video.filename if video else ""}
 
+class CameraGroupsTableModel(GenericTableModel):
+    """Table model for camera groups."""
+    
+    properties = ("name", "cameras")
+    
+    def __init__(self, items=None, context=None):
+        super().__init__(items=items, context=context)
+        # Register for updates
+        if context and hasattr(context, 'state'):
+            context.state.connect("camera_groups", self.update_items)
+    
+    def update_items(self, camera_groups):
+        """Update the model when camera groups change."""
+        self.items = camera_groups
+        self.beginResetModel()
+        self.endResetModel()
+        
+    def object_to_items(self, obj):
+        return obj
+    
+    def item_to_data(self, obj, item):
+        return {
+            "name": item.name,
+            "cameras": len(item.cameras)
+        }
+    
+    def can_set(self, item, key):
+        return key == "name"
+    
+    def set_item(self, item, key, value):
+        if key == "name" and value:
+            item.name = value
+            # Mark project as changed
+            self.context.changestack_push("rename camera group")
 
 class InstanceGroupTableModel(GenericTableModel):
     """Table model for displaying all instance groups in a given frame.
