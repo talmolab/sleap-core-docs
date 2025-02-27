@@ -730,6 +730,14 @@ class SessionsDock(DockWidget):
             ellipsis_left=True,
         )
 
+        # Create camera groups table
+        self.camera_groups_table = GenericTableView(
+            is_activatable=True,
+            state=main_window.state,
+            row_name="selected_camera_group",
+            model=self.camera_groups_model,
+        )
+
         self.main_window.state.connect(
             "selected_session", self.main_window.update_cameras_model
         )
