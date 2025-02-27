@@ -800,6 +800,124 @@ class SessionsDock(DockWidget):
         video_link_button = self.create_video_link_button()
         self.wgt_layout.addWidget(video_link_button)
 
+        camera_groups_container = self.create_camera_groups_table()
+        self.wgt_layout.addWidget(camera_groups_container)
+
+    def create_camera_groups_table(self) -> QWidget:
+        """Create the camera groups table and buttons."""
+        main_window = self.main_window
+        
+        # Create a container widget with a title
+        container = QGroupBox("Camera Groups")
+        container_layout = QVBoxLayout()
+        container.setLayout(container_layout)
+        
+        # Create the camera groups table
+        if not hasattr(self, 'camera_groups_model') or self.camera_groups_model is None:
+            # Create the model if it doesn't exist
+            self.camera_groups_model = self.camera_groups_model_type(
+                items=main_window.state.get("camera_groups", []), 
+                context=main_window.commands
+            )
+
+        # Create the camera groups table
+        self.camera_groups_table = GenericTableView(
+            is_activatable=True,
+            state=main_window.state,
+            row_name="selected_camera_group",
+            model=self.camera_groups_model,
+        )
+        container_layout.addWidget(self.camera_groups_table)
+        
+        # Create buttons for camera groups
+        hb = QHBoxLayout()
+        self.add_button(hb, "Create Group", self._create_camera_group)
+        self.add_button(hb, "Delete Group", self._delete_camera_group)
+        
+        hbw = QWidget()
+        hbw.setLayout(hb)
+        container_layout.addWidget(hbw)
+
+        # Connect state changes to model updates
+        main_window.state.connect("camera_groups", self._update_camera_groups_model)
+        
+        return container
+    
+    def _update_camera_groups_model(self, camera_groups):
+        """Update the camera groups model when the state changes."""
+        if hasattr(self, 'camera_groups_model') and self.camera_groups_model:
+            self.camera_groups_model.items = camera_groups
+            self.camera_groups_model.beginResetModel()
+            self.camera_groups_model.endResetModel()
+            print(f"Updated camera groups model with {len(camera_groups)} groups")
+
+    def create_add_to_group_button(self) -> QWidget:
+        """Create the 'Add to Group' button."""
+        hb = QHBoxLayout()
+        self.add_button(hb, "Add to Group", self._add_camera_to_group)
+        
+        hbw = QWidget()
+        hbw.setLayout(hb)
+        return hbw
+
+    def _create_camera_group(self):
+        """Create a new camera group."""
+        name, ok = QInputDialog.getText(
+            self.main_window, "New Camera Group", "Enter name for camera group:"
+        )
+        if ok and name:
+            self.main_window.commands.addCameraGroup(name)
+            # Force update the table
+            if hasattr(self, 'camera_groups_table') and self.camera_groups_table:
+                self.camera_groups_table.model().beginResetModel()
+                self.camera_groups_table.model().endResetModel()
+
+    def _delete_camera_group(self):
+        """Delete the selected camera group."""
+        camera_group = self.main_window.state["selected_camera_group"]
+        if camera_group:
+            self.main_window.commands.deleteCameraGroup(camera_group)
+
+    def _add_camera_to_group(self):
+        """Add the selected camera to a group."""
+        camera = self.main_window.state.get("camera")
+        if not camera:
+            QMessageBox.information(
+                self.main_window,
+                "No Camera Selected",
+                "Please select a camera to add to a group."
+            )
+            return
+        
+        # Get available groups
+        if not self.main_window.state.get("camera_groups") or len(self.main_window.state["camera_groups"]) == 0:
+            reply = QMessageBox.question(
+                self.main_window,
+                "No Groups",
+                "No camera groups exist. Would you like to create one?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.Yes
+            )
+            if reply == QMessageBox.Yes:
+                self._create_camera_group()
+            return
+        
+        # Show group selection dialog
+        group_names = [group.name for group in self.main_window.state["camera_groups"]]
+        selected_name, ok = QInputDialog.getItem(
+            self.main_window, 
+            "Select Group", 
+            "Choose a group to add the camera to:", 
+            group_names, 
+            0, 
+            False
+        )
+        
+        if ok and selected_name:
+            selected_idx = group_names.index(selected_name)
+            selected_group = self.main_window.state["camera_groups"][selected_idx]
+            self.main_window.commands.addCameraToGroup(camera, selected_group)
+
 
 class InstanceGroupDock(DockWidget):
     """Dock widget for displaying instance groups."""
