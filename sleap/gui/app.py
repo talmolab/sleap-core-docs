@@ -163,6 +163,8 @@ class MainWindow(QMainWindow):
             self.state["share usage data"] = False
         self.state["clipboard_track"] = None
         self.state["clipboard_instance"] = None
+        self.state["camera_groups"] = []
+        self.state["selected_camera_group"] = None
 
         self.state.connect("marker size", self.plotFrame)
         self.state.connect("node label size", self.plotFrame)
