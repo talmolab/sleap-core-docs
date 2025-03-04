@@ -3918,3 +3918,131 @@ class UnlinkVideo(EditCommand):
 
         # Reset the selected camera
         context.state["selected_camera"] = None
+
+class CameraGroup:
+    """Represents a group of cameras with a user-defined name."""
+    
+    def __init__(self, name: str, cameras=None):
+        self.name = name
+        self.cameras = cameras or []
+    
+    def __repr__(self):
+        return f"CameraGroup(name='{self.name}', cameras={len(self.cameras)})"
+    
+    def add_camera(self, camera):
+        if camera not in self.cameras:
+            self.cameras.append(camera)
+    
+    def remove_camera(self, camera):
+        if camera in self.cameras:
+            self.cameras.remove(camera)
+
+
+class AddCameraGroup(EditCommand):
+    topics = [UpdateTopic.sessions, UpdateTopic.project]
+    
+    @classmethod
+    def do_action(cls, context: CommandContext, params: dict):
+        name = params.get("name", "New Group")
+        
+        # Initialize metadata if needed
+        if not hasattr(context.labels, "metadata"):
+            context.labels.metadata = {}
+        
+        if "camera_groups" not in context.labels.metadata:
+            context.labels.metadata["camera_groups"] = []
+        
+        # Create new camera group
+        camera_group = CameraGroup(name)
+        context.labels.metadata["camera_groups"].append(camera_group)
+        
+        # Update state
+        context.state["camera_groups"] = context.labels.metadata["camera_groups"]
+        
+        # Mark project as changed
+        context.changestack_push("add camera group")
+
+class SetCameraGroupName(EditCommand):
+    """Command to set the name of a camera group."""
+    
+    topics = [UpdateTopic.sessions]
+    
+    @classmethod
+    def do_action(cls, context: CommandContext, params: dict):
+        """Set the name of a camera group."""
+        camera_group = params.get("camera_group")
+        name = params.get("name")
+        
+        if camera_group and name:
+            camera_group.name = name
+            
+            # Mark project as changed
+            context.changestack_push("rename camera group")
+
+
+class DeleteCameraGroup(EditCommand):
+    """Command to delete a camera group."""
+    
+    topics = [UpdateTopic.sessions]
+    
+    @classmethod
+    def do_action(cls, context: CommandContext, params: dict):
+        """Delete the selected camera group."""
+        camera_group = params.get("camera_group")
+        
+        if not camera_group:
+            camera_group = context.state.get("selected_camera_group")
+            
+        if not camera_group:
+            return
+            
+        if hasattr(context.labels, "metadata") and "camera_groups" in context.labels.metadata:
+            if camera_group in context.labels.metadata["camera_groups"]:
+                context.labels.metadata["camera_groups"].remove(camera_group)
+                
+                # Update state
+                context.state["camera_groups"] = context.labels.metadata["camera_groups"]
+                context.state["selected_camera_group"] = None
+                
+                # Mark project as changed
+                context.changestack_push("delete camera group")
+
+
+class AddCameraToGroup(EditCommand):
+    """Command to add a camera to a group."""
+    
+    topics = [UpdateTopic.sessions]
+    
+    @classmethod
+    def do_action(cls, context: CommandContext, params: dict):
+        """Add a camera to a group."""
+        camera_group = params.get("camera_group")
+        camera = params.get("camera")
+        
+        if camera_group and camera:
+            # Add camera to group
+            camera_group.add_camera(camera)
+            
+            # Update state to trigger UI refresh
+            context.state["camera_groups"] = context.labels.metadata["camera_groups"]
+            
+            # Mark project as changed
+            context.changestack_push("add camera to group")
+
+
+class RemoveCameraFromGroup(EditCommand):
+    """Command to remove a camera from a group."""
+    
+    topics = [UpdateTopic.sessions]
+    
+    @classmethod
+    def do_action(cls, context: CommandContext, params: dict):
+        """Remove a camera from a group."""
+        camera_group = params.get("camera_group")
+        camera = params.get("camera")
+        
+        if camera_group and camera:
+            camera_group.remove_camera(camera)
+            
+            # Mark project as changed
+            context.changestack_push("remove camera from group")
