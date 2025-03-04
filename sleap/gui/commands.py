@@ -685,7 +685,25 @@ class CommandContext:
         """Unlinks video from a camera"""
         self.execute(UnlinkVideo)
 
+    def addCameraGroup(self, name="New Group"):
+        """Create a new camera group."""
+        self.execute(AddCameraGroup, name=name)
 
+    def setCameraGroupName(self, camera_group, name: str):
+        """Set the name of a camera group."""
+        self.execute(SetCameraGroupName, camera_group=camera_group, name=name)
+
+    def deleteCameraGroup(self, camera_group):
+        """Delete a camera group."""
+        self.execute(DeleteCameraGroup, camera_group=camera_group)
+
+    def addCameraToGroup(self, camera, camera_group):
+        """Add a camera to a group."""
+        self.execute(AddCameraToGroup, camera=camera, camera_group=camera_group)
+
+    def removeCameraFromGroup(self, camera, camera_group):
+        """Remove a camera from a group."""
+        self.execute(RemoveCameraFromGroup, camera=camera, camera_group=camera_group)
 # File Commands
 
 
