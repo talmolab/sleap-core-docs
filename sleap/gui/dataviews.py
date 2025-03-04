@@ -699,7 +699,7 @@ class CameraGroupsTableModel(GenericTableModel):
         self.items = camera_groups
         self.beginResetModel()
         self.endResetModel()
-        
+
     def object_to_items(self, obj):
         return obj
     
@@ -714,9 +714,7 @@ class CameraGroupsTableModel(GenericTableModel):
     
     def set_item(self, item, key, value):
         if key == "name" and value:
-            item.name = value
-            # Mark project as changed
-            self.context.changestack_push("rename camera group")
+            self.context.setCameraGroupName(camera_group=item, name=value)
 
 class InstanceGroupTableModel(GenericTableModel):
     """Table model for displaying all instance groups in a given frame.
