@@ -813,18 +813,10 @@ class SessionsDock(DockWidget):
         container.setLayout(container_layout)
         
         # Create the camera groups table
-        if not hasattr(self, 'camera_groups_model') or self.camera_groups_model is None:
-            # Create the model if it doesn't exist
-            self.camera_groups_model = self.camera_groups_model_type(
-                items=main_window.state.get("camera_groups", []), 
-                context=main_window.commands
-            )
-
-        # Create the camera groups table
         self.camera_groups_table = GenericTableView(
             is_activatable=True,
             state=main_window.state,
-            row_name="selected_camera_group",
+            row_name="selected_camera_group",  # This is the key parameter
             model=self.camera_groups_model,
         )
         container_layout.addWidget(self.camera_groups_table)
@@ -837,9 +829,6 @@ class SessionsDock(DockWidget):
         hbw = QWidget()
         hbw.setLayout(hb)
         container_layout.addWidget(hbw)
-
-        # Connect state changes to model updates
-        main_window.state.connect("camera_groups", self._update_camera_groups_model)
         
         return container
     
@@ -849,7 +838,6 @@ class SessionsDock(DockWidget):
             self.camera_groups_model.items = camera_groups
             self.camera_groups_model.beginResetModel()
             self.camera_groups_model.endResetModel()
-            print(f"Updated camera groups model with {len(camera_groups)} groups")
 
     def create_add_to_group_button(self) -> QWidget:
         """Create the 'Add to Group' button."""
@@ -868,19 +856,47 @@ class SessionsDock(DockWidget):
         if ok and name:
             self.main_window.commands.addCameraGroup(name)
             # Force update the table
-            if hasattr(self, 'camera_groups_table') and self.camera_groups_table:
-                self.camera_groups_table.model().beginResetModel()
-                self.camera_groups_table.model().endResetModel()
+            if hasattr(self, 'camera_groups_model') and self.camera_groups_model:
+                camera_groups = self.main_window.state.get("camera_groups", [])
+                self.camera_groups_model.items = camera_groups
+                self.camera_groups_model.beginResetModel()
+                self.camera_groups_model.endResetModel()
+            
 
     def _delete_camera_group(self):
         """Delete the selected camera group."""
-        camera_group = self.main_window.state["selected_camera_group"]
-        if camera_group:
+        camera_group = self.main_window.state.get("selected_camera_group")
+        
+        if not camera_group:
+            QMessageBox.information(
+                self.main_window,
+                "No Group Selected",
+                "Please select a camera group to delete."
+            )
+            return
+        
+        reply = QMessageBox.question(
+            self.main_window,
+            "Delete Group",
+            f"Are you sure you want to delete the camera group '{camera_group.name}'?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+        
+        if reply == QMessageBox.Yes:
+            # Delete the camera group
             self.main_window.commands.deleteCameraGroup(camera_group)
+            
+            # Force update the model
+            if hasattr(self, 'camera_groups_model') and self.camera_groups_model:
+                camera_groups = self.main_window.state.get("camera_groups", [])
+                self.camera_groups_model.items = camera_groups
+                self.camera_groups_model.beginResetModel()
+                self.camera_groups_model.endResetModel()
 
     def _add_camera_to_group(self):
         """Add the selected camera to a group."""
-        camera = self.main_window.state.get("camera")
+        camera = self.main_window.state.get("selected_camera")
         if not camera:
             QMessageBox.information(
                 self.main_window,
@@ -900,6 +916,8 @@ class SessionsDock(DockWidget):
             )
             if reply == QMessageBox.Yes:
                 self._create_camera_group()
+                # Return for now, user can try again after creating a group
+                return
             return
         
         # Show group selection dialog
@@ -917,6 +935,13 @@ class SessionsDock(DockWidget):
             selected_idx = group_names.index(selected_name)
             selected_group = self.main_window.state["camera_groups"][selected_idx]
             self.main_window.commands.addCameraToGroup(camera, selected_group)
+            
+            # Force update the model
+            if hasattr(self, 'camera_groups_model') and self.camera_groups_model:
+                camera_groups = self.main_window.state.get("camera_groups", [])
+                self.camera_groups_model.items = camera_groups
+                self.camera_groups_model.beginResetModel()
+                self.camera_groups_model.endResetModel()
 
 
 class InstanceGroupDock(DockWidget):
