@@ -1209,6 +1209,17 @@ class MainWindow(QMainWindow):
                 if topic in what:
                     return True
             return False
+        
+        # Add this block to handle camera groups
+        if UpdateTopic.project in what or UpdateTopic.sessions in what or UpdateTopic.all in what:
+        # Initialize camera groups if needed
+            if not hasattr(self.labels, "metadata"):
+                self.labels.metadata = {}
+            
+            if "camera_groups" not in self.labels.metadata:
+                self.labels.metadata["camera_groups"] = []
+            
+            self.state["camera_groups"] = self.labels.metadata["camera_groups"]
 
         if _has_topic(
             [
