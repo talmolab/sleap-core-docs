@@ -63,6 +63,7 @@ from sleap.io.format.ndx_pose import NDXPoseAdaptor
 from sleap.io.video import Video, MediaVideo
 from sleap.skeleton import Node, Skeleton
 from sleap.util import get_package_file
+from sleap.io.cameras import CameraCategory
 
 # Indicates whether we support multiple project windows (i.e., "open" opens new window)
 OPEN_IN_NEW = True
