@@ -683,38 +683,37 @@ class CamerasTableModel(GenericTableModel):
         video = obj.get_video(item)
         return {"camera": item.name, "video": video.filename if video else ""}
 
-class CameraGroupsTableModel(GenericTableModel):
-    """Table model for camera groups."""
-    
+
+class CameraCategoriesTableModel(GenericTableModel):
+    """Table model for camera categories."""
+
     properties = ("name", "cameras")
-    
-    def __init__(self, items=None, context=None):
-        super().__init__(items=items, context=context)
+
+    def __init__(self, items=None, properties=None, context=None):
+        super().__init__(items=items, properties=properties, context=context)
         # Register for updates
-        if context and hasattr(context, 'state'):
-            context.state.connect("camera_groups", self.update_items)
-    
-    def update_items(self, camera_groups):
-        """Update the model when camera groups change."""
-        self.items = camera_groups
+        if context and hasattr(context, "state"):
+            context.state.connect("camera_categories", self.update_items)
+
+    def update_items(self, camera_categories):
+        """Update the model when camera categories change."""
+        self.items = camera_categories
         self.beginResetModel()
         self.endResetModel()
 
     def object_to_items(self, obj):
         return obj
-    
+
     def item_to_data(self, obj, item):
-        return {
-            "name": item.name,
-            "cameras": len(item.cameras)
-        }
-    
+        return {"name": item.name, "cameras": len(item.cameras)}
+
     def can_set(self, item, key):
         return key == "name"
-    
+
     def set_item(self, item, key, value):
         if key == "name" and value:
-            self.context.setCameraGroupName(camera_group=item, name=value)
+            self.context.setCameraCategoryName(camera_category=item, name=value)
+
 
 class InstanceGroupTableModel(GenericTableModel):
     """Table model for displaying all instance groups in a given frame.
