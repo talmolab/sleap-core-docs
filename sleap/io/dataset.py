@@ -85,6 +85,7 @@ from sleap.gui.suggestions import SuggestionFrame
 from sleap.gui.dialogs.missingfiles import MissingFilesDialog
 from sleap.rangelist import RangeList
 from sleap.util import uniquify, json_dumps
+from sleap.io.cameras import CameraCategory
 
 """
 The version number to put in the Labels JSON format.
@@ -499,6 +500,7 @@ class Labels(MutableSequence):
             Dictionary key is :class:`Video`, value is list of
             (frame index, x, y) tuples.
         provenance: Dictionary that denotes the origin of the :py:class:`Labels`.
+        camera_categories: Dictionary that stores camera categories.
     """
 
     labeled_frames: List[LabeledFrame] = attr.ib(default=attr.Factory(list))
@@ -512,7 +514,8 @@ class Labels(MutableSequence):
     provenance: Dict[Text, Union[str, int, float, bool]] = attr.ib(
         default=attr.Factory(dict)
     )
-
+    camera_categories: List[CameraCategory] = attr.ib(default=attr.Factory(list))
+    
     def __attrs_post_init__(self):
         """
         Called by attrs after the class is instantiated.
