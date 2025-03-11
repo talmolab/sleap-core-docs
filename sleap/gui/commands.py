@@ -686,25 +686,31 @@ class CommandContext:
         """Unlinks video from a camera"""
         self.execute(UnlinkVideo)
 
-    def addCameraGroup(self, name="New Group"):
-        """Create a new camera group."""
-        self.execute(AddCameraGroup, name=name)
+    def addCameraCategory(self, name="New Category"):
+        """Create a new camera category."""
+        self.execute(AddCameraCategory, name=name)
 
-    def setCameraGroupName(self, camera_group, name: str):
-        """Set the name of a camera group."""
-        self.execute(SetCameraGroupName, camera_group=camera_group, name=name)
+    def setCameraCategoryName(self, camera_category, name: str):
+        """Set the name of a camera category."""
+        self.execute(SetCameraCategoryName, camera_category=camera_category, name=name)
 
-    def deleteCameraGroup(self, camera_group):
-        """Delete a camera group."""
-        self.execute(DeleteCameraGroup, camera_group=camera_group)
+    def deleteCameraCategory(self, camera_category):
+        """Delete a camera category."""
+        self.execute(DeleteCameraCategory, camera_category=camera_category)
 
-    def addCameraToGroup(self, camera, camera_group):
-        """Add a camera to a group."""
-        self.execute(AddCameraToGroup, camera=camera, camera_group=camera_group)
+    def addCameraToCategory(self, camera, camera_category):
+        """Add a camera to a category."""
+        self.execute(AddCameraToCategory, camera=camera, camera_category=camera_category)
 
-    def removeCameraFromGroup(self, camera, camera_group):
-        """Remove a camera from a group."""
-        self.execute(RemoveCameraFromGroup, camera=camera, camera_group=camera_group)
+    def removeCameraFromCategory(self, camera, camera_category):
+        """Remove a camera from a category."""
+        self.execute(RemoveCameraFromCategory, camera=camera, camera_category=camera_category)
+
+    # def exportCameraGroupFrames(self, camera_group):
+    #     """Export frames from a camera group."""
+    #     self.execute(ExportCameraGroupFrames, camera_group=camera_group)
+
+
 # File Commands
 
 
