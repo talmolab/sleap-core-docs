@@ -2548,3 +2548,21 @@ class FrameGroup:
                 "RecordingSession. Overwriting."
             )
             session.frame_groups.pop(frame_idx)
+
+class CameraCategory:
+    """Represents a category of cameras with a user-defined name."""
+    
+    def __init__(self, name: str, cameras=None):
+        self.name = name
+        self.cameras = cameras or []
+    
+    def __repr__(self):
+        return f"CameraCategory(name='{self.name}', cameras={len(self.cameras)})"
+    
+    def add_camera(self, camera):
+        if camera not in self.cameras:
+            self.cameras.append(camera)
+    
+    def remove_camera(self, camera):
+        if camera in self.cameras:
+            self.cameras.remove(camera)
