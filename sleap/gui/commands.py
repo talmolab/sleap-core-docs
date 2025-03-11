@@ -3944,130 +3944,152 @@ class UnlinkVideo(EditCommand):
         # Reset the selected camera
         context.state["selected_camera"] = None
 
-class CameraGroup:
-    """Represents a group of cameras with a user-defined name."""
+class AddCameraCategory(EditCommand):
+    """Command to add a new camera category."""
     
-    def __init__(self, name: str, cameras=None):
-        self.name = name
-        self.cameras = cameras or []
-    
-    def __repr__(self):
-        return f"CameraGroup(name='{self.name}', cameras={len(self.cameras)})"
-    
-    def add_camera(self, camera):
-        if camera not in self.cameras:
-            self.cameras.append(camera)
-    
-    def remove_camera(self, camera):
-        if camera in self.cameras:
-            self.cameras.remove(camera)
-
-
-class AddCameraGroup(EditCommand):
     topics = [UpdateTopic.sessions, UpdateTopic.project]
     
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
-        name = params.get("name", "New Group")
+        name = params.get("name", "New Category")
         
-        # Initialize metadata if needed
-        if not hasattr(context.labels, "metadata"):
-            context.labels.metadata = {}
+        # Initialize camera_categories if needed
+        if not hasattr(context.labels, "camera_categories"):
+            context.labels.camera_categories = []
         
-        if "camera_groups" not in context.labels.metadata:
-            context.labels.metadata["camera_groups"] = []
+        # Create new camera category
         
-        # Create new camera group
-        camera_group = CameraGroup(name)
-        context.labels.metadata["camera_groups"].append(camera_group)
+        camera_category = CameraCategory(name)
+        context.labels.camera_categories.append(camera_category)
         
         # Update state
-        context.state["camera_groups"] = context.labels.metadata["camera_groups"]
-        
-        # Mark project as changed
-        context.changestack_push("add camera group")
+        context.state["camera_categories"] = context.labels.camera_categories
 
-class SetCameraGroupName(EditCommand):
-    """Command to set the name of a camera group."""
+
+
+class SetCameraCategoryName(EditCommand):
+    """Command to set the name of a camera category."""
     
     topics = [UpdateTopic.sessions]
     
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
-        """Set the name of a camera group."""
-        camera_group = params.get("camera_group")
+        """Set the name of a camera category."""
+        camera_category = params.get("camera_category")
         name = params.get("name")
         
-        if camera_group and name:
-            camera_group.name = name
+        if camera_category and name:
+            camera_category.name = name
             
-            # Mark project as changed
-            context.changestack_push("rename camera group")
 
-
-class DeleteCameraGroup(EditCommand):
-    """Command to delete a camera group."""
+class DeleteCameraCategory(EditCommand):
+    """Command to delete a camera category."""
     
     topics = [UpdateTopic.sessions]
     
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
-        """Delete the selected camera group."""
-        camera_group = params.get("camera_group")
+        """Delete the selected camera category."""
+        camera_category = params.get("camera_category")
         
-        if not camera_group:
-            camera_group = context.state.get("selected_camera_group")
+        if not camera_category:
+            camera_category = context.state.get("selected_camera_category")
             
-        if not camera_group:
+        if not camera_category:
             return
             
-        if hasattr(context.labels, "metadata") and "camera_groups" in context.labels.metadata:
-            if camera_group in context.labels.metadata["camera_groups"]:
-                context.labels.metadata["camera_groups"].remove(camera_group)
+        if hasattr(context.labels, "camera_categories"):
+            if camera_category in context.labels.camera_categories:
+                context.labels.camera_categories.remove(camera_category)
                 
                 # Update state
-                context.state["camera_groups"] = context.labels.metadata["camera_groups"]
-                context.state["selected_camera_group"] = None
-                
-                # Mark project as changed
-                context.changestack_push("delete camera group")
+                context.state["camera_categories"] = context.labels.camera_categories
+                context.state["selected_camera_category"] = None
 
 
-class AddCameraToGroup(EditCommand):
-    """Command to add a camera to a group."""
+class AddCameraToCategory(EditCommand):
+    """Command to add a camera to a category."""
     
     topics = [UpdateTopic.sessions]
     
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
-        """Add a camera to a group."""
-        camera_group = params.get("camera_group")
+        """Add a camera to a category."""
+        camera_category = params.get("camera_category")
         camera = params.get("camera")
         
-        if camera_group and camera:
-            # Add camera to group
-            camera_group.add_camera(camera)
+        if camera_category and camera:
+            # Add camera to category
+            camera_category.add_camera(camera)
             
             # Update state to trigger UI refresh
-            context.state["camera_groups"] = context.labels.metadata["camera_groups"]
-            
-            # Mark project as changed
-            context.changestack_push("add camera to group")
+            context.state["camera_categories"] = context.labels.camera_categories
 
 
-class RemoveCameraFromGroup(EditCommand):
-    """Command to remove a camera from a group."""
+
+class RemoveCameraFromCategory(EditCommand):
+    """Command to remove a camera from a category."""
     
     topics = [UpdateTopic.sessions]
     
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
-        """Remove a camera from a group."""
-        camera_group = params.get("camera_group")
+        """Remove a camera from a category."""
+        camera_category = params.get("camera_category")
         camera = params.get("camera")
         
-        if camera_group and camera:
-            camera_group.remove_camera(camera)
-            
-            # Mark project as changed
-            context.changestack_push("remove camera from group")
+        if camera_category and camera:
+            camera_category.remove_camera(camera)
+
+
+class ExportCameraGroupFrames(AppCommand):
+    """Command to export frames from a camera group."""
+
+    @classmethod
+    def ask(cls, context: CommandContext, params: dict) -> bool:
+        """Ask for export options."""
+        camera_group = params.get("camera_group")
+        if not camera_group:
+            return False
+
+        # Get export directory
+        export_dir = FileDialog.save_dir(
+            context.app,
+            caption=f"Export frames from camera group: {camera_group.name}",
+            dir=os.path.dirname(context.state["filename"] or ""),
+        )
+
+        if not export_dir:
+            return False
+
+        params["export_dir"] = export_dir
+        return True
+
+    @classmethod
+    def do_action(cls, context: CommandContext, params: dict):
+        """Export frames from the specified camera group."""
+        camera_group = params.get("camera_group")
+        export_dir = params.get("export_dir")
+
+        if not camera_group or not export_dir:
+            return
+
+        # Create a new Labels object with only the frames from the camera group
+        export_labels = Labels()
+        export_labels.skeletons = context.labels.skeletons.copy()
+
+        # Add videos from the camera group
+        for camera in camera_group.cameras:
+            for session in context.labels.sessions:
+                video = session.get_video(camera)
+                if video and video in context.labels.videos:
+                    export_labels.add_video(video)
+
+        # Add labeled frames that use videos from the camera group
+        for labeled_frame in context.labels:
+            if labeled_frame.video in export_labels.videos:
+                export_labels.append(labeled_frame)
+
+        # Save the export
+        export_path = os.path.join(export_dir, f"{camera_group.name}_export.slp")
+        export_labels.save(export_path)
