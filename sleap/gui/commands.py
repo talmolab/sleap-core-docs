@@ -706,9 +706,9 @@ class CommandContext:
         """Remove a camera from a category."""
         self.execute(RemoveCameraFromCategory, camera=camera, camera_category=camera_category)
 
-    # def exportCameraGroupFrames(self, camera_group):
-    #     """Export frames from a camera group."""
-    #     self.execute(ExportCameraGroupFrames, camera_group=camera_group)
+    def exportLabelsPackage(self):
+        """Shows gui for exporting labels package."""
+        self.execute(ExportLabelsPackage)
 
 
 # File Commands
