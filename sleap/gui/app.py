@@ -997,6 +997,16 @@ class MainWindow(QMainWindow):
             "proofreading or reproducibility."
         )
 
+        add_menu_item(
+            predictionMenu,
+            "export_labels",
+            "Export Labels Package...",
+            self.commands.exportLabelsPackage,
+        ).setToolTip(
+            "Export labeled frames with various options into a single file.\n\n"
+            "Use this for archiving, training, or sharing your dataset."
+        )
+
         predictionMenu.addSeparator()
         add_menu_item(
             predictionMenu,
