@@ -1,0 +1,11 @@
+main:
+  - name: export_type
+    label: Export Type
+    type: list
+    options: Labeled frames,Labeled + suggested frames (recommended),Labeled + predicted + suggested frames
+    option_labels: Labeled frames,Labeled + suggested frames (recommended),Labeled + predicted + suggested frames
+    default: training
+    tooltips:
+      - Export user-labeled frames with image data into a single file.\n\nUse this for archiving a dataset with labeled frames only.
+      - Export user-labeled frames and suggested frames with image data into a single file.\n\nUse this for human-in-the-loop training to enable remote inference on unlabeled frames.
+      - Export all frames (including predictions) and suggested frames with image data into a single file.\n\nUse this when you need to store images for predicted frames, such as for proofreading or reproducibility.
