@@ -1579,7 +1579,72 @@ class ExportFullPackage(ExportDatasetWithImages):
     all_labeled = True
     suggested = True
 
+class ExportLabelsPackage(AppCommand):
+    """Command to export labels package with dialog."""
+    
+    @classmethod
+    def do_action(cls, context: CommandContext, params: dict):
+        from sleap.io.dataset import export_dataset_gui
+        
+        # Export the dataset
+        export_dataset_gui(
+            labels=context.state["labels"],
+            filename=params["filename"],
+            all_labeled=params["all_labeled"],
+            suggested=params["suggested"],
+            verbose=True,
+        )
+    
+    @staticmethod
+    def ask(context: CommandContext, params: dict) -> bool:
+        from sleap.gui.dialogs.export_labels import get_export_options
+        
+        # Create and show dialog
+        export_options = get_export_options(parent=context.app)
+        
+        # Check if user hit cancel
+        if export_options is None:
+            return False
+        
+        # Process export type
+        export_type = export_options.get("export_type", "user_labels")
+        if export_type == "user_labels":
+            params["all_labeled"] = False
+            params["suggested"] = False
+        elif export_type == "training":
+            params["all_labeled"] = False
+            params["suggested"] = True
+        elif export_type == "full":
+            params["all_labeled"] = True
+            params["suggested"] = True
+        
 
+        extension = ".slp"
+        
+        # Set up file dialog
+        filters = [
+            "SLEAP HDF5 dataset (*.slp *.h5)",
+        ]
+        
+        dirname = os.path.dirname(context.state["filename"])
+        basename = os.path.basename(context.state["filename"])
+        
+        new_basename = f"{os.path.splitext(basename)[0]}.pkg{extension}"
+        new_filename = os.path.join(dirname, new_basename)
+        
+        filename, _ = FileDialog.save(
+            context.app,
+            caption="Save Labeled Frames As...",
+            dir=new_filename,
+            filter=";;".join(filters),
+        )
+        
+        # Check if user hit cancel
+        if len(filename) == 0:
+            return False
+        
+        params["filename"] = filename
+        return True
 # Navigation Commands
 
 
