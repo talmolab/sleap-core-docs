@@ -64,6 +64,7 @@ from sleap.io.video import Video, MediaVideo
 from sleap.skeleton import Node, Skeleton
 from sleap.util import get_package_file
 from sleap.io.cameras import CameraCategory
+from sleap.gui.dialogs.formbuilder import FormBuilderModalDialog
 
 # Indicates whether we support multiple project windows (i.e., "open" opens new window)
 OPEN_IN_NEW = True
@@ -1595,12 +1596,17 @@ class ExportLabelsPackage(AppCommand):
             verbose=True,
         )
     
+    def get_export_options(parent=None):
+        """Show the export labels dialog and return the selected options."""
+        dialog = FormBuilderModalDialog(form_name="export_labels_form", parent=parent)
+        dialog.setWindowTitle("Export Labels Package")
+        return dialog.get_results()
+
     @staticmethod
     def ask(context: CommandContext, params: dict) -> bool:
-        from sleap.gui.dialogs.export_labels import get_export_options
         
         # Create and show dialog
-        export_options = get_export_options(parent=context.app)
+        export_options = ExportLabelsPackage.get_export_options(parent=context.app)
         
         # Check if user hit cancel
         if export_options is None:
