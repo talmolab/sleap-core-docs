@@ -1585,8 +1585,6 @@ class ExportLabelsPackage(AppCommand):
     
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
-        from sleap.io.dataset import export_dataset_gui
-        
         # Export the dataset
         export_dataset_gui(
             labels=context.state["labels"],
@@ -1596,15 +1594,15 @@ class ExportLabelsPackage(AppCommand):
             verbose=True,
         )
     
+    @staticmethod
     def get_export_options(parent=None):
-        """Show the export labels dialog and return the selected options."""
+        # Show the export labels dialog and return the selected options
         dialog = FormBuilderModalDialog(form_name="export_labels_form", parent=parent)
         dialog.setWindowTitle("Export Labels Package")
         return dialog.get_results()
 
     @staticmethod
     def ask(context: CommandContext, params: dict) -> bool:
-        
         # Create and show dialog
         export_options = ExportLabelsPackage.get_export_options(parent=context.app)
         
