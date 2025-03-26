@@ -22,6 +22,7 @@ from sleap.gui.commands import (
     SaveProjectAs,
     DeleteFrameLimitPredictions,
     get_new_version_filename,
+    GoNextInstanceChange,
 )
 from sleap.instance import Instance, LabeledFrame
 from sleap.io.convert import default_analysis_filename
@@ -1046,3 +1047,32 @@ def test_newInstance(qtbot, centered_pair_predictions: Labels):
     )
     diff = np.nan_to_num(new_inst.numpy() - copy_instance.numpy(), nan=offset)
     assert np.all(diff == offset)
+
+
+def test_go_next_instance_change(centered_pair_predictions: Labels):
+    """Test that goto next instance change command works correctly."""
+    # Set up test data
+    labels = centered_pair_predictions
+    video = labels.videos[0]
+    
+    # Create frames with different numbers of instances
+    lf1 = labels[0]  # First frame (already exists)
+    initial_count = len(lf1.instances)
+    
+    # Create a new frame with different number of instances
+    lf2 = LabeledFrame(frame_idx=lf1.frame_idx + 10, video=video)
+    new_instance = Instance(labels.skeleton)  # Create one new instance
+    lf2.add_instance(new_instance)
+    labels.add_frame(lf2)
+    
+    # Set up command context
+    context = CommandContext.from_labels(labels)
+    context.state["video"] = video
+    context.state["frame_idx"] = lf1.frame_idx
+    
+    # Execute the command
+    context.execute(GoNextInstanceChange)
+    
+    # Verify that we moved to the frame with different instance count
+    assert context.state["frame_idx"] == lf2.frame_idx
+    assert len(labels.find(video, lf2.frame_idx)[0].instances) != initial_count
