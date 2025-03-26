@@ -632,6 +632,10 @@ class CommandContext:
         """Open the current prerelease version."""
         self.execute(OpenPrereleaseVersion)
 
+    def nextInstanceChange(self):
+        """Go to next frame where number of instances changes."""
+        self.execute(GoNextInstanceChange)
+
 
 # File Commands
 
@@ -1599,6 +1603,28 @@ class GoNextSuggestedFrame(NavCommand):
 
 class GoPrevSuggestedFrame(GoNextSuggestedFrame):
     seek_direction = -1
+
+
+class GoNextInstanceChange(NavCommand):
+    @classmethod
+    def do_action(cls, context: CommandContext, params: dict):
+        video = context.state["video"]
+        cur_idx = context.state["frame_idx"]
+
+        # Get current number of instances
+        current_frame = context.labels.find(video, cur_idx, return_new=True)[0]
+        current_instance_count = len(current_frame.instances)
+
+        # Get all labeled frames after current frame
+        later_frames = context.labels.frames(video, from_frame_idx=cur_idx + 1)
+        later_frames_list = list(later_frames)
+
+        # Find first frame where instance count changes
+        for frame in later_frames_list:
+            instance_count = len(frame.instances)
+            if instance_count != current_instance_count:
+                cls.go_to(context, frame.frame_idx)
+                break
 
 
 class GoNextTrackFrame(NavCommand):
