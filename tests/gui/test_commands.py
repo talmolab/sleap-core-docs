@@ -1046,3 +1046,31 @@ def test_newInstance(qtbot, centered_pair_predictions: Labels):
     )
     diff = np.nan_to_num(new_inst.numpy() - copy_instance.numpy(), nan=offset)
     assert np.all(diff == offset)
+
+
+def test_go_next_instance_change(centered_pair_predictions: Labels):
+    """Test that goto next instance change command works correctly."""
+    # Set up test data
+    labels = centered_pair_predictions
+    video = labels.videos[0]
+
+    # Create frames with different numbers of instances
+    lf1 = labels[0]  # First frame (already exists)
+    initial_count = len(lf1.instances)
+
+    for lf in labels.labeled_frames[1:]:
+        if len(lf.instances) != initial_count:
+            skipped_to_frame = lf.frame_idx
+            break
+
+    # Set up command context
+    context = CommandContext.from_labels(labels)
+    context.state["video"] = video
+    context.state["frame_idx"] = lf1.frame_idx
+
+    # Execute the command
+    context.execute(GoNextInstanceChange)
+
+    # Verify that we moved to the frame with different instance count
+    assert context.state["frame_idx"] == skipped_to_frame
+    assert len(labels.find(video, skipped_to_frame)[0].instances) != initial_count
