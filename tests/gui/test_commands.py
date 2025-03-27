@@ -22,6 +22,7 @@ from sleap.gui.commands import (
     SaveProjectAs,
     DeleteFrameLimitPredictions,
     get_new_version_filename,
+    GoNextInstanceChange,
 )
 from sleap.instance import Instance, LabeledFrame
 from sleap.io.convert import default_analysis_filename

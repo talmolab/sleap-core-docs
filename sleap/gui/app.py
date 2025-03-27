@@ -575,6 +575,13 @@ class MainWindow(QMainWindow):
             self.commands.nextTrackFrame,
         )
 
+        add_menu_item(
+            goMenu,
+            "goto next instance change",
+            "Next Instance Change",
+            self.commands.nextInstanceChange,
+        )
+
         goMenu.addSeparator()
 
         def next_vid():
