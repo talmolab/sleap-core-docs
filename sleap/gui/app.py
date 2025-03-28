@@ -578,7 +578,7 @@ class MainWindow(QMainWindow):
         add_menu_item(
             goMenu,
             "goto next instance change",
-            "Next Instance Change",
+            "Next Instance Count Change",
             self.commands.nextInstanceChange,
         )
 
