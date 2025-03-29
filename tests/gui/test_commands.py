@@ -1057,13 +1057,11 @@ def test_go_next_instance_change(centered_pair_predictions: Labels):
     video = labels.videos[0]
 
     # Create frames with different numbers of instances
-    lf1 = context.labels.find(video, 0, return_new=True)[
-        0
-    ]  # First frame (already exists)
+    lf1 = labels.find(video, 0, return_new=True)[0]  # First frame (already exists)
     initial_count = len(lf1.instances_to_show)
 
     for frame_idx in range(1, video.num_frames):
-        lf = context.labels.find(video, frame_idx, return_new=True)[0]
+        lf = labels.find(video, frame_idx, return_new=True)[0]
         if len(lf.instances_to_show) != initial_count:
             skipped_to_frame = lf.frame_idx
             break
@@ -1088,13 +1086,13 @@ def test_go_prev_instance_change(centered_pair_predictions: Labels):
     video = labels.videos[0]
 
     # Create frames with different numbers of instances
-    lf1 = context.labels.find(video, video.num_frames - 1, return_new=True)[
+    lf1 = labels.find(video, video.num_frames - 1, return_new=True)[
         0
     ]  # First frame (already exists)
     initial_count = len(lf1.instances_to_show)
 
     for frame_idx in range(video.num_frames - 1, 0, -1):
-        lf = context.labels.find(video, frame_idx, return_new=True)[0]
+        lf = labels.find(video, frame_idx, return_new=True)[0]
         if len(lf.instances_to_show) != initial_count:
             skipped_to_frame = lf.frame_idx
             break

@@ -636,6 +636,10 @@ class CommandContext:
         """Go to next frame where number of instances changes."""
         self.execute(GoNextInstanceChange)
 
+    def prevInstanceChange(self):
+        """Goes to previous frame with different instance count."""
+        self.execute(GoPrevInstanceChange)
+
 
 # File Commands
 
