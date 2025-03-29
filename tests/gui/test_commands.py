@@ -1057,7 +1057,9 @@ def test_go_next_instance_change(centered_pair_predictions: Labels):
     video = labels.videos[0]
 
     # Create frames with different numbers of instances
-    lf1 = context.labels.find(video, 0, return_new=True)[0]  # First frame (already exists)
+    lf1 = context.labels.find(video, 0, return_new=True)[
+        0
+    ]  # First frame (already exists)
     initial_count = len(lf1.instances_to_show)
 
     for frame_idx in range(1, video.num_frames):
@@ -1078,6 +1080,7 @@ def test_go_next_instance_change(centered_pair_predictions: Labels):
     assert context.state["frame_idx"] == skipped_to_frame
     assert len(labels.find(video, skipped_to_frame)[0].instances) != initial_count
 
+
 def test_go_prev_instance_change(centered_pair_predictions: Labels):
     """Test that goto next instance change command works correctly."""
     # Set up test data
@@ -1085,7 +1088,9 @@ def test_go_prev_instance_change(centered_pair_predictions: Labels):
     video = labels.videos[0]
 
     # Create frames with different numbers of instances
-    lf1 = context.labels.find(video, video.num_frames - 1, return_new=True)[0]  # First frame (already exists)
+    lf1 = context.labels.find(video, video.num_frames - 1, return_new=True)[
+        0
+    ]  # First frame (already exists)
     initial_count = len(lf1.instances_to_show)
 
     for frame_idx in range(video.num_frames - 1, 0, -1):
