@@ -578,8 +578,15 @@ class MainWindow(QMainWindow):
         add_menu_item(
             goMenu,
             "goto next instance change",
-            "Next Instance Change",
+            "Next Instance Count Change",
             self.commands.nextInstanceChange,
+        )
+
+        add_menu_item(
+            goMenu,
+            "goto prev instance change",
+            "Previous Instance Count Change",
+            self.commands.prevInstanceChange,
         )
 
         goMenu.addSeparator()

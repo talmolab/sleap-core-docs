@@ -1613,17 +1613,43 @@ class GoNextInstanceChange(NavCommand):
 
         # Get current number of instances
         current_frame = context.labels.find(video, cur_idx, return_new=True)[0]
-        current_instance_count = len(current_frame.instances)
+        current_instance_count = len(current_frame.instances_to_show)
 
         # Get all labeled frames after current frame
-        later_frames = context.labels.frames(video, from_frame_idx=cur_idx + 1)
-        later_frames_list = list(later_frames)
+        for frame in range(cur_idx + 1, video.frames):
+            if (
+                len(
+                    context.labels.find(video, frame, return_new=True)[
+                        0
+                    ].instances_to_show
+                )
+                != current_instance_count
+            ):
+                cls.go_to(context, frame)
+                break
 
-        # Find first frame where instance count changes
-        for frame in later_frames_list:
-            instance_count = len(frame.instances)
-            if instance_count != current_instance_count:
-                cls.go_to(context, frame.frame_idx)
+
+class GoPrevInstanceChange(NavCommand):
+    @classmethod
+    def do_action(cls, context: CommandContext, params: dict):
+        video = context.state["video"]
+        cur_idx = context.state["frame_idx"]
+
+        # Get current number of instances
+        current_frame = context.labels.find(video, cur_idx, return_new=True)[0]
+        current_instance_count = len(current_frame.instances_to_show)
+
+        # Get all labeled frames after current frame
+        for frame in range(cur_idx - 1, -1, -1):
+            if (
+                len(
+                    context.labels.find(video, frame, return_new=True)[
+                        0
+                    ].instances_to_show
+                )
+                != current_instance_count
+            ):
+                cls.go_to(context, frame)
                 break
 
 
