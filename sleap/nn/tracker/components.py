@@ -12,15 +12,18 @@ Main types of functions:
 
 
 """
+
+from __future__ import annotations
+
 import operator
 from collections import defaultdict
-from typing import List, Tuple, Optional, TypeVar, Callable
+from typing import Callable, List, Optional, Tuple, TypeVar
 
 import attr
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
-from sleap import PredictedInstance, Instance, Track
+from sleap import Instance, LabeledFrame, PredictedInstance, Track
 from sleap.nn import utils
 
 InstanceType = TypeVar("InstanceType", Instance, PredictedInstance)
@@ -110,11 +113,27 @@ def greedy_matching(cost_matrix: np.ndarray) -> List[Tuple[int, int]]:
 
 
 def nms_instances(
-    instances, iou_threshold, target_count=None
-) -> Tuple[List[PredictedInstance], List[PredictedInstance]]:
+    instances: list[PredictedInstance],
+    iou_threshold: float | None,
+    target_count: int | None = None,
+) -> tuple[list[PredictedInstance], list[PredictedInstance]]:
+    """Finds `Instance`s to keep using non-maximum suppression.
+
+    Args:
+        instances: The list of `PredictedInstance` objects to filter.
+        iou_threshold: The IOU threshold for suppression. If None, then no suppression
+            is applied and `PredictedInstance.score` is used to determine which
+            instances to keep.
+        target_count: The maximum number of instances to keep. Default is None,
+            which means all instances are kept.
+
+    Returns:
+        A tuple of two lists: the first list contains the instances to keep, and
+        the second list contains the instances to remove.
+    """
     boxes = np.array([inst.bounding_box for inst in instances])
     scores = np.array([inst.score for inst in instances])
-    picks = nms_fast(boxes, scores, iou_threshold, target_count)
+    picks: list[int] = nms_fast(boxes, scores, iou_threshold, target_count)
 
     to_keep = [inst for i, inst in enumerate(instances) if i in picks]
     to_remove = [inst for i, inst in enumerate(instances) if i not in picks]
@@ -122,90 +141,100 @@ def nms_instances(
     return to_keep, to_remove
 
 
-def nms_fast(boxes, scores, iou_threshold, target_count=None) -> List[int]:
-    """https://www.pyimagesearch.com/2015/02/16/faster-non-maximum-suppression-python/"""
+def nms_fast(
+    boxes: np.ndarray,
+    scores: np.ndarray,
+    iou_threshold: float,
+    target_count: int | None = None,
+) -> list[int]:
+    """Finds indices of boxes to keep using non-maximum suppression.
 
-    # if there are no boxes, return an empty list
+    https://www.pyimagesearch.com/2015/02/16/faster-non-maximum-suppression-python/
+
+    Args:
+        boxes: The bounding boxes to filter. Each box is represented by its coordinates
+            in the format (x1, y1, x2, y2) where (x1, y1) is the corner closest to
+            (0, 0) and (x2, y2) is the corner farthest from (0, 0). Shape is (N, 4)
+            where N is the number of boxes.
+        scores: The scores for each bounding box (e.g., confidence scores associated
+            with `PredictedInstance`). Scores are used to pick which boxes to evaluate
+            first (i.e. the highest scoring box is never removed). Shape is (N,) where
+            N is the number of boxes.
+        iou_threshold: The IOU threshold for suppression. This is a soft threshold since
+            boxes are added back if there are too few boxes picked (determined by
+            `target_count`).
+        target_count: The maximum number of boxes to keep. Default is None, which
+            means only boxes with IOU less than the threshold are kept.
+
+    Returns:
+        A list of indices of the boxes that have an IOU less than the IOU threshold.
+    """
+    # Return an empty list if no boxes.
     if len(boxes) == 0:
         return []
 
-    # if we already have fewer boxes than the target count, return all boxes
+    # Return all boxes (if target_count is None or greater than the number of boxes).
     if target_count and len(boxes) < target_count:
         return list(range(len(boxes)))
 
-    # if the bounding boxes coordinates are integers, convert them to floats --
-    # this is important since we'll be doing a bunch of divisions
+    # Convert boxes to float if they are integers (for higher precision division).
     if boxes.dtype.kind == "i":
         boxes = boxes.astype("float")
 
-    # initialize the list of picked indexes
-    picked_idxs = []
-
-    # init list of boxes removed by nms
-    nms_idxs = []
-
-    # grab the coordinates of the bounding boxes
-    x1 = boxes[:, 0]
-    y1 = boxes[:, 1]
+    # Grab the coordinates of all the bounding boxes.
+    x1 = boxes[:, 0]  # x1 <= x2
+    y1 = boxes[:, 1]  # y1 <= y2
     x2 = boxes[:, 2]
     y2 = boxes[:, 3]
 
-    # compute the area of the bounding boxes and sort the bounding
-    # boxes by their scores
-    area = (x2 - x1 + 1) * (y2 - y1 + 1)
-    idxs = np.argsort(scores)
+    # Compute the area of all the bounding boxes.
+    areas = (x2 - x1 + 1) * (y2 - y1 + 1)
 
-    # keep looping while some indexes still remain in the indexes list
-    while len(idxs) > 0:
-
-        # we want to add the best box which is the last box in sorted list
+    picked_idxs = []
+    nms_idxs = []
+    idxs = np.argsort(scores)  # The higher-scoring boxes are at the end of the list.
+    while len(idxs) > 0:  # Each iteration, we remove the last box in `idxs`.
+        # Get highest score box (last in list) and add to picked boxes.
         picked_box_idx = idxs[-1]
-
-        # last = len(idxs) - 1
-        # i = idxs[last]
         picked_idxs.append(picked_box_idx)
 
-        # find the largest (x, y) coordinates for the start of
-        # the bounding box and the smallest (x, y) coordinates
-        # for the end of the bounding box
+        # Find the smallest (x, y) coordinates for corner 1 of the bounding box.
         xx1 = np.maximum(x1[picked_box_idx], x1[idxs[:-1]])
         yy1 = np.maximum(y1[picked_box_idx], y1[idxs[:-1]])
+
+        # Find the largest (x, y) coordinates for corner 2 of the bounding box.
         xx2 = np.minimum(x2[picked_box_idx], x2[idxs[:-1]])
         yy2 = np.minimum(y2[picked_box_idx], y2[idxs[:-1]])
 
-        # compute the width and height of the bounding box
+        # Compute the ratio of overlap.
         w = np.maximum(0, xx2 - xx1 + 1)
         h = np.maximum(0, yy2 - yy1 + 1)
+        overlap = (w * h) / areas[idxs[:-1]]
 
-        # compute the ratio of overlap
-        overlap = (w * h) / area[idxs[:-1]]
-
-        # find boxes with iou over threshold
+        # Find and remove boxes with iou over threshold.
         nms_for_new_box = np.where(overlap > iou_threshold)[0]
-        nms_idxs.extend(list(idxs[nms_for_new_box]))
+        nms_idxs.extend(list(idxs[nms_for_new_box]))  # In case we need to add back.
+        idxs = np.delete(idxs, nms_for_new_box)
 
-        # delete new box (last in list) plus nms boxes
-        idxs = np.delete(idxs, nms_for_new_box)[:-1]
+        # Remove the last box (the one we just picked).
+        idxs = idxs[:-1]
 
-    # if we're below the target number of boxes, add some back
+    # Add some boxes back if we have too few picked boxes.
     if target_count and nms_idxs and len(picked_idxs) < target_count:
-        # sort by descending score
+        # Add back boxes with the highest scores.
         nms_idxs.sort(key=lambda idx: -scores[idx])
-
         add_back_count = min(len(nms_idxs), len(picked_idxs) - target_count)
         picked_idxs.extend(nms_idxs[:add_back_count])
 
-    # return the list of picked boxes
     return picked_idxs
 
 
 def cull_instances(
-    frames: List["LabeledFrame"],
+    frames: List[LabeledFrame],
     instance_count: int,
     iou_threshold: Optional[float] = None,
-):
-    """
-    Removes instances from frames over instance per frame threshold.
+) -> None:
+    """Removes instances from frames over instance per frame threshold.
 
     Args:
         frames: The list of `LabeledFrame` objects with predictions.
@@ -256,52 +285,70 @@ def cull_instances(
 
 
 def cull_frame_instances(
-    instances_list: List[InstanceType],
-    instance_count: int,
-    iou_threshold: Optional[float] = None,
-) -> List["LabeledFrame"]:
-    """
-    Removes instances (for single frame) over instance per frame threshold.
+    instances_list: list[InstanceType],
+    instance_count: int | None = None,
+    iou_threshold: float | None = None,
+    general_iou_threshold: float | None = None,
+) -> list[InstanceType]:
+    """Removes instances (for single frame) over instance per frame threshold.
 
     Args:
         instances_list: The list of instances for a single frame.
-        instance_count: The maximum number of instances we want per frame.
-        iou_threshold: Intersection over Union (IOU) threshold to use when
-            removing overlapping instances over target count; if None, then
-            only use score to determine which instances to remove.
+        instance_count: The maximum number of instances we want per frame. If None, then
+            no limit is applied. Default is None.
+        iou_threshold: Intersection over Union (IOU) threshold to use when removing
+            overlapping instances over `instance_count`. If None, then only use score to
+            determine which instances to remove over `instance_count`. Default is None.
+        general_iou_threshold: Intersection over Union (IOU) threshold to use when
+            removing overlapping instances - regardless of `instance_count`. If None,
+            then no general IOU threshold is applied. Default is None.
 
     Returns:
-        Updated list of frames, also modifies frames in place.
+        Updated `instances_list` (modified in-place).
     """
     if not instances_list:
         return
 
-    if len(instances_list) > instance_count:
-        # List of instances which we'll pare down
-        keep_instances = instances_list
+    # List of instances which we'll pare down
+    keep_instances = instances_list
+
+    # First, let's remove instances over the general IOU threshold
+    if general_iou_threshold is not None:
 
         # Use NMS to remove overlapping instances over target count
-        if iou_threshold:
-            keep_instances, extra_instances = nms_instances(
-                keep_instances,
-                iou_threshold=iou_threshold,
-                target_count=instance_count,
-            )
-            # Remove the extra instances
-            for inst in extra_instances:
-                instances_list.remove(inst)
+        keep_instances, extra_instances = nms_instances(
+            keep_instances,
+            iou_threshold=general_iou_threshold,
+        )
 
-        # Use lower score to remove instances over target count
-        if len(keep_instances) > instance_count:
-            # Sort by ascending score, get target number of instances
-            # from the end of list (i.e., with highest score)
-            extra_instances = sorted(keep_instances, key=operator.attrgetter("score"))[
-                :-instance_count
-            ]
+        # Remove the extra instances
+        for inst in extra_instances:
+            instances_list.remove(inst)
 
-            # Remove the extra instances
-            for inst in extra_instances:
-                instances_list.remove(inst)
+    # If we have no restrictions on instance count, return the list.
+    if instance_count is None or len(instances_list) <= instance_count:
+        return instances_list
+
+    # Otherwise, let's determine instances to remove over the target count...
+    extra_instances = []
+
+    # ...using NMS to remove overlapping instances over target count.
+    if iou_threshold is not None:
+        keep_instances, extra_instances = nms_instances(
+            keep_instances,
+            iou_threshold=iou_threshold,
+            target_count=instance_count,
+        )
+
+    # ...using lower score to remove instances over target count.
+    elif len(keep_instances) > instance_count:  # Only true if no iou threshold.
+        extra_instances = sorted(keep_instances, key=operator.attrgetter("score"))[
+            :-instance_count
+        ]
+
+    # Remove the extra instances.
+    for inst in extra_instances:
+        instances_list.remove(inst)
 
     return instances_list
 

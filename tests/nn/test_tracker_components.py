@@ -1,16 +1,17 @@
-import pytest
 import numpy as np
+import pytest
 
-from sleap.nn.tracking import Tracker
+from sleap.instance import LabeledFrame, PredictedInstance
+from sleap.io.dataset import Labels
 from sleap.nn.tracker.components import (
-    nms_instances,
-    nms_fast,
-    cull_instances,
     FrameMatches,
+    cull_instances,
+    cull_frame_instances,
     greedy_matching,
+    nms_fast,
+    nms_instances,
 )
-
-from sleap.instance import PredictedInstance
+from sleap.nn.tracking import Tracker
 from sleap.skeleton import Skeleton
 
 
@@ -22,7 +23,7 @@ from sleap.skeleton import Skeleton
 @pytest.mark.parametrize("count", [0, 2])
 def test_tracker_by_name(tracker, similarity, match, count):
     t = Tracker.make_tracker_by_name(
-        "flow", "instance", "greedy", clean_instance_count=2
+        tracker=tracker, similarity=similarity, match=match, clean_instance_count=count
     )
     t.track([])
     t.final_pass([])
@@ -40,6 +41,144 @@ def test_cull_instances(centered_pair_predictions):
 
     for frame in frames:
         assert len(frame.instances) == 1
+
+
+def test_cull_frame_instances_no_target(centered_pair_predictions: Labels):
+    labels = centered_pair_predictions
+    video = labels.video
+    labeled_frame: LabeledFrame = labels.find_last(video=video, frame_idx=1098)
+
+    # There will never be an IOU greater than 1, so expect all instances back.
+    assert len(labeled_frame.instances) == 3
+    cull_frame_instances(
+        instances_list=labeled_frame.instances, general_iou_threshold=1
+    )
+    assert len(labeled_frame.instances) == 3
+
+    # There is an instance with an IOU of 1 though, so expect 2 instances back.
+    assert len(labeled_frame.instances) == 3
+    cull_frame_instances(
+        instances_list=labeled_frame.instances, general_iou_threshold=0.999999999999999
+    )
+    assert len(labeled_frame.instances) == 2
+
+    # Test with Tracker
+
+    tracker: Tracker = Tracker.make_tracker_by_name(
+        pre_cull_general_iou_threshold=0.999999999999999,
+    )
+    assert tracker.pre_cull_function is not None
+
+    # There is also an instance with an IOU of 0.67, so expect 1 instance back.
+    assert len(labeled_frame.instances) == 2
+    tracker: Tracker = Tracker.make_tracker_by_name(
+        pre_cull_general_iou_threshold=0.6,
+    )
+    assert tracker.pre_cull_function is not None
+    tracker.pre_cull_function(inst_list=labeled_frame.instances)
+    assert len(labeled_frame.instances) == 1
+
+
+def test_cull_frame_instances_with_target(centered_pair_predictions: Labels):
+    labels = centered_pair_predictions
+    video = labels.video
+    labeled_frame: LabeledFrame = labels.find_last(video=video, frame_idx=1098)
+
+    # Target count equal to the number of instances. Expect all instances back.
+    target_count = 3
+
+    # No IOU threshold.
+    assert len(labeled_frame.instances) == target_count
+    cull_frame_instances(instances_list=labeled_frame.instances, instance_count=3)
+    assert len(labeled_frame.instances) == target_count
+
+    # With IOU threshold.
+    assert len(labeled_frame.instances) == target_count
+    cull_frame_instances(
+        instances_list=labeled_frame.instances,
+        instance_count=target_count,
+        iou_threshold=0.0,
+    )
+    assert len(labeled_frame.instances) == target_count
+
+    # Target count less than the number of instances. Expect target count instances back
+
+    # Without IOU.
+    target_count = 2
+    assert len(labeled_frame.instances) == 3
+    cull_frame_instances(
+        instances_list=labeled_frame.instances, instance_count=target_count
+    )
+    assert len(labeled_frame.instances) == target_count
+
+    # With IOU.
+    target_count = 1
+    assert len(labeled_frame.instances) == 2
+    cull_frame_instances(
+        instances_list=labeled_frame.instances,
+        instance_count=target_count,
+        iou_threshold=0.0,
+    )
+    assert len(labeled_frame.instances) == target_count
+
+    # Test with both target count and general IOU threshold. Switching frames and using
+    # Tracker.
+
+    labeled_frame: LabeledFrame = labels.find_last(video=video, frame_idx=1095)
+    tracker: Tracker = Tracker.make_tracker_by_name(target_instance_count=target_count)
+    assert tracker.pre_cull_function is None
+
+    # No instances removed.
+
+    target_count = 4
+    general_iou_threshold = 1
+    tracker: Tracker = Tracker.make_tracker_by_name(
+        target_instance_count=target_count,
+        pre_cull_general_iou_threshold=general_iou_threshold,
+    )
+    assert tracker.pre_cull_function is not None
+
+    # Without non-general IOU.
+    assert len(labeled_frame.instances) == target_count
+    tracker.pre_cull_function(inst_list=labeled_frame.instances)
+    assert len(labeled_frame.instances) == target_count
+
+    # With non-general IOU.
+    iou_threshold = 0.0
+    assert len(labeled_frame.instances) == target_count
+    tracker: Tracker = Tracker.make_tracker_by_name(
+        target_instance_count=target_count,
+        pre_cull_iou_threshold=iou_threshold,
+        pre_cull_general_iou_threshold=general_iou_threshold,
+    )
+    assert tracker.pre_cull_function is not None
+    tracker.pre_cull_function(inst_list=labeled_frame.instances)
+    assert len(labeled_frame.instances) == target_count
+
+    # Instance removed via general IOU.
+    target_count = 4
+    general_iou_threshold = 0.999999999999999
+    assert len(labeled_frame.instances) == 4
+    tracker: Tracker = Tracker.make_tracker_by_name(
+        target_instance_count=target_count,
+        pre_cull_general_iou_threshold=general_iou_threshold,
+    )
+    assert tracker.pre_cull_function is not None
+    tracker.pre_cull_function(inst_list=labeled_frame.instances)
+    assert len(labeled_frame.instances) == target_count - 1
+
+    # Instance removed via non-general IOU.
+    target_count = 2
+    iou_threshold = 0.0
+    assert len(labeled_frame.instances) == 3
+    tracker: Tracker = Tracker.make_tracker_by_name(
+        target_instance_count=target_count,
+        pre_cull_to_target=True,
+        pre_cull_iou_threshold=iou_threshold,
+    )
+    assert tracker.pre_cull_function is not None
+    tracker.pre_cull_function(inst_list=labeled_frame.instances)
+    assert len(labeled_frame.instances) == target_count
 
 
 def test_nms():
