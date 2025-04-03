@@ -1673,3 +1673,136 @@ def test_remove_instance_removes_from_predicted_reference():
     # Ensure no lingering references to the predicted instance
     assert predicted_instance not in labels.all_instances
     assert all(predicted_instance not in lf.instances for lf in labels.labeled_frames)
+
+
+import pytest
+from sleap.io.dataset import Labels
+from sleap.io.video import Video
+from sleap.io.cameras import CameraCategory, Camcorder
+
+
+def test_labels_camera_categories():
+    """Test that Labels can store and retrieve camera categories correctly."""
+    # Create a test dataset
+    video1 = Video.from_media(filename="min_session_back.mp4")
+    video2 = Video.from_media(filename="min_session_backL.mp4")
+
+    # Create labels with these videos
+    labels = Labels()
+    labels.videos = [video1, video2]
+
+    # Initially, camera_categories should be empty
+    assert hasattr(labels, "camera_categories")
+    assert len(labels.camera_categories) == 0
+
+    # Create camera categories
+    cam1 = Camcorder(camera=video1)
+    cam2 = Camcorder(camera=video2)
+
+    category1 = CameraCategory(name="Top View")
+    category1.cameras = [cam1]
+
+    category2 = CameraCategory(name="Side View")
+    category2.cameras = [cam2]
+
+    # Add camera categories to labels
+    labels.camera_categories = [category1, category2]
+
+    # Check that camera_categories is populated correctly
+    assert len(labels.camera_categories) == 2
+    assert labels.camera_categories[0].name == "Top View"
+    assert labels.camera_categories[1].name == "Side View"
+
+    # Verify that cameras are correctly associated with videos
+    assert len(labels.camera_categories[0].cameras) == 1
+    assert labels.camera_categories[0].cameras[0].camera == video1
+
+    assert len(labels.camera_categories[1].cameras) == 1
+    assert labels.camera_categories[1].cameras[0].camera == video2
+
+    # Test adding a new category
+    category3 = CameraCategory(name="Front View")
+    labels.camera_categories.append(category3)
+
+    assert len(labels.camera_categories) == 3
+    assert labels.camera_categories[2].name == "Front View"
+
+
+def test_labels_camera_categories_persistence():
+    """Test that camera categories are properly saved and loaded."""
+    import tempfile
+
+    # Create a test dataset with camera categories
+    video1 = Video.from_media(filename="min_session_back.mp4")
+    
+    labels = Labels()
+    labels.videos = [video1]
+
+    # Create camera category
+    cam1 = Camcorder(camera=video1)
+    category = CameraCategory(name="Test Category")
+    category.cameras = [cam1]
+
+    # Add to labels
+    labels.camera_categories = [category]
+
+    # Save and load the labels
+    with tempfile.NamedTemporaryFile(suffix=".slp", delete=False) as temp:
+        try:
+            # Save to a temporary file
+            labels.save(temp.name)
+
+            # Load the labels back
+            loaded_labels = Labels.load_file(temp.name)
+
+            # Check that camera categories were loaded correctly
+            assert hasattr(loaded_labels, "camera_categories")
+            assert len(loaded_labels.camera_categories) == 1
+            assert loaded_labels.camera_categories[0].name == "Test Category"
+
+            # Check that the camera is associated with the correct video
+            assert len(loaded_labels.camera_categories[0].cameras) == 1
+            assert (
+                loaded_labels.camera_categories[0].cameras[0].camera
+                == loaded_labels.videos[0]
+            )
+        finally:
+            # Clean up
+            import os
+
+            os.unlink(temp.name)
+
+
+def test_add_camera_to_category():
+    """Test adding a camera to a category."""
+    # Create a test dataset
+    video1 = Video.from_media(filename="min_session_back.mp4")
+    video2 = Video.from_media(filename="min_session_backL.mp4")
+
+    # Create labels with these videos
+    labels = Labels()
+    labels.videos = [video1, video2]
+
+    # Create a camera category
+    category = CameraCategory(name="Test Category")
+    labels.camera_categories = [category]
+
+    # No cameras initially
+    assert len(category.cameras) == 0
+
+    # Create camera and add to category
+    cam1 = Camcorder(camera=video1)
+    category.cameras.append(cam1)
+
+    # Check that the camera was added correctly
+    assert len(category.cameras) == 1
+    assert category.cameras[0].camera == video1
+
+    # Add another camera to the category
+    cam2 = Camcorder(camera=video2)
+    category.cameras.append(cam2)
+
+    # Check that both cameras are in the category
+    assert len(category.cameras) == 2
+    assert category.cameras[0].camera == video1
+    assert category.cameras[1].camera == video2
