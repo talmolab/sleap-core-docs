@@ -2566,3 +2566,98 @@ class CameraCategory:
     def remove_camera(self, camera):
         if camera in self.cameras:
             self.cameras.remove(camera)
+
+    @staticmethod
+    def make_cattr(videos_list: List[Video]) -> cattr.Converter:
+        """Make a `cattr.Converter` for `CameraCategory` serialization.
+
+        Args:
+            videos_list: List containing `Video` objects (expected `Labels.videos`).
+
+        Returns:
+            `cattr.Converter` object.
+        """
+        category_cattr = cattr.Converter()
+        
+        # Create video_to_idx mapping for unstructuring
+        video_to_idx = {video: i for i, video in enumerate(videos_list)}
+        
+        # Register structure hook for CameraCategory
+        category_cattr.register_structure_hook(
+            CameraCategory,
+            lambda x, cls: CameraCategory.from_dict(
+                category_dict=x,
+                videos_list=videos_list,
+            ),
+        )
+        
+        # Register unstructure hook for CameraCategory
+        category_cattr.register_unstructure_hook(
+            CameraCategory,
+            lambda x: x.to_dict(video_to_idx=video_to_idx),
+        )
+        
+        return category_cattr
+
+    def to_dict(self, video_to_idx: Dict[Video, int]) -> Dict:
+        """Convert camera category to dictionary for serialization.
+        
+        Args:
+            video_to_idx: Dictionary mapping Video objects to their indices.
+            
+        Returns:
+            Dictionary representation of the camera category.
+        """
+        cameras_data = []
+        for camera in self.cameras:
+            # Handle Camcorder objects which have a camera attribute
+            if hasattr(camera, 'camera'):
+                # Check if the camera attribute is directly a Video object
+                if isinstance(camera.camera, Video) and camera.camera in video_to_idx:
+                    camera_data = {
+                        "video_idx": video_to_idx[camera.camera],
+                    }
+                    cameras_data.append(camera_data)
+                # If camcorder uses a Camera object that has video-like properties
+                elif hasattr(camera.camera, 'filename') and camera.camera in video_to_idx:
+                    camera_data = {
+                        "video_idx": video_to_idx[camera.camera],
+                    }
+                    cameras_data.append(camera_data)
+            # Handle direct video attribute as well (for backward compatibility)
+            elif hasattr(camera, 'video') and camera.video in video_to_idx:
+                camera_data = {
+                    "video_idx": video_to_idx[camera.video],
+                }
+                cameras_data.append(camera_data)
+        
+        return {
+            "name": self.name,
+            "cameras": cameras_data,
+        }
+
+    @classmethod
+    def from_dict(cls, category_dict: Dict, videos_list: List[Video]) -> 'CameraCategory':
+        """Create a CameraCategory from a dictionary.
+        
+        Args:
+            category_dict: Dictionary containing category data.
+            videos_list: List of Video objects.
+            
+        Returns:
+            CameraCategory object.
+        """
+        category = cls(name=category_dict.get("name", ""))
+        
+        # Create cameras for the category
+        cameras = []
+        for camera_data in category_dict.get("cameras", []):
+            video_idx = camera_data.get("video_idx", -1)
+            if 0 <= video_idx < len(videos_list):
+                video = videos_list[video_idx]
+                # Create Camcorder with the video as its camera attribute
+                camera = Camcorder(camera=video)
+                cameras.append(camera)
+        
+        category.cameras = cameras
+        return category
