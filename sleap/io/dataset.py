@@ -2174,6 +2174,12 @@ class Labels(MutableSequence):
             videos_list=self.videos, labeled_frame_to_idx=labeled_frame_to_idx
         )
 
+        # Register unstructure hooks for camera categories
+        label_cattr.register_unstructure_hook(
+            CameraCategory, lambda x: str(self.camera_categories.index(x))
+        )
+        camera_categories_cattr = CameraCategory.make_cattr(videos_list=self.videos)
+
         # Serialize the skeletons, videos, and labels
         dicts = {
             "version": LABELS_JSON_FILE_VERSION,
@@ -2185,6 +2191,7 @@ class Labels(MutableSequence):
             "sessions": sessions_cattr.unstructure(self.sessions),
             "negative_anchors": label_cattr.unstructure(self.negative_anchors),
             "provenance": label_cattr.unstructure(self.provenance),
+            "camera_categories": camera_categories_cattr.unstructure(self.camera_categories),
         }
 
         if not skip_labels:
@@ -2944,6 +2951,60 @@ class Labels(MutableSequence):
                     item["backend"] = cattr.unstructure(vid)
 
         return video_callback
+
+    def filter_by_camera_category(self, category_name: str) -> "Labels":
+        """Filter labels to include only frames from cameras in the specified category.
+        
+        Args:
+            category_name: Name of the camera category to filter by.
+            
+        Returns:
+            A new Labels object containing only frames from the specified camera category.
+            
+        Notes:
+            This creates a shallow copy of the labels, keeping all videos, skeletons, etc.
+            but only including LabeledFrames from the specified camera category.
+        """
+        # Find all videos in the specified camera category
+        videos_in_category = []
+        for category in self.camera_categories:
+            if category.name == category_name:
+                videos_in_category = [camera.video for camera in category.cameras]
+                break
+        
+        if not videos_in_category:
+            return self.__class__(
+                videos=self.videos,
+                skeletons=self.skeletons,
+                tracks=self.tracks,
+                provenance=self.provenance,
+                camera_categories=self.camera_categories
+            )
+        
+        # Filter labeled frames to only include those from videos in the category
+        filtered_frames = [
+            lf for lf in self.labeled_frames 
+            if lf.video in videos_in_category
+        ]
+        
+        # Filter suggestions to only include those from videos in the category
+        filtered_suggestions = [
+            s for s in self.suggestions
+            if s.video in videos_in_category
+        ]
+        
+        # Create a new Labels object with the filtered frames
+        new_labels = self.__class__(
+            labeled_frames=filtered_frames,
+            videos=self.videos,  # Keep all videos for reference
+            skeletons=self.skeletons,
+            tracks=self.tracks,
+            suggestions=filtered_suggestions,
+            provenance=self.provenance,
+            camera_categories=self.camera_categories
+        )
+        
+        return new_labels
 
 
 def find_path_using_paths(missing_path: Text, search_paths: List[Text]) -> Text:
