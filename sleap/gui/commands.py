@@ -701,11 +701,15 @@ class CommandContext:
 
     def addCameraToCategory(self, camera, camera_category):
         """Add a camera to a category."""
-        self.execute(AddCameraToCategory, camera=camera, camera_category=camera_category)
+        self.execute(
+            AddCameraToCategory, camera=camera, camera_category=camera_category
+        )
 
     def removeCameraFromCategory(self, camera, camera_category):
         """Remove a camera from a category."""
-        self.execute(RemoveCameraFromCategory, camera=camera, camera_category=camera_category)
+        self.execute(
+            RemoveCameraFromCategory, camera=camera, camera_category=camera_category
+        )
 
     def exportLabelsPackage(self):
         """Shows gui for exporting labels package."""
@@ -1542,6 +1546,7 @@ class ExportDatasetWithImages(AppCommand):
 
     @staticmethod
     def ask(context: CommandContext, params: dict) -> bool:
+        """Ask for filename to save dataset with images."""
         filters = [
             "SLEAP HDF5 dataset (*.slp *.h5)",
             "Compressed JSON dataset (*.json *.json.zip)",
@@ -1580,12 +1585,13 @@ class ExportFullPackage(ExportDatasetWithImages):
     all_labeled = True
     suggested = True
 
-class ExportLabelsPackage(AppCommand):
+
+class ExportLabelsPackage(ExportDatasetWithImages):
     """Command to export labels package with dialog."""
     
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
-        # Export the dataset
+        """Execute the export action with specified parameters."""
         export_dataset_gui(
             labels=context.state["labels"],
             filename=params["filename"],
