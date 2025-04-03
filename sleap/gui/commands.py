@@ -1597,6 +1597,7 @@ class ExportLabelsPackage(ExportDatasetWithImages):
             filename=params["filename"],
             all_labeled=params["all_labeled"],
             suggested=params["suggested"],
+            camera_category=params.get("camera_category"),
             verbose=True,
         )
     
@@ -1609,15 +1610,20 @@ class ExportLabelsPackage(ExportDatasetWithImages):
 
     @staticmethod
     def ask(context: CommandContext, params: dict) -> bool:
+        from sleap.gui.dialogs.export_labels import ExportLabelsDialog
+
         # Create and show dialog
-        export_options = ExportLabelsPackage.get_export_options(parent=context.app)
+        dialog = ExportLabelsDialog(labels=context.state["labels"])
+        
+        # Show modal dialog and get form results
+        export_options = dialog.get_results()
         
         # Check if user hit cancel
         if export_options is None:
             return False
-        
+            
         # Process export type
-        export_type = export_options.get("export_type", "user_labels")
+        export_type = export_options.get("export_type", "training")
         if export_type == "user_labels":
             params["all_labeled"] = False
             params["suggested"] = False
@@ -1627,35 +1633,19 @@ class ExportLabelsPackage(ExportDatasetWithImages):
         elif export_type == "full":
             params["all_labeled"] = True
             params["suggested"] = True
-        
-
-        extension = ".slp"
-        
-        # Set up file dialog
-        filters = [
-            "SLEAP HDF5 dataset (*.slp *.h5)",
-        ]
-        
-        dirname = os.path.dirname(context.state["filename"])
-        basename = os.path.basename(context.state["filename"])
-        
-        new_basename = f"{os.path.splitext(basename)[0]}.pkg{extension}"
-        new_filename = os.path.join(dirname, new_basename)
-        
-        filename, _ = FileDialog.save(
-            context.app,
-            caption="Save Labeled Frames As...",
-            dir=new_filename,
-            filter=";;".join(filters),
-        )
-        
-        # Check if user hit cancel
-        if len(filename) == 0:
+            
+        # Process camera category
+        camera_category = export_options.get("camera_category", "all")
+        if camera_category != "all":
+            params["camera_category"] = camera_category
+        else:
+            params["camera_category"] = None
+            
+        # Get filename using parent class method
+        if not super().ask(context, params):
             return False
-        
-        params["filename"] = filename
+
         return True
-# Navigation Commands
 
 
 class GoIteratorCommand(AppCommand):
