@@ -1588,7 +1588,7 @@ class ExportFullPackage(ExportDatasetWithImages):
 
 class ExportLabelsPackage(ExportDatasetWithImages):
     """Command to export labels package with dialog."""
-    
+
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
         """Execute the export action with specified parameters."""
@@ -1600,7 +1600,7 @@ class ExportLabelsPackage(ExportDatasetWithImages):
             camera_category=params.get("camera_category"),
             verbose=True,
         )
-    
+
     @staticmethod
     def get_export_options(parent=None):
         # Show the export labels dialog and return the selected options
@@ -1614,14 +1614,14 @@ class ExportLabelsPackage(ExportDatasetWithImages):
 
         # Create and show dialog
         dialog = ExportLabelsDialog(labels=context.state["labels"])
-        
+
         # Show modal dialog and get form results
         export_options = dialog.get_results()
-        
+
         # Check if user hit cancel
         if export_options is None:
             return False
-            
+
         # Process export type
         export_type = export_options.get("export_type", "training")
         if export_type == "user_labels":
@@ -1633,14 +1633,14 @@ class ExportLabelsPackage(ExportDatasetWithImages):
         elif export_type == "full":
             params["all_labeled"] = True
             params["suggested"] = True
-            
+
         # Process camera category
         camera_category = export_options.get("camera_category", "all")
         if camera_category != "all":
             params["camera_category"] = camera_category
         else:
             params["camera_category"] = None
-            
+
         # Get filename using parent class method
         if not super().ask(context, params):
             return False
@@ -4009,64 +4009,64 @@ class UnlinkVideo(EditCommand):
         # Reset the selected camera
         context.state["selected_camera"] = None
 
+
 class AddCameraCategory(EditCommand):
     """Command to add a new camera category."""
-    
+
     topics = [UpdateTopic.sessions, UpdateTopic.project]
-    
+
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
         name = params.get("name", "New Category")
-        
+
         # Initialize camera_categories if needed
         if not hasattr(context.labels, "camera_categories"):
             context.labels.camera_categories = []
-        
+
         # Create new camera category
-        
+
         camera_category = CameraCategory(name)
         context.labels.camera_categories.append(camera_category)
-        
+
         # Update state
         context.state["camera_categories"] = context.labels.camera_categories
 
 
-
 class SetCameraCategoryName(EditCommand):
     """Command to set the name of a camera category."""
-    
+
     topics = [UpdateTopic.sessions]
-    
+
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
         """Set the name of a camera category."""
         camera_category = params.get("camera_category")
         name = params.get("name")
-        
+
         if camera_category and name:
             camera_category.name = name
-            
+
 
 class DeleteCameraCategory(EditCommand):
     """Command to delete a camera category."""
-    
+
     topics = [UpdateTopic.sessions]
-    
+
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
         """Delete the selected camera category."""
         camera_category = params.get("camera_category")
-        
+
         if not camera_category:
             camera_category = context.state.get("selected_camera_category")
-            
+
         if not camera_category:
             return
-            
+
         if hasattr(context.labels, "camera_categories"):
             if camera_category in context.labels.camera_categories:
                 context.labels.camera_categories.remove(camera_category)
-                
+
                 # Update state
                 context.state["camera_categories"] = context.labels.camera_categories
                 context.state["selected_camera_category"] = None
@@ -4074,35 +4074,34 @@ class DeleteCameraCategory(EditCommand):
 
 class AddCameraToCategory(EditCommand):
     """Command to add a camera to a category."""
-    
+
     topics = [UpdateTopic.sessions]
-    
+
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
         """Add a camera to a category."""
         camera_category = params.get("camera_category")
         camera = params.get("camera")
-        
+
         if camera_category and camera:
             # Add camera to category
             camera_category.add_camera(camera)
-            
+
             # Update state to trigger UI refresh
             context.state["camera_categories"] = context.labels.camera_categories
 
 
-
 class RemoveCameraFromCategory(EditCommand):
     """Command to remove a camera from a category."""
-    
+
     topics = [UpdateTopic.sessions]
-    
+
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
         """Remove a camera from a category."""
         camera_category = params.get("camera_category")
         camera = params.get("camera")
-        
+
         if camera_category and camera:
             camera_category.remove_camera(camera)
 
