@@ -504,39 +504,41 @@ class Labels(MutableSequence):
             )
 
         # Ditto for tracks, a pattern is emerging here
-        if len(self.tracks) == 0:
-            # Get tracks from any Instances or PredictedInstances
-            other_tracks = {
-                instance.track
+        # if len(self.tracks) == 0:
+        # Get tracks from any Instances or PredictedInstances
+        other_tracks = {
+            instance.track
+            for frame in self.labels
+            for instance in frame.instances
+            if instance.track
+        }
+
+        # Add tracks from any PredictedInstance referenced by instance
+        # This fixes things when there's a referenced PredictionInstance
+        # which is no longer in the frame.
+        other_tracks = other_tracks.union(
+            {
+                instance.from_predicted.track
                 for frame in self.labels
                 for instance in frame.instances
-                if instance.track
+                if instance.from_predicted and instance.from_predicted.track
             }
+        )
 
-            # Add tracks from any PredictedInstance referenced by instance
-            # This fixes things when there's a referenced PredictionInstance
-            # which is no longer in the frame.
-            other_tracks = other_tracks.union(
-                {
-                    instance.from_predicted.track
-                    for frame in self.labels
-                    for instance in frame.instances
-                    if instance.from_predicted and instance.from_predicted.track
-                }
-            )
+        # Get list of other tracks not already in track list
+        new_tracks = list(other_tracks - set(self.tracks))
 
-            # Get list of other tracks not already in track list
-            new_tracks = list(other_tracks - set(self.tracks))
-            if self.tracks and merge:
-                new_tracks = [self.tracks[0]]
-                for track in other_tracks:
-                    for t in new_tracks:
-                        if not track.matches(t):
-                            new_tracks.append(track)
+        if self.tracks and merge:
+            new_tracks = self.tracks
+            for track in other_tracks:
+                for t in new_tracks:
+                    if not track.matches(t):
+                        new_tracks.append(track)
 
             # Sort the new tracks by spawned on and then name
             new_tracks.sort(key=lambda t: (t.spawned_on, t.name))
 
+        else:
             self.tracks.extend(new_tracks)
 
     def _update_containers(self, new_label: LabeledFrame):
