@@ -531,9 +531,8 @@ class Labels(MutableSequence):
         if self.tracks and merge:
             new_tracks = self.tracks
             for track in other_tracks:
-                for t in new_tracks:
-                    if not track.matches(t):
-                        new_tracks.append(track)
+                if not any(track.matches(t) for t in new_tracks):
+                    new_tracks.append(track)
 
             # Sort the new tracks by spawned on and then name
             new_tracks.sort(key=lambda t: (t.spawned_on, t.name))
