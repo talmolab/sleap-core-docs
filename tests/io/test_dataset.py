@@ -727,7 +727,6 @@ def test_unify_skeletons():
     labels.to_dict()
 
 
-
 def test_dont_unify_skeletons():
     vid = Video.from_filename("foo.mp4")
 
