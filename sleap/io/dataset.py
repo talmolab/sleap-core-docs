@@ -469,18 +469,16 @@ class Labels(MutableSequence):
         if len(self.skeletons) == 0:
             # if `labels.skeletons` is empty, then add all new skeletons
             self.skeletons = list(
-                set(self.skeletons).union(
-                    {
-                        instance.skeleton
-                        for label in self.labels
-                        for instance in label.instances
-                    }
-                )
+                {
+                    instance.skeleton
+                    for label in self.labels
+                    for instance in label.instances
+                }
             )
 
         if len(self.nodes) == 0:
             self.nodes = list(
-                set([node for skeleton in self.skeletons for node in skeleton.nodes])
+                set(node for skeleton in self.skeletons for node in skeleton.nodes)
             )
 
         if self.skeletons and merge:
