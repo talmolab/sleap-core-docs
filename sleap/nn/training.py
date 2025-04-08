@@ -1319,10 +1319,11 @@ class TopdownConfmapsModelTrainer(Trainer):
         # Create an instance peak finding layer.
         find_peaks = FindInstancePeaks(
             keras_model=self.keras_model,
-            input_scale=self.config.data.preprocessing.input_scaling,
+            input_scale=1.0,
             peak_threshold=0.2,
             refinement="local",
             return_confmaps=True,
+            resize_input_image=False,
         )
 
         def visualize_example(example):
@@ -1759,10 +1760,11 @@ class TopDownMultiClassModelTrainer(Trainer):
         # Create an instance peak finding layer.
         find_peaks = FindInstancePeaks(
             keras_model=self.keras_model,
-            input_scale=self.config.data.preprocessing.input_scaling,
+            input_scale=1.0,
             peak_threshold=0.2,
             refinement="local",
             return_confmaps=True,
+            resize_input_image=False,
         )
 
         def visualize_example(example):

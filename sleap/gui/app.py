@@ -1345,7 +1345,7 @@ class MainWindow(QMainWindow):
                 message += f" [Hidden] Press '{hide_key}' to toggle."
                 self.statusBar().setStyleSheet("color: red")
             else:
-                self.statusBar().setStyleSheet("color: black")
+                self.statusBar().setStyleSheet("")
 
         self.statusBar().showMessage(message)
 
