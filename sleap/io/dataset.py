@@ -465,77 +465,54 @@ class Labels(MutableSequence):
             if len(new_videos):
                 self.videos.extend(list(new_videos))
 
-        # Ditto for skeletons
-        if len(self.skeletons) == 0:
-            # if `labels.skeletons` is empty, then add all new skeletons
-            self.skeletons = list(
-                {
-                    instance.skeleton
-                    for label in self.labels
-                    for instance in label.instances
-                }
-            )
+        if merge or len(self.skeletons) == 0:
+            if not self.skeletons:
+                # if `labels.skeletons` is empty, then add all new skeletons
+                self.skeletons = list(
+                    set(self.skeletons).union(
+                        {
+                            instance.skeleton
+                            for label in self.labels
+                            for instance in label.instances
+                        }
+                    )
+                )
+            else:
+                for lf in self.labels:
+                    for instance in lf.instances:
+                        for skeleton in self.skeletons:
+                            # check if the new skeleton is already in `labels.skeletons`
+                            if not skeleton.matches(instance.skeleton):
+                                self.skeletons.append(instance.skeleton)
+                            else:
+                                # assign the existing skeleton if the instance has duplicate skeleton
+                                instance.skeleton = skeleton
 
-        if len(self.nodes) == 0:
+        if merge or len(self.nodes) == 0:
             self.nodes = list(
-                set(node for skeleton in self.skeletons for node in skeleton.nodes)
+                set().union(
+                    {node for skeleton in self.skeletons for node in skeleton.nodes}
+                )
             )
 
-        if self.skeletons and merge:
-            # remove duplicate skeletons during merge
-            skeletons = [self.skeletons[0]]
-            for lf in self.labels:
-                for instance in lf.instances:
-                    for skeleton in skeletons:
-                        # check if the new skeleton is already in `labels.skeletons`
-                        if not skeleton.matches(instance.skeleton):
-                            skeletons.append(instance.skeleton)
-                        else:
-                            # assign the existing skeleton if the instance has duplicate skeleton
-                            instance.skeleton = skeleton
-
-            self.skeletons = skeletons
-
-            # updates nodes after removing duplicate skeletons
-            self.nodes = list(
-                set([node for skeleton in self.skeletons for node in skeleton.nodes])
-            )
-
-        # Ditto for tracks, a pattern is emerging here
-        # if len(self.tracks) == 0:
-        # Get tracks from any Instances or PredictedInstances
-        other_tracks = {
-            instance.track
-            for frame in self.labels
-            for instance in frame.instances
-            if instance.track
-        }
-
-        # Add tracks from any PredictedInstance referenced by instance
-        # This fixes things when there's a referenced PredictionInstance
-        # which is no longer in the frame.
-        other_tracks = other_tracks.union(
-            {
-                instance.from_predicted.track
+        if merge or len(self.tracks) == 0:
+            # Get tracks from any Instances or PredictedInstances
+            other_tracks = {
+                instance.track
                 for frame in self.labels
                 for instance in frame.instances
-                if instance.from_predicted and instance.from_predicted.track
+                if instance.track
             }
-        )
 
-        # Get list of other tracks not already in track list
-        new_tracks = list(other_tracks - set(self.tracks))
-
-        if self.tracks and merge:
-            new_tracks = self.tracks
-            for track in other_tracks:
-                if not any(track.matches(t) for t in new_tracks):
-                    new_tracks.append(track)
+            new_tracks = []
+            if not self.tracks:
+                new_tracks = list(other_tracks)
+            else:
+                for t in other_tracks:
+                    if not np.any([track.matches(t) for track in self.tracks]):
+                        new_tracks.append(t)
 
             # Sort the new tracks by spawned on and then name
-            new_tracks.sort(key=lambda t: (t.spawned_on, t.name))
-
-        else:
             new_tracks.sort(key=lambda t: (t.spawned_on, t.name))
             self.tracks.extend(new_tracks)
 
