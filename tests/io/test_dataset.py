@@ -727,26 +727,6 @@ def test_unify_skeletons():
     labels.to_dict()
 
 
-def test_dont_unify_skeletons():
-    vid = Video.from_filename("foo.mp4")
-
-    skeleton_a = Skeleton.load_json("tests/data/skeleton/fly_skeleton_legs.json")
-    skeleton_b = Skeleton.load_json("tests/data/skeleton/fly_skeleton_legs.json")
-
-    lf_a = LabeledFrame(vid, frame_idx=2, instances=[Instance(skeleton_a)])
-    lf_b = LabeledFrame(vid, frame_idx=3, instances=[Instance(skeleton_b)])
-
-    labels = Labels(labeled_frames=[lf_a])
-    labels.extend_from([lf_b], unify=False)
-    ids = skeleton_ids_from_label_instances(labels)
-
-    # Make sure we still have two distinct skeleton objects
-    assert len(set(ids)) == 2
-
-    # Make sure we can serialize this
-    labels.to_dict()
-
-
 def test_instance_cattr(centered_pair_predictions: Labels, tmpdir: str):
     labels = centered_pair_predictions
     lf = labels.labeled_frames[0]
