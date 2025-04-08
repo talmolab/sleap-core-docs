@@ -538,6 +538,7 @@ class Labels(MutableSequence):
             new_tracks.sort(key=lambda t: (t.spawned_on, t.name))
 
         else:
+            new_tracks.sort(key=lambda t: (t.spawned_on, t.name))
             self.tracks.extend(new_tracks)
 
     def _update_containers(self, new_label: LabeledFrame):
