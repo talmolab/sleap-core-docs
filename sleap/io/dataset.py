@@ -467,15 +467,13 @@ class Labels(MutableSequence):
 
         if merge or len(self.skeletons) == 0:
             instance_skeletons = {
-                    instance.skeleton 
-                    for lf in self.labels
-                    for instance in lf.instances
-                }
-            
+                instance.skeleton for lf in self.labels for instance in lf.instances
+            }
+
             if not self.skeletons:
                 # if `labels.skeletons` is empty, then add all new skeletons
                 self.skeletons = list(instance_skeletons)
-                
+
             else:
                 # Map duplicate skeletons to existing ones
                 skeleton_map = {}
@@ -531,7 +529,6 @@ class Labels(MutableSequence):
                     for instance in frame.instances:
                         if instance.track in track_map:
                             instance.track = track_map[instance.track]
-
 
             # Sort the new tracks by spawned on and then name
             new_tracks.sort(key=lambda t: (t.spawned_on, t.name))
