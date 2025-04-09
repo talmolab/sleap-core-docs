@@ -466,27 +466,34 @@ class Labels(MutableSequence):
                 self.videos.extend(list(new_videos))
 
         if merge or len(self.skeletons) == 0:
+            instance_skeletons = {
+                    instance.skeleton 
+                    for lf in self.labels
+                    for instance in lf.instances
+                }
+            
             if not self.skeletons:
                 # if `labels.skeletons` is empty, then add all new skeletons
-                self.skeletons = list(
-                    set(self.skeletons).union(
-                        {
-                            instance.skeleton
-                            for label in self.labels
-                            for instance in label.instances
-                        }
-                    )
-                )
+                self.skeletons = list(instance_skeletons)
+                
             else:
+                # Map duplicate skeletons to existing ones
+                skeleton_map = {}
+                for new_skeleton in instance_skeletons:
+                    matched = False
+                    for existing in self.skeletons:
+                        if existing.matches(new_skeleton):
+                            skeleton_map[new_skeleton] = existing
+                            matched = True
+                            break
+                    if not matched:
+                        self.skeletons.append(new_skeleton)
+
+                # Update instances to use deduplicated skeletons
                 for lf in self.labels:
                     for instance in lf.instances:
-                        for skeleton in self.skeletons:
-                            # check if the new skeleton is already in `labels.skeletons`
-                            if not skeleton.matches(instance.skeleton):
-                                self.skeletons.append(instance.skeleton)
-                            else:
-                                # assign the existing skeleton if the instance has duplicate skeleton
-                                instance.skeleton = skeleton
+                        if instance.skeleton in skeleton_map:
+                            instance.skeleton = skeleton_map[instance.skeleton]
 
         if merge or len(self.nodes) == 0:
             self.nodes = list(
@@ -497,20 +504,34 @@ class Labels(MutableSequence):
 
         if merge or len(self.tracks) == 0:
             # Get tracks from any Instances or PredictedInstances
-            other_tracks = {
+            instance_tracks = {
                 instance.track
                 for frame in self.labels
                 for instance in frame.instances
                 if instance.track
             }
 
-            new_tracks = []
             if not self.tracks:
-                new_tracks = list(other_tracks)
+                new_tracks = list(instance_tracks)
             else:
-                for t in other_tracks:
-                    if not np.any([track.matches(t) for track in self.tracks]):
-                        new_tracks.append(t)
+                track_map = {}
+                new_tracks = []
+                for new_track in instance_tracks:
+                    matched = False
+                    for existing in self.tracks:
+                        if existing.matches(new_track):
+                            track_map[new_track] = existing
+                            matched = True
+                            break
+                    if not matched:
+                        new_tracks.append(new_track)
+
+                # Update instances to use deduplicated tracks
+                for frame in self.labels:
+                    for instance in frame.instances:
+                        if instance.track in track_map:
+                            instance.track = track_map[instance.track]
+
 
             # Sort the new tracks by spawned on and then name
             new_tracks.sort(key=lambda t: (t.spawned_on, t.name))
