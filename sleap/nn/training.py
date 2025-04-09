@@ -1018,7 +1018,10 @@ class SingleInstanceModelTrainer(Trainer):
 
     def _update_config(self):
         """Update the configuration with inferred values."""
-        if self.config.data.preprocessing.pad_to_stride is None:
+        if (
+            self.config.data.preprocessing.pad_to_stride is None
+            or self.config.data.preprocessing.pad_to_stride < self.model.maximum_stride
+        ):
             self.config.data.preprocessing.pad_to_stride = self.model.maximum_stride
 
         if self.config.optimization.batches_per_epoch is None:
@@ -1135,7 +1138,10 @@ class CentroidConfmapsModelTrainer(Trainer):
 
     def _update_config(self):
         """Update the configuration with inferred values."""
-        if self.config.data.preprocessing.pad_to_stride is None:
+        if (
+            self.config.data.preprocessing.pad_to_stride is None
+            or self.config.data.preprocessing.pad_to_stride < self.model.maximum_stride
+        ):
             self.config.data.preprocessing.pad_to_stride = self.model.maximum_stride
 
         if self.config.optimization.batches_per_epoch is None:
@@ -1371,7 +1377,10 @@ class BottomUpModelTrainer(Trainer):
 
     def _update_config(self):
         """Update the configuration with inferred values."""
-        if self.config.data.preprocessing.pad_to_stride is None:
+        if (
+            self.config.data.preprocessing.pad_to_stride is None
+            or self.config.data.preprocessing.pad_to_stride < self.model.maximum_stride
+        ):
             self.config.data.preprocessing.pad_to_stride = self.model.maximum_stride
 
         if self.config.optimization.batches_per_epoch is None:
@@ -1512,7 +1521,10 @@ class BottomUpMultiClassModelTrainer(Trainer):
 
     def _update_config(self):
         """Update the configuration with inferred values."""
-        if self.config.data.preprocessing.pad_to_stride is None:
+        if (
+            self.config.data.preprocessing.pad_to_stride is None
+            or self.config.data.preprocessing.pad_to_stride < self.model.maximum_stride
+        ):
             self.config.data.preprocessing.pad_to_stride = self.model.maximum_stride
 
         if self.config.optimization.batches_per_epoch is None:
@@ -1651,7 +1663,10 @@ class TopDownMultiClassModelTrainer(Trainer):
 
     def _update_config(self):
         """Update the configuration with inferred values."""
-        if self.config.data.preprocessing.pad_to_stride is None:
+        if (
+            self.config.data.preprocessing.pad_to_stride is None
+            or self.config.data.preprocessing.pad_to_stride < self.model.maximum_stride
+        ):
             self.config.data.preprocessing.pad_to_stride = self.model.maximum_stride
 
         if (self.config.data.instance_cropping.crop_size is None) or (
