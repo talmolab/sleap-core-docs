@@ -1588,18 +1588,6 @@ class ExportFullPackage(ExportDatasetWithImages):
 class ExportLabelsPackage(ExportDatasetWithImages):
     """Command to export labels package with dialog."""
 
-    @classmethod
-    def do_action(cls, context: CommandContext, params: dict):
-        """Execute the export action with specified parameters."""
-        export_dataset_gui(
-            labels=context.state["labels"],
-            filename=params["filename"],
-            all_labeled=params["all_labeled"],
-            suggested=params["suggested"],
-            camera_category=params.get("camera_category"),
-            verbose=True,
-        )
-
     @classmethod  # Changed from @staticmethod to @classmethod
     def ask(cls, context: CommandContext, params: dict) -> bool:
         from sleap.gui.dialogs.export_labels import ExportLabelsDialog
