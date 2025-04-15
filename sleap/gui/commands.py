@@ -3999,10 +3999,6 @@ class AddCameraCategory(EditCommand):
     def do_action(cls, context: CommandContext, params: dict):
         name = params.get("name", "New Category")
 
-        # Initialize camera_categories if needed
-        if not hasattr(context.labels, "camera_categories"):
-            context.labels.camera_categories = []
-
         # Create new camera category
 
         camera_category = CameraCategory(name)
