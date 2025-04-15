@@ -64,7 +64,6 @@ from sleap.io.video import Video, MediaVideo
 from sleap.skeleton import Node, Skeleton
 from sleap.util import get_package_file
 from sleap.io.cameras import CameraCategory
-from sleap.gui.dialogs.formbuilder import FormBuilderModalDialog
 
 # Indicates whether we support multiple project windows (i.e., "open" opens new window)
 OPEN_IN_NEW = True
