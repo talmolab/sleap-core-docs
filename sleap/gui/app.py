@@ -964,39 +964,6 @@ class MainWindow(QMainWindow):
 
         predictionMenu.addSeparator()
 
-        labels_package_menu = predictionMenu.addMenu("Export Labels Package...")
-        add_menu_item(
-            labels_package_menu,
-            "export user labels package",
-            "Labeled frames",
-            self.commands.exportUserLabelsPackage,
-        ).setToolTip(
-            "Export user-labeled frames with image data into a single SLP file.\n\n"
-            "Use this for archiving a dataset with labeled frames only."
-        )
-        add_menu_item(
-            labels_package_menu,
-            "export labels package",
-            "Labeled + suggested frames (recommended)",
-            self.commands.exportTrainingPackage,
-        ).setToolTip(
-            "Export user-labeled frames and suggested frames with image data into a "
-            "single SLP file.\n\n"
-            "Use this for human-in-the-loop training to enable remote inference on "
-            "unlabeled frames."
-        )
-        add_menu_item(
-            labels_package_menu,
-            "export full package",
-            "Labeled + predicted + suggested frames",
-            self.commands.exportFullPackage,
-        ).setToolTip(
-            "Export all frames (including predictions) and suggested frames with image "
-            "data into a single SLP file.\n\n"
-            "Use this when you need to store images for predicted frames, such as for "
-            "proofreading or reproducibility."
-        )
-
         add_menu_item(
             predictionMenu,
             "export_labels",
