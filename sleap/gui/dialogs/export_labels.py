@@ -20,32 +20,25 @@ class ExportLabelsDialog(FormBuilderModalDialog):
         super().__init__(form_name="export_labels_form", which_form="main")
 
         # Find the camera category combobox in the form layout
-        camera_combo = None
-        for widget in self.findChildren(QComboBox):
-            if widget.objectName() == "camera_category":
-                camera_combo = widget
-                break
+        camera_combo = self.form_widget.fields.get("camera_category", None)
 
         if camera_combo:
-            # Clear existing items
-            camera_combo.clear()
-
             # Build list of available camera categories
             camera_options = []
 
             # Always add "All Cameras" option
-            camera_options.append(("All Cameras", "all"))
+            default_option = "All Cameras"
+            camera_options.append(default_option)
 
             # Add available camera categories
-            if (
-                labels and labels.camera_categories
-            ):  # Direct access to camera_categories list
+            if labels.camera_categories:  # Direct access to camera_categories list
                 for category in labels.camera_categories:
                     if category.cameras:  # Only add categories that have cameras
-                        camera_options.append((category.name, category.name))
+                        camera_options.append(category.name)
 
             # Populate the combobox with available options
-            for display_text, data in camera_options:
-                camera_combo.addItem(display_text, data)
+            self.form_widget.fields["camera_category"].set_options(
+                camera_options, default_option
+            )
 
         self.setWindowTitle("Export Labels Options")
