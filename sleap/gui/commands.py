@@ -1622,7 +1622,9 @@ class ExportLabelsPackage(ExportDatasetWithImages):
             params["camera_category"] = None
 
         # Get filename using parent class method
-        return ExportDatasetWithImages.ask(context, params)  # Changed to direct class call
+        return ExportDatasetWithImages.ask(
+            context, params
+        )  # Changed to direct class call
 
 
 # Navigation Commands
