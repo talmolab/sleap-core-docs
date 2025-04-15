@@ -1625,6 +1625,9 @@ class ExportLabelsPackage(ExportDatasetWithImages):
         return ExportDatasetWithImages.ask(context, params)  # Changed to direct class call
 
 
+# Navigation Commands
+
+
 class GoIteratorCommand(AppCommand):
     @staticmethod
     def _plot_if_next(context, frame_iterator: Iterator) -> bool:
