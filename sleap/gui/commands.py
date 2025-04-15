@@ -1601,15 +1601,8 @@ class ExportLabelsPackage(ExportDatasetWithImages):
             verbose=True,
         )
 
-    @staticmethod
-    def get_export_options(parent=None):
-        # Show the export labels dialog and return the selected options
-        dialog = FormBuilderModalDialog(form_name="export_labels_form", parent=parent)
-        dialog.setWindowTitle("Export Labels Package")
-        return dialog.get_results()
-
-    @staticmethod
-    def ask(context: CommandContext, params: dict) -> bool:
+    @classmethod  # Changed from @staticmethod to @classmethod
+    def ask(cls, context: CommandContext, params: dict) -> bool:
         from sleap.gui.dialogs.export_labels import ExportLabelsDialog
 
         # Create and show dialog
@@ -1642,10 +1635,7 @@ class ExportLabelsPackage(ExportDatasetWithImages):
             params["camera_category"] = None
 
         # Get filename using parent class method
-        if not super().ask(context, params):
-            return False
-
-        return True
+        return ExportDatasetWithImages.ask(context, params)  # Changed to direct class call
 
 
 class GoIteratorCommand(AppCommand):
