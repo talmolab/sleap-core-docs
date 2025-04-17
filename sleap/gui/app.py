@@ -1272,6 +1272,7 @@ class MainWindow(QMainWindow):
             self.update_unlinked_videos_model()
             self._update_sessions_menu()
             self._update_instance_group_model()
+            self._update_camera_categories_model()
 
     def update_unlinked_videos_model(self):
         """Update the unlinked videos model with the selected session."""
