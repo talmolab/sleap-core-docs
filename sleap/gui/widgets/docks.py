@@ -1,5 +1,7 @@
 """Module for creating dock widgets for the `MainWindow`."""
 
+from __future__ import annotations
+
 from typing import Callable, Dict, Iterable, List, Optional, Type, Union
 
 from qtpy import QtGui
@@ -805,15 +807,20 @@ class SessionsDock(DockWidget):
         hbw.setLayout(hb)
         return hbw
 
-    def _create_camera_category(self):
-        """Create a new camera category."""
+    def _create_camera_category(self) -> tuple[str | None, bool]:
+        """Create a new camera category.
+
+        Returns:
+            name: The name of the new camera category.
+            ok: True if the user clicked OK, False if they canceled.
+        """
         name, ok = QInputDialog.getText(
             self.main_window, "New Camera Category", "Enter name for camera category:"
         )
         if ok and name:
             self.main_window.commands.addCameraCategory(name)
 
-        return name if ok else None
+        return name, ok
 
     def _delete_camera_category(self):
         """Delete the selected camera category."""
@@ -844,20 +851,16 @@ class SessionsDock(DockWidget):
         camera = self.main_window.state.get("selected_camera")
         labels = self.main_window.state.get("labels")
         camera_categories = labels.camera_categories
-        category_name = None
 
         # Get available categories
-        if len(camera_categories) == 0:
-            category_name = self._create_camera_category()
-            if category_name is None:
-                return
 
-        # Show category selection dialog
         category_names = [
             category.name for category in self.main_window.state["camera_categories"]
         ]
         new_category_name = "Create New Category"
         category_names.append(new_category_name)
+
+        # Show category selection dialog.
         selected_name, ok = QInputDialog.getItem(
             self.main_window,
             "Select Category",
@@ -867,23 +870,25 @@ class SessionsDock(DockWidget):
             False,
         )
 
-        if ok and selected_name:
-            if selected_name == new_category_name:
-                self.main_window.commands.addCameraCategory()
-            else:
-                selected_idx = category_names.index(selected_name)
-                selected_category = self.main_window.state["camera_categories"][
-                    selected_idx
-                ]
-                self.main_window.commands.addCameraToCategory(camera, selected_category)
+        # Return early if the user canceled the dialog.
+        if not ok:
+            return
 
-            # Force update the model
-            if (
-                hasattr(self, "camera_categories_model")
-                and self.camera_categories_model
-            ):
-                camera_categories = self.main_window.state.get("camera_categories", [])
-                self.camera_categories_model.update_items(camera_categories)
+        # Create a new category if the user selected "Create New Category"
+        if selected_name == new_category_name:
+            selected_name, ok = self._create_camera_category()
+            if not ok:
+                return
+            selected_idx = -1
+            selected_category = camera_categories[selected_idx]
+
+        # Otherwise, add the camera to the selected category
+        else:
+            selected_idx = category_names.index(selected_name)
+            selected_category = camera_categories[selected_idx]
+
+        # This command will update the model
+        self.main_window.commands.addCameraToCategory(camera, selected_category)
 
 
 class InstanceGroupDock(DockWidget):

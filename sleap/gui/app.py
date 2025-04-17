@@ -1294,6 +1294,12 @@ class MainWindow(QMainWindow):
 
         self.instance_groups_dock.table.model().items = []
 
+    def _update_camera_categories_model(self):
+        """Update the camera categories model with the selected session."""
+        self.sessions_dock.camera_categories_table.model().items = self.state[
+            "labels"
+        ].camera_categories
+
     def update_cameras_model(self):
         """Update the cameras model with the selected session."""
         self.sessions_dock.camera_table.model().items = self.state["selected_session"]
