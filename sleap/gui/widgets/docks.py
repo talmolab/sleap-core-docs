@@ -763,12 +763,12 @@ class SessionsDock(DockWidget):
     def create_camera_categories_table(self) -> QWidget:
         """Create the camera categories table and buttons."""
         main_window = self.main_window
-        
+
         # Create a container widget with a title
         container = QGroupBox("Camera Categories")
         container_layout = QVBoxLayout()
         container.setLayout(container_layout)
-        
+
         # Create the camera groups table
         self.camera_categories_table = GenericTableView(
             is_activatable=True,
@@ -777,18 +777,18 @@ class SessionsDock(DockWidget):
             model=self.camera_categories_model,
         )
         container_layout.addWidget(self.camera_categories_table)
-        
+
         # Create buttons for camera categories
         hb = QHBoxLayout()
         self.add_button(hb, "Create Category", self._create_camera_category)
         self.add_button(hb, "Delete Category", self._delete_camera_category)
-        
+
         hbw = QWidget()
         hbw.setLayout(hb)
         container_layout.addWidget(hbw)
-        
+
         return container
-    
+
     def _update_camera_categories_model(self, camera_categories):
         """Update the camera categories model when the state changes."""
         if hasattr(self, 'camera_categories_model') and self.camera_categories_model:
@@ -800,7 +800,7 @@ class SessionsDock(DockWidget):
         """Create the 'Add to Category' button."""
         hb = QHBoxLayout()
         self.add_button(hb, "Add to Category", self._add_camera_to_category)
-        
+
         hbw = QWidget()
         hbw.setLayout(hb)
         return hbw
@@ -818,23 +818,23 @@ class SessionsDock(DockWidget):
     def _delete_camera_category(self):
         """Delete the selected camera category."""
         camera_category = self.main_window.state.get("selected_camera_category")
-        
+
         if not camera_category:
             QMessageBox.information(
                 self.main_window,
                 "No Category Selected",
-                "Please select a camera category to delete."
+                "Please select a camera category to delete.",
             )
             return
-        
+
         reply = QMessageBox.question(
             self.main_window,
             "Delete Category",
             f"Are you sure you want to delete the camera category '{camera_category.name}'?",
             QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No
+            QMessageBox.No,
         )
-        
+
         if reply == QMessageBox.Yes:
             # Delete the camera category
             self.main_window.commands.deleteCameraCategory(camera_category)
