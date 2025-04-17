@@ -691,9 +691,6 @@ class CameraCategoriesTableModel(GenericTableModel):
 
     def __init__(self, items=None, properties=None, context=None):
         super().__init__(items=items, properties=properties, context=context)
-        # Register for updates
-        if context and hasattr(context, "state"):
-            context.state.connect("camera_categories", self.update_items)
 
     def update_items(self, camera_categories):
         """Update the model when camera categories change."""
@@ -713,6 +710,7 @@ class CameraCategoriesTableModel(GenericTableModel):
     def set_item(self, item, key, value):
         if key == "name" and value:
             self.context.setCameraCategoryName(camera_category=item, name=value)
+            self.update_items(self.original_items)
 
 
 class InstanceGroupTableModel(GenericTableModel):

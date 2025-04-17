@@ -4006,14 +4006,9 @@ class AddCameraCategory(EditCommand):
         camera_category = CameraCategory(name)
         context.labels.camera_categories.append(camera_category)
 
-        # Update state
-        context.state["camera_categories"] = context.labels.camera_categories
-
 
 class SetCameraCategoryName(EditCommand):
     """Command to set the name of a camera category."""
-
-    topics = [UpdateTopic.sessions]
 
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
@@ -4045,8 +4040,6 @@ class DeleteCameraCategory(EditCommand):
             if camera_category in context.labels.camera_categories:
                 context.labels.camera_categories.remove(camera_category)
 
-                # Update state
-                context.state["camera_categories"] = context.labels.camera_categories
                 context.state["selected_camera_category"] = None
 
 
@@ -4064,9 +4057,6 @@ class AddCameraToCategory(EditCommand):
         if camera_category and camera:
             # Add camera to category
             camera_category.add_camera(camera)
-
-            # Update state to trigger UI refresh
-            context.state["camera_categories"] = context.labels.camera_categories
 
 
 class RemoveCameraFromCategory(EditCommand):

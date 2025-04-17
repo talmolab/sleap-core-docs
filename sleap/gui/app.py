@@ -163,7 +163,6 @@ class MainWindow(QMainWindow):
             self.state["share usage data"] = False
         self.state["clipboard_track"] = None
         self.state["clipboard_instance"] = None
-        self.state["camera_categories"] = []
         self.state["selected_camera_category"] = None
 
         self.state.connect("marker size", self.plotFrame)
@@ -1172,6 +1171,7 @@ class MainWindow(QMainWindow):
             and has_selected_camcorder
             and has_selected_session
         )
+        self._buttons["add to category"].setEnabled(has_selected_camcorder)
 
         # Update overlays
         self.overlays["track_labels"].visible = (
@@ -1854,3 +1854,8 @@ def main(args: Optional[list] = None, labels: Optional[Labels] = None):
         app.exec_()
 
     pass
+
+
+if __name__ == "__main__":
+    ds = "tests/data/cameras/minimal_session/min_session_frame_groups.slp"
+    main([ds])

@@ -658,7 +658,8 @@ class SessionsDock(DockWidget):
             items=main_window.state["selected_session"], context=main_window.commands
         )
         self.camera_categories_model = self.camera_categories_model_type(
-            items=main_window.state.get("camera_categories", []), context=main_window.commands
+            items=main_window.state["labels"].camera_categories,
+            context=main_window.commands,
         )
 
         self.model = {
@@ -708,10 +709,6 @@ class SessionsDock(DockWidget):
             "selected_session", self.main_window.update_unlinked_videos_model
         )
 
-        self.main_window.state.connect(
-            "camera_categories", self._update_camera_categories_model
-        )
-    
         self.table = {
             "sessions_table": self.sessions_table,
             "camera_table": self.camera_table,
@@ -815,13 +812,8 @@ class SessionsDock(DockWidget):
         )
         if ok and name:
             self.main_window.commands.addCameraCategory(name)
-            # Force update the table
-            if hasattr(self, 'camera_categories_model') and self.camera_categories_model:
-                camera_categories = self.main_window.state.get("camera_categories", [])
-                self.camera_categories_model.items = camera_categories
-                self.camera_categories_model.beginResetModel()
-                self.camera_categories_model.endResetModel()
-            
+
+        return name if ok else None
 
     def _delete_camera_category(self):
         """Delete the selected camera category."""
@@ -846,13 +838,6 @@ class SessionsDock(DockWidget):
         if reply == QMessageBox.Yes:
             # Delete the camera category
             self.main_window.commands.deleteCameraCategory(camera_category)
-            
-            # Force update the model
-            if hasattr(self, 'camera_categories_model') and self.camera_categories_model:
-                camera_categories = self.main_window.state.get("camera_categories", [])
-                self.camera_categories_model.items = camera_categories
-                self.camera_categories_model.beginResetModel()
-                self.camera_categories_model.endResetModel()
 
     def _add_camera_to_category(self):
         """Add the selected camera to a category."""
@@ -895,11 +880,13 @@ class SessionsDock(DockWidget):
             self.main_window.commands.addCameraToCategory(camera, selected_category)
 
             # Force update the model
-            if hasattr(self, 'camera_categories_model') and self.camera_categories_model:
+            if (
+                hasattr(self, "camera_categories_model")
+                and self.camera_categories_model
+            ):
                 camera_categories = self.main_window.state.get("camera_categories", [])
-                self.camera_categories_model.items = camera_categories
-                self.camera_categories_model.beginResetModel()
-                self.camera_categories_model.endResetModel()
+                self.camera_categories_model.update_items(camera_categories)
+
 
 class InstanceGroupDock(DockWidget):
     """Dock widget for displaying instance groups."""
