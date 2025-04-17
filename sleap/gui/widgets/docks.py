@@ -842,42 +842,40 @@ class SessionsDock(DockWidget):
     def _add_camera_to_category(self):
         """Add the selected camera to a category."""
         camera = self.main_window.state.get("selected_camera")
-        if not camera:
-            QMessageBox.information(
-                self.main_window,
-                "No Camera Selected",
-                "Please select a camera to add to a category."
-            )
-            return
-        
+        labels = self.main_window.state.get("labels")
+        camera_categories = labels.camera_categories
+        category_name = None
+
         # Get available categories
-        if not self.main_window.state.get("camera_categories") or len(self.main_window.state["camera_categories"]) == 0:
-            reply = QMessageBox.question(
-                self.main_window,
-                "No Categories",
-                "No camera categories exist. Would you like to create one?",
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.Yes
-            )
-            if reply == QMessageBox.Yes:
-                self._create_camera_category()
-            return
-        
+        if len(camera_categories) == 0:
+            category_name = self._create_camera_category()
+            if category_name is None:
+                return
+
         # Show category selection dialog
-        category_names = [category.name for category in self.main_window.state["camera_categories"]]
+        category_names = [
+            category.name for category in self.main_window.state["camera_categories"]
+        ]
+        new_category_name = "Create New Category"
+        category_names.append(new_category_name)
         selected_name, ok = QInputDialog.getItem(
-            self.main_window, 
-            "Select Category", 
-            "Choose a category to add the camera to:", 
-            category_names, 
-            0, 
-            False
+            self.main_window,
+            "Select Category",
+            "Choose a category to add the camera to:",
+            category_names,
+            len(category_names) - 1,
+            False,
         )
-        
+
         if ok and selected_name:
-            selected_idx = category_names.index(selected_name)
-            selected_category = self.main_window.state["camera_categories"][selected_idx]
-            self.main_window.commands.addCameraToCategory(camera, selected_category)
+            if selected_name == new_category_name:
+                self.main_window.commands.addCameraCategory()
+            else:
+                selected_idx = category_names.index(selected_name)
+                selected_category = self.main_window.state["camera_categories"][
+                    selected_idx
+                ]
+                self.main_window.commands.addCameraToCategory(camera, selected_category)
 
             # Force update the model
             if (
