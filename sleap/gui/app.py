@@ -1105,6 +1105,9 @@ class MainWindow(QMainWindow):
         has_selected_session = self.state["selected_session"] is not None
         has_video = self.state["video"] is not None
         has_selected_camcorder = self.state["selected_camera"] is not None
+        has_selected_camera_category = (
+            self.state["selected_camera_category"] is not None
+        )
         has_selected_unlinked_video = self.state["selected_unlinked_video"] is not None
 
         has_frame_range = bool(self.state["has_frame_range"])
@@ -1172,6 +1175,7 @@ class MainWindow(QMainWindow):
             and has_selected_session
         )
         self._buttons["add to category"].setEnabled(has_selected_camcorder)
+        self._buttons["delete category"].setEnabled(has_selected_camera_category)
 
         # Update overlays
         self.overlays["track_labels"].visible = (
