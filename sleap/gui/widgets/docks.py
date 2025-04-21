@@ -624,7 +624,11 @@ class SessionsDock(DockWidget):
         hbw.setLayout(hb)
         return hbw
 
-    def create_video_unlink_button(self) -> QWidget:
+    def create_camera_table_buttons(self) -> QWidget:
+        """Create the buttons for the camera table.
+
+        This includes the "Unlink Video" and "Add to Category" buttons.
+        """
         main_window = self.main_window
 
         hb = QHBoxLayout()
@@ -747,7 +751,7 @@ class SessionsDock(DockWidget):
         # Add the cameras table to the dock
         self.wgt_layout.addWidget(self.camera_table)
 
-        video_unlink_button = self.create_video_unlink_button()
+        video_unlink_button = self.create_camera_table_buttons()
         self.wgt_layout.addWidget(video_unlink_button)
 
         # Add the triangulation options to the dock
@@ -759,11 +763,14 @@ class SessionsDock(DockWidget):
         video_link_button = self.create_video_link_button()
         self.wgt_layout.addWidget(video_link_button)
 
-        camera_categories_container = self.create_camera_categories_table()
+        camera_categories_container = self.create_camera_categories_table_and_buttons()
         self.wgt_layout.addWidget(camera_categories_container)
 
-    def create_camera_categories_table(self) -> QWidget:
-        """Create the camera categories table and buttons."""
+    def create_camera_categories_table_and_buttons(self) -> QWidget:
+        """Create the camera categories table and buttons.
+
+        This does not include the 'Add to Category' button, which is created separately.
+        """
         main_window = self.main_window
 
         # Create a container widget with a title
