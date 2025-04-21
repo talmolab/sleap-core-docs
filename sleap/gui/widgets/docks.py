@@ -787,13 +787,6 @@ class SessionsDock(DockWidget):
 
         return container
 
-    def _update_camera_categories_model(self, camera_categories):
-        """Update the camera categories model when the state changes."""
-        if hasattr(self, "camera_categories_model") and self.camera_categories_model:
-            self.camera_categories_model.items = camera_categories
-            self.camera_categories_model.beginResetModel()
-            self.camera_categories_model.endResetModel()
-
     def create_add_to_category_button(self) -> QWidget:
         """Create the 'Add to Category' button."""
         hb = QHBoxLayout()
