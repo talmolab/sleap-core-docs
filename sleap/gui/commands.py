@@ -4006,6 +4006,9 @@ class AddCameraCategory(EditCommand):
         camera_category = CameraCategory(name)
         context.labels.camera_categories.append(camera_category)
 
+        context.state["selected_camera"] = None
+        context.state["selected_camera_category"] = None
+
 
 class SetCameraCategoryName(EditCommand):
     """Command to set the name of a camera category."""
@@ -4018,6 +4021,8 @@ class SetCameraCategoryName(EditCommand):
 
         if camera_category and name:
             camera_category.name = name
+
+        context.state["selected_camera_category"] = None
 
 
 class DeleteCameraCategory(EditCommand):
@@ -4058,6 +4063,9 @@ class AddCameraToCategory(EditCommand):
             # Add camera to category
             camera_category.add_camera(camera)
 
+        context.state["selected_camera"] = None
+        context.state["selected_camera_category"] = None
+
 
 class RemoveCameraFromCategory(EditCommand):
     """Command to remove a camera from a category."""
@@ -4072,3 +4080,6 @@ class RemoveCameraFromCategory(EditCommand):
 
         if camera_category and camera:
             camera_category.remove_camera(camera)
+
+        context.state["selected_camera"] = None
+        context.state["selected_camera_category"] = None
