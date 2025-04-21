@@ -699,7 +699,7 @@ class SessionsDock(DockWidget):
         self.camera_categories_table = GenericTableView(
             is_activatable=True,
             state=main_window.state,
-            row_name="selected_camera_category",
+            row_name="camera_category",
             model=self.camera_categories_model,
         )
 
@@ -772,12 +772,6 @@ class SessionsDock(DockWidget):
         container.setLayout(container_layout)
 
         # Create the camera groups table
-        self.camera_categories_table = GenericTableView(
-            is_activatable=True,
-            state=main_window.state,
-            row_name="selected_camera_category",  # This is the key parameter
-            model=self.camera_categories_model,
-        )
         container_layout.addWidget(self.camera_categories_table)
 
         # Create buttons for camera categories
