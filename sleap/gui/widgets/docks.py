@@ -797,43 +797,8 @@ class SessionsDock(DockWidget):
         return hbw
 
     def _create_camera_category(self) -> tuple[str | None, bool]:
-        """Create a new camera category.
-
-        Returns:
-            name: The name of the new camera category.
-            ok: True if the user clicked OK, False if they canceled.
-        """
-        name, ok = QInputDialog.getText(
-            self.main_window, "New Camera Category", "Enter name for camera category:"
-        )
-        if ok and name:
-            self.main_window.commands.addCameraCategory(name)
-
-        return name, ok
-
-    def _delete_camera_category(self):
-        """Delete the selected camera category."""
-        camera_category = self.main_window.state.get("selected_camera_category")
-
-        if not camera_category:
-            QMessageBox.information(
-                self.main_window,
-                "No Category Selected",
-                "Please select a camera category to delete.",
-            )
-            return
-
-        reply = QMessageBox.question(
-            self.main_window,
-            "Delete Category",
-            f"Are you sure you want to delete the camera category '{camera_category.name}'?",
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No,
-        )
-
-        if reply == QMessageBox.Yes:
-            # Delete the camera category
-            self.main_window.commands.deleteCameraCategory(camera_category)
+        """Create a new camera category."""
+        self.main_window.commands.addCameraCategory()
 
     def _add_camera_to_category(self):
         """Add the selected camera to a category."""
@@ -844,7 +809,8 @@ class SessionsDock(DockWidget):
         # Get available categories
 
         category_names = [
-            category.name for category in self.main_window.state["camera_categories"]
+            category.name
+            for category in self.main_window.state["labels"].camera_categories
         ]
         new_category_name = "Create New Category"
         category_names.append(new_category_name)
@@ -865,11 +831,12 @@ class SessionsDock(DockWidget):
 
         # Create a new category if the user selected "Create New Category"
         if selected_name == new_category_name:
-            selected_name, ok = self._create_camera_category()
-            if not ok:
+            n_categories = len(camera_categories)
+            self._create_camera_category()
+            if n_categories == len(camera_categories):
+                # No new category was created, so return early
                 return
-            selected_idx = -1
-            selected_category = camera_categories[selected_idx]
+            selected_category = camera_categories[-1]
 
         # Otherwise, add the camera to the selected category
         else:

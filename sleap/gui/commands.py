@@ -4000,6 +4000,15 @@ class AddCameraCategory(EditCommand):
     topics = [UpdateTopic.sessions, UpdateTopic.project]
 
     @classmethod
+    def ask(cls, context: CommandContext, params: dict) -> bool:
+        """Ask the user for the name of the new camera category."""
+        name, ok = QtWidgets.QInputDialog.getText(
+            context.app, "New Camera Category", "Enter name for camera category:"
+        )
+        params["name"] = name
+        return name and ok
+
+    @classmethod
     def do_action(cls, context: CommandContext, params: dict):
         name = params.get("name", "New Category")
 
