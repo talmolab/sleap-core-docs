@@ -777,7 +777,9 @@ class SessionsDock(DockWidget):
         # Create buttons for camera categories
         hb = QHBoxLayout()
         self.add_button(hb, "Create Category", self._create_camera_category)
-        self.add_button(hb, "Delete Category", self._delete_camera_category)
+        self.add_button(
+            hb, "Delete Category", main_window.commands.deleteCameraCategory
+        )
 
         hbw = QWidget()
         hbw.setLayout(hb)

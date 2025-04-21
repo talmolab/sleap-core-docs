@@ -26,6 +26,8 @@ and "do" for all commands (this is important if we're going to implement undo)--
 for now it's at least easy to see where this separation is violated.
 """
 
+from __future__ import annotations
+
 import logging
 import operator
 import os
@@ -694,7 +696,7 @@ class CommandContext:
         """Set the name of a camera category."""
         self.execute(SetCameraCategoryName, camera_category=camera_category, name=name)
 
-    def deleteCameraCategory(self, camera_category):
+    def deleteCameraCategory(self, camera_category: CameraCategory | None = None):
         """Delete a camera category."""
         self.execute(DeleteCameraCategory, camera_category=camera_category)
 
@@ -4033,19 +4035,16 @@ class DeleteCameraCategory(EditCommand):
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
         """Delete the selected camera category."""
-        camera_category = params.get("camera_category")
-
-        if not camera_category:
-            camera_category = context.state.get("selected_camera_category")
-
-        if not camera_category:
+        camera_category = (
+            params["camera_category"] or context.state["selected_camera_category"]
+        )
+        if camera_category is None:
             return
 
-        if hasattr(context.labels, "camera_categories"):
-            if camera_category in context.labels.camera_categories:
-                context.labels.camera_categories.remove(camera_category)
+        if camera_category in context.labels.camera_categories:
+            context.labels.camera_categories.remove(camera_category)
 
-                context.state["selected_camera_category"] = None
+            context.state["selected_camera_category"] = None
 
 
 class AddCameraToCategory(EditCommand):
