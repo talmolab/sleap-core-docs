@@ -640,6 +640,12 @@ class SessionsDock(DockWidget):
             hb, "Add to Category", self.main_window.commands.addCameraToCategory
         )
 
+        self.add_button(
+            hb,
+            "Remove from Category",
+            self.main_window.commands.removeCameraFromCategory,
+        )
+
         hbw = QWidget()
         hbw.setLayout(hb)
         return hbw
