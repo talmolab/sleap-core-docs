@@ -738,36 +738,6 @@ class SessionsDock(DockWidget):
         hbw.setLayout(hb)
         return hbw
 
-    def lay_everything_out(self) -> None:
-        if self.table is None:
-            self.create_tables()
-
-        # TODO(LM): Add this to a create method
-        # Add the sessions table to the dock
-        self.wgt_layout.addWidget(self.sessions_table)
-
-        table_edit_buttons = self.create_table_edit_buttons()
-        self.wgt_layout.addWidget(table_edit_buttons)
-
-        # TODO(LM): Add this to a create method
-        # Add the cameras table to the dock
-        self.wgt_layout.addWidget(self.camera_table)
-
-        video_unlink_button = self.create_camera_table_buttons()
-        self.wgt_layout.addWidget(video_unlink_button)
-
-        # Add the triangulation options to the dock
-        triangulation_options = self.create_triangulation_options()
-        self.wgt_layout.addWidget(triangulation_options)
-
-        # Add the unlinked videos table to the dock
-        self.wgt_layout.addWidget(self.unlinked_videos_table)
-        video_link_button = self.create_video_link_button()
-        self.wgt_layout.addWidget(video_link_button)
-
-        camera_categories_container = self.create_camera_categories_table_and_buttons()
-        self.wgt_layout.addWidget(camera_categories_container)
-
     def create_camera_categories_table_and_buttons(self) -> QWidget:
         """Create the camera categories table and buttons.
 
@@ -797,6 +767,36 @@ class SessionsDock(DockWidget):
         container_layout.addWidget(hbw)
 
         return container
+
+    def lay_everything_out(self) -> None:
+        if self.table is None:
+            self.create_tables()
+
+        # TODO(LM): Add this to a create method
+        # Add the sessions table to the dock
+        self.wgt_layout.addWidget(self.sessions_table)
+
+        table_edit_buttons = self.create_table_edit_buttons()
+        self.wgt_layout.addWidget(table_edit_buttons)
+
+        # TODO(LM): Add this to a create method
+        # Add the cameras table to the dock
+        self.wgt_layout.addWidget(self.camera_table)
+
+        video_unlink_button = self.create_camera_table_buttons()
+        self.wgt_layout.addWidget(video_unlink_button)
+
+        # Add the triangulation options to the dock
+        triangulation_options = self.create_triangulation_options()
+        self.wgt_layout.addWidget(triangulation_options)
+
+        # Add the unlinked videos table to the dock
+        self.wgt_layout.addWidget(self.unlinked_videos_table)
+        video_link_button = self.create_video_link_button()
+        self.wgt_layout.addWidget(video_link_button)
+
+        camera_categories_container = self.create_camera_categories_table_and_buttons()
+        self.wgt_layout.addWidget(camera_categories_container)
 
 
 class InstanceGroupDock(DockWidget):
