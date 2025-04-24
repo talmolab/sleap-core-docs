@@ -711,7 +711,11 @@ class CommandContext:
             AddCameraToCategory, camera=camera, camera_category=camera_category
         )
 
-    def removeCameraFromCategory(self, camera, camera_category):
+    def removeCameraFromCategory(
+        self,
+        camera: Camcorder | None = None,
+        camera_category: CameraCategory | None = None,
+    ):
         """Remove a camera from a category."""
         self.execute(
             RemoveCameraFromCategory, camera=camera, camera_category=camera_category
