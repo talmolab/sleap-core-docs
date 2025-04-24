@@ -4144,8 +4144,15 @@ class RemoveCameraFromCategory(EditCommand):
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
         """Remove a camera from a category."""
-        camera_category = params.get("camera_category")
-        camera = params.get("camera")
+        camera_category: CameraCategory = params.get(
+            "camera_category"
+        ) or context.state.get("selected_camera_category")
+        camera = params.get("camera") or context.state.get("selected_camera")
+
+        if camera_category is None or camera is None:
+            raise ValueError(
+                "No camera category or camera selected. Cannot remove camera."
+            )
 
         if camera_category and camera:
             camera_category.remove_camera(camera)
