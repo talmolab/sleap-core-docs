@@ -688,8 +688,9 @@ class CommandContext:
         """Unlinks video from a camera"""
         self.execute(UnlinkVideo)
 
-    def addCameraCategory(self, name="New Category"):
+    def addCameraCategory(self, name: str | None = None):
         """Create a new camera category."""
+        name = name or "New Category"
         self.execute(AddCameraCategory, name=name)
 
     def setCameraCategoryName(self, camera_category, name: str):
@@ -700,7 +701,11 @@ class CommandContext:
         """Delete a camera category."""
         self.execute(DeleteCameraCategory, camera_category=camera_category)
 
-    def addCameraToCategory(self, camera, camera_category):
+    def addCameraToCategory(
+        self,
+        camera: Camcorder | None = None,
+        camera_category: CameraCategory | None = None,
+    ):
         """Add a camera to a category."""
         self.execute(
             AddCameraToCategory, camera=camera, camera_category=camera_category
@@ -4017,7 +4022,6 @@ class AddCameraCategory(EditCommand):
         camera_category = CameraCategory(name)
         context.labels.camera_categories.append(camera_category)
 
-        context.state["selected_camera"] = None
         context.state["selected_camera_category"] = None
 
 
@@ -4056,10 +4060,63 @@ class DeleteCameraCategory(EditCommand):
             context.state["selected_camera_category"] = None
 
 
-class AddCameraToCategory(EditCommand):
+class AddCameraToCategory(AddCameraCategory):
     """Command to add a camera to a category."""
 
     topics = [UpdateTopic.sessions]
+
+    @classmethod
+    def ask(cls, context: CommandContext, params: dict) -> bool:
+        """Ask the user for the camera category and camera to add.
+
+        If the user selects "Create New Category", then the `ask` method of
+        `AddCameraCategory` is called to prompt for a new category name.
+        Controversially, the `do_action` method of `AddCameraCategory` is also called to
+        create the new category.
+        """
+        camera = params["camera"] or context.state.get("selected_camera")
+        if camera is None:
+            raise ValueError("No camera selected.")
+        params["camera"] = camera
+
+        labels: Labels = context.state.get("labels")
+        camera_categories = labels.camera_categories
+
+        # Get available categories
+
+        category_names = [category.name for category in camera_categories]
+        new_category_name = "Create New Category"
+        category_names.append(new_category_name)
+
+        # Show category selection dialog.
+        selected_name, ok = QtWidgets.QInputDialog.getItem(
+            context.app,
+            "Select Category",
+            "Choose a category to add the camera to:",
+            category_names,
+            len(category_names) - 1,
+            False,
+        )
+
+        # Return early if the user canceled the dialog.
+        if not ok:
+            return
+
+        # Create a new category if the user selected "Create New Category"
+        if selected_name == new_category_name:
+            ok = super().ask(context, params)
+            if not ok:
+                return
+            super().do_action(context, params)
+            selected_category = camera_categories[-1]
+
+        # Otherwise, add the camera to the selected category
+        else:
+            selected_idx = category_names.index(selected_name)
+            selected_category = camera_categories[selected_idx]
+
+        params["camera_category"] = selected_category
+        return True
 
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):

@@ -636,7 +636,9 @@ class SessionsDock(DockWidget):
             hb, "Unlink Video", main_window.commands.unlink_video_from_camera
         )
 
-        self.add_button(hb, "Add to Category", self._add_camera_to_category)
+        self.add_button(
+            hb, "Add to Category", self.main_window.commands.addCameraToCategory
+        )
 
         hbw = QWidget()
         hbw.setLayout(hb)
@@ -783,7 +785,9 @@ class SessionsDock(DockWidget):
 
         # Create buttons for camera categories
         hb = QHBoxLayout()
-        self.add_button(hb, "Create Category", self._create_camera_category)
+        self.add_button(
+            hb, "Create Category", self.main_window.commands.addCameraCategory
+        )
         self.add_button(
             hb, "Delete Category", main_window.commands.deleteCameraCategory
         )
@@ -793,65 +797,6 @@ class SessionsDock(DockWidget):
         container_layout.addWidget(hbw)
 
         return container
-
-    def create_add_to_category_button(self) -> QWidget:
-        """Create the 'Add to Category' button."""
-        hb = QHBoxLayout()
-        self.add_button(hb, "Add to Category", self._add_camera_to_category)
-
-        hbw = QWidget()
-        hbw.setLayout(hb)
-        return hbw
-
-    def _create_camera_category(self) -> tuple[str | None, bool]:
-        """Create a new camera category."""
-        self.main_window.commands.addCameraCategory()
-
-    def _add_camera_to_category(self):
-        """Add the selected camera to a category."""
-        camera = self.main_window.state.get("selected_camera")
-        labels = self.main_window.state.get("labels")
-        camera_categories = labels.camera_categories
-
-        # Get available categories
-
-        category_names = [
-            category.name
-            for category in self.main_window.state["labels"].camera_categories
-        ]
-        new_category_name = "Create New Category"
-        category_names.append(new_category_name)
-
-        # Show category selection dialog.
-        selected_name, ok = QInputDialog.getItem(
-            self.main_window,
-            "Select Category",
-            "Choose a category to add the camera to:",
-            category_names,
-            len(category_names) - 1,
-            False,
-        )
-
-        # Return early if the user canceled the dialog.
-        if not ok:
-            return
-
-        # Create a new category if the user selected "Create New Category"
-        if selected_name == new_category_name:
-            n_categories = len(camera_categories)
-            self._create_camera_category()
-            if n_categories == len(camera_categories):
-                # No new category was created, so return early
-                return
-            selected_category = camera_categories[-1]
-
-        # Otherwise, add the camera to the selected category
-        else:
-            selected_idx = category_names.index(selected_name)
-            selected_category = camera_categories[selected_idx]
-
-        # This command will update the model
-        self.main_window.commands.addCameraToCategory(camera, selected_category)
 
 
 class InstanceGroupDock(DockWidget):
