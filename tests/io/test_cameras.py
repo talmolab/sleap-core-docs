@@ -1093,7 +1093,9 @@ def test_cameras_are_not_sorted():
         assert camera.name == f"cam_{camera_idx}"
 
 
-def test_camera_category_from_dict_to_dict(min_session_camera_cluster: CameraCluster):
+def test_camera_category_from_dict_to_dict_for_standalone(
+    min_session_camera_cluster: CameraCluster,
+):
     """Test `CameraCategory` from_dict and to_dict methods."""
 
     camera_cluster = min_session_camera_cluster
@@ -1120,3 +1122,39 @@ def test_camera_category_from_dict_to_dict(min_session_camera_cluster: CameraClu
         np.testing.assert_array_equal(cam_loaded.dist, cam.dist)
         np.testing.assert_array_equal(cam_loaded.rvec, cam.rvec)
         np.testing.assert_array_equal(cam_loaded.tvec, cam.tvec)
+
+
+def test_camera_category_from_dict_to_dict_for_labels(
+    multiview_min_session_frame_groups: Labels,
+):
+    """Test `CameraCategory` from_dict and to_dict methods."""
+
+    labels = multiview_min_session_frame_groups
+    session = labels.sessions[0]
+    camera_cluster = session.camera_cluster
+
+    category_name = "test_category"
+    camera1 = camera_cluster.cameras[0]
+    camera2 = camera_cluster.cameras[1]
+    cameras = [camera1, camera2]
+    camera_category = CameraCategory(name=category_name, cameras=cameras)
+
+    camera_category_dict = camera_category.to_dict(sessions_list=labels.sessions)
+    assert isinstance(camera_category_dict, dict)
+    assert camera_category_dict["name"] == category_name
+    assert len(camera_category_dict["cameras"]) == len(cameras)
+
+    camera_category_loaded = CameraCategory.from_dict(
+        camera_category_dict, sessions_list=labels.sessions
+    )
+    assert isinstance(camera_category_loaded, CameraCategory)
+    assert camera_category_loaded.name == category_name
+    assert len(camera_category_loaded.cameras) == len(cameras)
+    for cam_loaded, cam in zip(camera_category_loaded.cameras, cameras):
+        assert cam_loaded.name == cam.name
+        assert cam_loaded.size == cam.size
+        np.testing.assert_array_equal(cam_loaded.matrix, cam.matrix)
+        np.testing.assert_array_equal(cam_loaded.dist, cam.dist)
+        np.testing.assert_array_equal(cam_loaded.rvec, cam.rvec)
+        np.testing.assert_array_equal(cam_loaded.tvec, cam.tvec)
+        assert cam_loaded in session.camera_cluster.cameras

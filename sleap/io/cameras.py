@@ -2569,7 +2569,7 @@ class CameraCategory:
             self.cameras.remove(camera)
 
     @staticmethod
-    def make_cattr(videos_list: List[Video]) -> cattr.Converter:
+    def make_cattr(sessions_list: List[Video]) -> cattr.Converter:
         """Make a `cattr.Converter` for `CameraCategory` serialization.
 
         Args:
@@ -2580,31 +2580,28 @@ class CameraCategory:
         """
         category_cattr = cattr.Converter()
 
-        # Create video_to_idx mapping for unstructuring
-        video_to_idx = {video: i for i, video in enumerate(videos_list)}
-
         # Register structure hook for CameraCategory
         category_cattr.register_structure_hook(
             CameraCategory,
             lambda x, cls: CameraCategory.from_dict(
                 category_dict=x,
-                videos_list=videos_list,
+                sessions_list=sessions_list,
             ),
         )
 
         # Register unstructure hook for CameraCategory
         category_cattr.register_unstructure_hook(
             CameraCategory,
-            lambda x: x.to_dict(video_to_idx=video_to_idx),
+            lambda x: x.to_dict(sessions_list=sessions_list),
         )
 
         return category_cattr
 
-    def to_dict(self, for_slp: bool = True) -> Dict:
+    def to_dict(self, sessions_list: list[RecordingSession] = None) -> Dict:
         """Convert camera category to dictionary for serialization.
 
         Args:
-            for_slp: If True, serialize for SLEAP format (referencing indices of object
+            sessions_list: List of RecordinIf True, serialize for SLEAP format (referencing indices of object
                 in containing Labels instance). Otherwise, serialize for standalone use.
                 Default is True.
 
@@ -2612,22 +2609,42 @@ class CameraCategory:
             Dictionary representation of the camera category.
         """
 
+        def find_containing_session(camera) -> Optional[RecordingSession]:
+            """Find the containing session for a camera."""
+            for session in sessions_list:
+                if camera in session.camera_cluster.cameras:
+                    return session
+            return None
+
         # Initialize list of camera dictionaries
-        cameras_data = []
+        cameras_data: list[Union[tuple, dict]] = []
         for camera in self.cameras:
-            camera_dict = camera.camera.get_dict()
-            cameras_data.append(camera_dict)
+            if sessions_list is not None:
+                # Use a session to camera index tuple (when part of a Labels object)
+                session = find_containing_session(camera)
+                session_idx = sessions_list.index(session)
+                cameras_list: list[Camcorder] = session.camera_cluster.cameras
+                camera_idx = cameras_list.index(camera)
+                camera_info = (session_idx, camera_idx)
+            else:
+                camera_info: dict = camera.camera.get_dict()
+            cameras_data.append(camera_info)
 
         category_dict = {"name": self.name, "cameras": cameras_data}
         return category_dict
 
     @classmethod
-    def from_dict(cls, category_dict: dict) -> "CameraCategory":
+    def from_dict(
+        cls, category_dict: dict, sessions_list: List[RecordingSession] = None
+    ) -> "CameraCategory":
         """Create a CameraCategory from a dictionary.
 
         Args:
             category_dict: Dictionary containing category data.
-            videos_list: List of Video objects.
+            sessions_list: List of `RecordingSession` objects (expected when creating
+                CameraCategory for a Labels object, i.e. structuring from an slp file).
+                If None, then creates a standalone CameraCategory (not part of a Labels
+                object). Default is None.
 
         Returns:
             CameraCategory object.
@@ -2637,8 +2654,24 @@ class CameraCategory:
         # Create cameras for the category
         cameras = []
         cameras_data = category_dict.get("cameras", [])
-        for camera_dict in cameras_data:
-            camera = Camcorder.from_dict(camera_dict)
+        for camera_info in cameras_data:
+            if isinstance(camera_info, dict):
+                # This is a standalone CameraCategory (not part of a Labels object)
+                camera = Camcorder.from_dict(camera_info)
+            elif sessions_list is not None:
+                # This CameraCategory is part of a Labels object (read in from slp file)
+                session_idx, camera_idx = camera_info
+                session: RecordingSession = sessions_list[session_idx]
+                cameras_list: list[Camcorder] = session.camera_cluster.cameras
+                camera = cameras_list[camera_idx]
+            else:
+                raise ValueError(
+                    "Cannot create CameraCategory. Need either a standalone dictionary "
+                    "with camera data or a session index and camera index tuple. "
+                    f"Received the following:\ncamera_info: {camera_info}, "
+                    f"\nsessions_list: {sessions_list}, \ncategory_dict: "
+                    f"{category_dict}"
+                )
             cameras.append(camera)
 
         category = cls(name=name, cameras=cameras)
