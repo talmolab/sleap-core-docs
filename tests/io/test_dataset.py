@@ -1681,51 +1681,71 @@ from sleap.io.video import Video
 from sleap.io.cameras import CameraCategory, Camcorder
 
 
-def test_labels_camera_categories():
+def test_labels_camera_categories(multiview_min_session_frame_groups: Labels, tmpdir):
     """Test that Labels can store and retrieve camera categories correctly."""
-    # Create a test dataset
-    video1 = Video.from_media(filename="min_session_back.mp4")
-    video2 = Video.from_media(filename="min_session_backL.mp4")
-
-    # Create labels with these videos
-    labels = Labels()
-    labels.videos = [video1, video2]
+    labels = multiview_min_session_frame_groups
+    session = labels.sessions[0]
+    video_1 = labels.videos[0]
+    video_2 = labels.videos[1]
+    video_3 = labels.videos[2]
+    cam_1 = session.get_camera(video_1)
+    cam_2 = session.get_camera(video_2)
+    cam_3 = session.get_camera(video_3)
 
     # Initially, camera_categories should be empty
-    assert hasattr(labels, "camera_categories")
-    assert len(labels.camera_categories) == 0
+    assert labels.camera_categories == []
 
     # Create camera categories
-    cam1 = Camcorder(camera=video1)
-    cam2 = Camcorder(camera=video2)
-
-    category1 = CameraCategory(name="Top View")
-    category1.cameras = [cam1]
-
-    category2 = CameraCategory(name="Side View")
-    category2.cameras = [cam2]
+    name_1 = "cam3"
+    category_1 = CameraCategory(name=name_1)
+    category_1.cameras = [cam_3]
+    name_2 = "cam 1 and 2"
+    category_2 = CameraCategory(name=name_2)
+    category_2.cameras = [cam_1, cam_2]
 
     # Add camera categories to labels
-    labels.camera_categories = [category1, category2]
+    labels.camera_categories = [category_1, category_2]
 
     # Check that camera_categories is populated correctly
     assert len(labels.camera_categories) == 2
-    assert labels.camera_categories[0].name == "Top View"
-    assert labels.camera_categories[1].name == "Side View"
+    assert labels.camera_categories[0].name == name_1
+    assert labels.camera_categories[1].name == name_2
 
     # Verify that cameras are correctly associated with videos
     assert len(labels.camera_categories[0].cameras) == 1
-    assert labels.camera_categories[0].cameras[0].camera == video1
+    assert labels.camera_categories[0].cameras[0] == cam_3
 
-    assert len(labels.camera_categories[1].cameras) == 1
-    assert labels.camera_categories[1].cameras[0].camera == video2
+    assert len(labels.camera_categories[1].cameras) == 2
+    assert labels.camera_categories[1].cameras[0] == cam_1
+    assert labels.camera_categories[1].cameras[1] == cam_2
 
     # Test adding a new category
-    category3 = CameraCategory(name="Front View")
+    name_3 = "empty"
+    category3 = CameraCategory(name=name_3)
     labels.camera_categories.append(category3)
 
     assert len(labels.camera_categories) == 3
-    assert labels.camera_categories[2].name == "Front View"
+    assert labels.camera_categories[2].name == name_3
+    assert labels.camera_categories[2].cameras == []
+
+    # Test saving and loading labels
+    output_file = Path(tmpdir, "test_labels_camera_categories.slp")
+    labels.save(output_file.as_posix())
+
+    # Load the labels back
+    loaded_labels = Labels.load_file(output_file.as_posix())
+    assert len(loaded_labels.camera_categories) == 3
+    assert loaded_labels.camera_categories[0].name == name_1
+    assert loaded_labels.camera_categories[1].name == name_2
+    assert loaded_labels.camera_categories[2].name == name_3
+    assert len(loaded_labels.camera_categories[0].cameras) == 1
+    assert loaded_labels.camera_categories[0].cameras[0] == cam_3
+    assert len(loaded_labels.camera_categories[1].cameras) == 2
+    assert loaded_labels.camera_categories[1].cameras[0] == cam_1
+    assert loaded_labels.camera_categories[1].cameras[1] == cam_2
+    assert len(loaded_labels.camera_categories[2].cameras) == 0
+    assert loaded_labels.camera_categories[2].name == name_3
+    assert loaded_labels.camera_categories[2].cameras == []
 
 
 def test_labels_camera_categories_persistence():
@@ -1734,7 +1754,7 @@ def test_labels_camera_categories_persistence():
 
     # Create a test dataset with camera categories
     video1 = Video.from_media(filename="min_session_back.mp4")
-    
+
     labels = Labels()
     labels.videos = [video1]
 
