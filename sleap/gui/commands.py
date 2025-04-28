@@ -4032,6 +4032,8 @@ class AddCameraCategory(EditCommand):
 class SetCameraCategoryName(EditCommand):
     """Command to set the name of a camera category."""
 
+    topics = [UpdateTopic.sessions]
+
     @classmethod
     def do_action(cls, context: CommandContext, params: dict):
         """Set the name of a camera category."""

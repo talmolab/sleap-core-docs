@@ -692,12 +692,6 @@ class CameraCategoriesTableModel(GenericTableModel):
     def __init__(self, items=None, properties=None, context=None):
         super().__init__(items=items, properties=properties, context=context)
 
-    def update_items(self, camera_categories):
-        """Update the model when camera categories change."""
-        self.items = camera_categories
-        self.beginResetModel()
-        self.endResetModel()
-
     def object_to_items(self, obj):
         return obj
 
@@ -710,7 +704,6 @@ class CameraCategoriesTableModel(GenericTableModel):
     def set_item(self, item, key, value):
         if key == "name" and value:
             self.context.setCameraCategoryName(camera_category=item, name=value)
-            self.update_items(self.original_items)
 
 
 class InstanceGroupTableModel(GenericTableModel):
