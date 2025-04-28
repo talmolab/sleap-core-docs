@@ -789,8 +789,8 @@ class SessionsDock(DockWidget):
         # Add the cameras table to the dock
         self.wgt_layout.addWidget(self.camera_table)
 
-        video_unlink_button = self.create_camera_table_buttons()
-        self.wgt_layout.addWidget(video_unlink_button)
+        camera_table_buttons = self.create_camera_table_buttons()
+        self.wgt_layout.addWidget(camera_table_buttons)
 
         # Add the triangulation options to the dock
         triangulation_options = self.create_triangulation_options()
