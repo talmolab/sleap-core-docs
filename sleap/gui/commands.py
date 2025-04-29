@@ -1489,6 +1489,7 @@ def export_dataset_gui(
     filename: str,
     all_labeled: bool = False,
     suggested: bool = False,
+    camera_category: Optional[CameraCategory] = None,
     verbose: bool = True,
 ) -> str:
     """Export dataset with image data and display progress GUI dialog.
@@ -1500,7 +1501,12 @@ def export_dataset_gui(
             instances. Defaults to `False`.
         suggested: If `True`, include image data for suggested frames. Defaults to
             `False`.
+        camera_category: If not `None`, only export frames from this camera category.
+            Defaults to `None` (export all frames).
         verbose: If `True`, display progress dialog. Defaults to `True`.
+
+    Returns:
+        str: The filename of the exported dataset.
     """
     if verbose:
         win = QtWidgets.QProgressDialog(
@@ -1526,6 +1532,7 @@ def export_dataset_gui(
         save_frame_data=True,
         all_labeled=all_labeled,
         suggested=suggested,
+        camera_category=camera_category,
         progress_callback=update_progress if verbose else None,
     )
 
@@ -1551,6 +1558,7 @@ class ExportDatasetWithImages(AppCommand):
             filename=params["filename"],
             all_labeled=cls.all_labeled,
             suggested=cls.suggested,
+            camera_category=params.get("camera_category", None),
             verbose=params.get("verbose", True),
         )
 
@@ -1599,15 +1607,9 @@ class ExportFullPackage(ExportDatasetWithImages):
 class ExportLabelsPackage(ExportDatasetWithImages):
     """Command to export labels package with dialog."""
 
-    @classmethod  # Changed from @staticmethod to @classmethod
+    @classmethod
     def ask(cls, context: CommandContext, params: dict) -> bool:
-        from sleap.gui.dialogs.export_labels import ExportLabelsDialog
-
-        # Create and show dialog
-        dialog = ExportLabelsDialog(labels=context.state["labels"])
-
-        # Show modal dialog and get form results
-        export_options = dialog.get_results()
+        export_options = cls.show_export_dialog(context, params)
 
         # Check if user hit cancel
         if export_options is None:
@@ -1625,17 +1627,33 @@ class ExportLabelsPackage(ExportDatasetWithImages):
             params["all_labeled"] = True
             params["suggested"] = True
 
+        # TODO: Get the actual CameraCategory object
         # Process camera category
-        camera_category = export_options.get("camera_category", "all")
+        camera_category = export_options.get("camera_category", None)
         if camera_category != "all":
             params["camera_category"] = camera_category
         else:
             params["camera_category"] = None
 
         # Get filename using parent class method
-        return ExportDatasetWithImages.ask(
-            context, params
-        )  # Changed to direct class call
+        return cls.show_filename_dialog(context, params)
+
+    @classmethod
+    def show_export_dialog(cls, context: CommandContext, params: dict) -> dict:
+        """Show export dialog to select export options."""
+        from sleap.gui.dialogs.export_labels import ExportLabelsDialog
+
+        # Create and show dialog
+        dialog = ExportLabelsDialog(labels=context.state["labels"])
+
+        # Show modaldialog and get form results (blocking call).
+        export_options = dialog.get_results()
+        return export_options
+
+    @classmethod
+    def show_filename_dialog(cls, context: CommandContext, params: dict) -> bool:
+        """Show dialog to select filename for export."""
+        return ExportDatasetWithImages.ask(context, params)
 
 
 # Navigation Commands

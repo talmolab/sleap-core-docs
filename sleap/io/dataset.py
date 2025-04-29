@@ -2562,6 +2562,7 @@ class Labels(MutableSequence):
         user_labeled: bool = True,
         all_labeled: bool = False,
         suggested: bool = False,
+        camera_category: Optional[CameraCategory] = None,
         progress_callback: Optional[Callable[[int, int], None]] = None,
     ) -> List[HDF5Video]:
         """Write images for labeled frames from all videos to hdf5 file.
@@ -2578,6 +2579,8 @@ class Labels(MutableSequence):
                 Defaults to `False`.
             suggested: Include suggested frames even if they do not have instances.
                 Useful for inference after training. Defaults to `False`.
+            camera_category: If not `None`, only save frames that belong to this
+                camera category. Defaults to `None`.
             progress_callback: If provided, this function will be called to report the
                 progress of the frame data saving. This function should be a callable
                 of the form: `fn(n, n_total)` where `n` is the number of frames saved so
@@ -2589,6 +2592,13 @@ class Labels(MutableSequence):
         Returns:
             A list of :class:`HDF5Video` objects with the stored frames.
         """
+
+        def find_containing_session(video: Video) -> Optional[RecordingSession]:
+            """Find the session that contains the video."""
+            for session in self.sessions:
+                if video in session.videos:
+                    return session
+            return None
 
         # Lets gather all the suggestions by video
         suggestion_frames_by_video = {video: [] for video in self.videos}
@@ -2602,6 +2612,20 @@ class Labels(MutableSequence):
         vids = []
         frame_idxs = []
         for video in self.videos:
+            # Optionally filter by camera category.
+            if camera_category is not None:
+                # Find containing session of video.
+                session = find_containing_session(video)
+                if session is None:
+                    continue
+
+                # For each containing session/video combo, get linked camera.
+                linked_camera = session.get_camera(video)
+
+                # Check if linked camera is in category.
+                if linked_camera not in camera_category:
+                    continue
+
             lfs_v = self.find(video)
             frame_nums = {
                 lf.frame_idx

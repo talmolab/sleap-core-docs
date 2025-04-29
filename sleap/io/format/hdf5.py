@@ -284,6 +284,7 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
         frame_data_format: str = "png",
         all_labeled: bool = False,
         suggested: bool = False,
+        camera_category: Optional[CameraCategory] = None,
         progress_callback: Optional[Callable[[int, int], None]] = None,
     ):
 
@@ -305,6 +306,7 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
                 user_labeled=True,
                 all_labeled=all_labeled,
                 suggested=suggested,
+                camera_category=camera_category,
                 progress_callback=progress_callback,
             )
 
