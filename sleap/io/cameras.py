@@ -2569,11 +2569,12 @@ class CameraCategory:
             self.cameras.remove(camera)
 
     @staticmethod
-    def make_cattr(sessions_list: List[Video]) -> cattr.Converter:
+    def make_cattr(sessions_list: List[RecordingSession]) -> cattr.Converter:
         """Make a `cattr.Converter` for `CameraCategory` serialization.
 
         Args:
-            videos_list: List containing `Video` objects (expected `Labels.videos`).
+            sessions_list: List containing `RecordingSession` objects (expecting
+                `Labels.sessions`).
 
         Returns:
             `cattr.Converter` object.
