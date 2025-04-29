@@ -1747,6 +1747,16 @@ def test_labels_camera_categories(multiview_min_session_frame_groups: Labels, tm
     assert loaded_labels.camera_categories[2].name == name_3
     assert loaded_labels.camera_categories[2].cameras == []
 
+    # Ensure cameras are the same as those referenced in sessions
+    loaded_session = loaded_labels.sessions[0]
+    camera_cluster = loaded_session.camera_cluster
+    loaded_cam_3 = loaded_labels.camera_categories[0].cameras[0]
+    loaded_cam_1 = loaded_labels.camera_categories[1].cameras[0]
+    loaded_cam_2 = loaded_labels.camera_categories[1].cameras[1]
+    assert loaded_cam_3 in camera_cluster.cameras
+    assert loaded_cam_1 in camera_cluster.cameras
+    assert loaded_cam_2 in camera_cluster.cameras
+
 
 def test_labels_camera_categories_persistence():
     """Test that camera categories are properly saved and loaded."""
