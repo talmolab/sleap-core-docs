@@ -1,5 +1,5 @@
 """
-A SLEAP dataset collects labeled video frames, together with required metadata. 
+A SLEAP dataset collects labeled video frames, together with required metadata.
 
 This contains labeled frame data (user annotations and/or predictions),
 together with all the other data that is saved for a SLEAP project
@@ -515,7 +515,7 @@ class Labels(MutableSequence):
         default=attr.Factory(dict)
     )
     camera_categories: List[CameraCategory] = attr.ib(default=attr.Factory(list))
-    
+
     def __attrs_post_init__(self):
         """
         Called by attrs after the class is instantiated.
@@ -2191,7 +2191,9 @@ class Labels(MutableSequence):
             "sessions": sessions_cattr.unstructure(self.sessions),
             "negative_anchors": label_cattr.unstructure(self.negative_anchors),
             "provenance": label_cattr.unstructure(self.provenance),
-            "camera_categories": camera_categories_cattr.unstructure(self.camera_categories),
+            "camera_categories": camera_categories_cattr.unstructure(
+                self.camera_categories
+            ),
         }
 
         if not skip_labels:
@@ -2954,13 +2956,13 @@ class Labels(MutableSequence):
 
     def filter_by_camera_category(self, category_name: str) -> "Labels":
         """Filter labels to include only frames from cameras in the specified category.
-        
+
         Args:
             category_name: Name of the camera category to filter by.
-            
+
         Returns:
             A new Labels object containing only frames from the specified camera category.
-            
+
         Notes:
             This creates a shallow copy of the labels, keeping all videos, skeletons, etc.
             but only including LabeledFrames from the specified camera category.
@@ -2971,28 +2973,26 @@ class Labels(MutableSequence):
             if category.name == category_name:
                 videos_in_category = [camera.video for camera in category.cameras]
                 break
-        
+
         if not videos_in_category:
             return self.__class__(
                 videos=self.videos,
                 skeletons=self.skeletons,
                 tracks=self.tracks,
                 provenance=self.provenance,
-                camera_categories=self.camera_categories
+                camera_categories=self.camera_categories,
             )
-        
+
         # Filter labeled frames to only include those from videos in the category
         filtered_frames = [
-            lf for lf in self.labeled_frames 
-            if lf.video in videos_in_category
+            lf for lf in self.labeled_frames if lf.video in videos_in_category
         ]
-        
+
         # Filter suggestions to only include those from videos in the category
         filtered_suggestions = [
-            s for s in self.suggestions
-            if s.video in videos_in_category
+            s for s in self.suggestions if s.video in videos_in_category
         ]
-        
+
         # Create a new Labels object with the filtered frames
         new_labels = self.__class__(
             labeled_frames=filtered_frames,
@@ -3001,9 +3001,9 @@ class Labels(MutableSequence):
             tracks=self.tracks,
             suggestions=filtered_suggestions,
             provenance=self.provenance,
-            camera_categories=self.camera_categories
+            camera_categories=self.camera_categories,
         )
-        
+
         return new_labels
 
 

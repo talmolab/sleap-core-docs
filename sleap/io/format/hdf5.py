@@ -191,9 +191,11 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
                     track=track,
                     points=pred_points[i["point_id_start"] : i["point_id_end"]],
                     score=i["score"],
-                    tracking_score=i["tracking_score"]
-                    if (format_id is not None and format_id >= 1.2)
-                    else 0.0,
+                    tracking_score=(
+                        i["tracking_score"]
+                        if (format_id is not None and format_id >= 1.2)
+                        else 0.0
+                    ),
                 )
             instances.append(instance)
 
