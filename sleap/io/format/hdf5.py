@@ -23,7 +23,7 @@ from sleap.instance import (
     PredictedPointArray,
 )
 from sleap.io import format
-from sleap.io.cameras import RecordingSession
+from sleap.io.cameras import CameraCategory, RecordingSession
 from sleap.util import json_dumps, json_loads
 
 from . import labels_json
@@ -244,6 +244,29 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
         for session in sessions:
             labels.add_session(session)
 
+        # Now that we have sessions added, we can use the sessions to add cameras to
+        # camera categories.
+
+        key = "camera_categories"
+        hdf5_key = f"{key}_json"
+        camera_categories = []
+        if hdf5_key in f:
+            items = [json_loads(item_json) for item_json in f[hdf5_key]]
+            camera_categories_dict = items
+            try:
+                # Make deserializer for `CameraCategory`
+                camera_categories_cattr = CameraCategory.make_cattr(
+                    sessions_list=labels.sessions
+                )
+                camera_categories = camera_categories_cattr.structure(
+                    camera_categories_dict, List[CameraCategory]
+                )
+            except Exception as e:
+                logger.warning("Error while loading `CameraCategory`s:")
+                logger.warning(e)
+
+        labels.camera_categories = camera_categories
+
         # Do the stuff that should happen after we have labeled frames
         labels.update_cache()
 
@@ -355,7 +378,13 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
             if not append:
                 # These items are stored in separate lists because the metadata
                 # group got to be too big.
-                for key in ("videos", "tracks", "suggestions", "sessions"):
+                for key in (
+                    "videos",
+                    "tracks",
+                    "suggestions",
+                    "sessions",
+                    "camera_categories",
+                ):
                     # Convert for saving in hdf5 dataset
                     data = [np.string_(json_dumps(item)) for item in d[key]]
 

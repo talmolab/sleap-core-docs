@@ -2178,7 +2178,7 @@ class Labels(MutableSequence):
         label_cattr.register_unstructure_hook(
             CameraCategory, lambda x: str(self.camera_categories.index(x))
         )
-        camera_categories_cattr = CameraCategory.make_cattr(videos_list=self.videos)
+        camera_categories_cattr = CameraCategory.make_cattr(sessions_list=self.sessions)
 
         # Serialize the skeletons, videos, and labels
         dicts = {
