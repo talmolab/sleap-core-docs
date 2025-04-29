@@ -14,6 +14,7 @@ from sleap.gui.commands import (
     CommandContext,
     ExportAnalysisFile,
     ExportDatasetWithImages,
+    ExportLabelsPackage,
     ImportDeepLabCutFolder,
     OpenSkeleton,
     RemoveVideo,
@@ -23,7 +24,7 @@ from sleap.gui.commands import (
     get_new_version_filename,
 )
 from sleap.instance import Instance, LabeledFrame
-from sleap.io.cameras import InstanceGroup, FrameGroup, RecordingSession
+from sleap.io.cameras import CameraCategory, InstanceGroup, FrameGroup, RecordingSession
 from sleap.io.convert import default_analysis_filename
 from sleap.io.dataset import Labels
 from sleap.io.format.adaptor import Adaptor
@@ -926,6 +927,53 @@ def test_exportLabelsPackage(export_extension, centered_pair_labels: Labels, tmp
     # Case 3: Export all frames and suggested frames with image data.
     context.exportFullPackage()
     assert_loaded_package_similar(path_to_pkg, sugg=True, pred=True)
+
+
+def test_exportLabelsPackage_with_category(
+    multiview_min_session_frame_groups: Labels, tmpdir
+):
+    """Test that Labels can be exported with only selected CameraCategory."""
+    labels = multiview_min_session_frame_groups
+
+    # Create command context.
+    context = CommandContext.from_labels(labels)
+
+    # Set up dataset.
+
+    session = labels.sessions[0]
+    video_1 = labels.videos[0]
+    video_2 = labels.videos[1]
+    video_3 = labels.videos[2]
+    cam_1 = session.get_camera(video_1)
+    cam_2 = session.get_camera(video_2)
+    cam_3 = session.get_camera(video_3)
+
+    # Create camera categories.
+    name_1 = "cam3"
+    category_1 = CameraCategory(name=name_1)
+    category_1.cameras = [cam_3]
+    name_2 = "cam 1 and 2"
+    category_2 = CameraCategory(name=name_2)
+    category_2.cameras = [cam_1, cam_2]
+    name_3 = "empty"
+    category3 = CameraCategory(name=name_3)
+    labels.camera_categories.append(category3)
+
+    # Avoid the GUI parts of the ask method.
+
+    export_options = {"export_type": "Labeled frames", "camera_category": "cam3"}
+    path_to_pkg = Path(tmpdir, "test_0.pkg.slp")
+    params = {"filename": path_to_pkg.as_posix()}
+
+    def show_export_dialog(self, context: CommandContext, params: dict) -> bool:
+        """Fake the GUI dialog."""
+        # Set the filename to a temporary file.
+        return export_options
+
+    ExportLabelsPackage.show_export_dialog = show_export_dialog
+    ExportLabelsPackage.show_filename_dialog = lambda context, params: True
+
+    # TODO: finish test
 
 
 def test_AddSession(
