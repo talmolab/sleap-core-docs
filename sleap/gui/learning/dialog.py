@@ -1,6 +1,7 @@
 """
 Dialogs for running training and/or inference in GUI.
 """
+import asyncio
 import json
 import shutil
 import tempfile
@@ -15,6 +16,9 @@ from sleap import Labels, Video
 from sleap.gui.dialogs.filedialog import FileDialog
 from sleap.gui.dialogs.formbuilder import YamlFormWidget
 from sleap.gui.learning import configs, datagen, receptivefield, runners, scopedkeydict
+
+import sleap_client
+from sleap_client.client import run_client
 
 # List of fields which should show list of skeleton nodes
 NODE_LIST_FIELDS = [
@@ -82,6 +86,9 @@ class LearningDialog(QtWidgets.QDialog):
 
         # Layout for buttons
         buttons = QtWidgets.QDialogButtonBox()
+        self.remote_button = buttons.addButton(
+            "Run on remote worker...", QtWidgets.QDialogButtonBox.ActionRole
+        )
         self.copy_button = buttons.addButton(
             "Copy to clipboard", QtWidgets.QDialogButtonBox.ActionRole
         )
@@ -98,6 +105,9 @@ class LearningDialog(QtWidgets.QDialog):
         self.save_button.setToolTip("Save scripts and configuration to run pipeline.")
         self.export_button.setToolTip(
             "Export data, configuration, and scripts for remote training and inference."
+        )
+        self.remote_button.setToolTip(
+            "Run pipeline on remote worker (GPU cluster)."
         )
         self.run_button.setToolTip("Run pipeline locally (GPU recommended).")
 
@@ -159,6 +169,7 @@ class LearningDialog(QtWidgets.QDialog):
         self.export_button.clicked.connect(self.export_package)
         self.cancel_button.clicked.connect(self.reject)
         self.run_button.clicked.connect(self.run)
+        self.remote_button.clicked.connect(lambda: asyncio.run(self.remote_worker()))
 
         # Connect button for previewing the training data
         if "_view_datagen" in self.pipeline_form_widget.buttons:
@@ -820,6 +831,72 @@ class LearningDialog(QtWidgets.QDialog):
             inference_params=pipeline_form_data,
             items_for_inference=items_for_inference,
         )
+
+
+    async def remote_worker(self, gui: bool = True):
+        """Run pipeline on remote worker (GPU cluster)."""
+        # Create temp dir before packaging.
+        tmp_dir = tempfile.TemporaryDirectory()
+        tmp_zip = tempfile.NamedTemporaryFile(delete=False, suffix=".zip")
+        tmp_zip.close()  # Close so shutil can write to it
+
+        # Check if we need to include suggestions.
+        include_suggestions = False
+        items_for_inference = self.get_items_for_inference(
+            self.pipeline_form_widget.get_form_data()
+        )
+        for item in items_for_inference.items:
+            if (
+                isinstance(item, runners.DatasetItemForInference)
+                and item.frame_filter == "suggested"
+            ):
+                include_suggestions = True
+
+        # Save dataset with images.
+        labels_pkg_filename = str(
+            Path(self.labels_filename).with_suffix(".pkg.slp").name
+        )
+        if gui:
+            ret = sleap.gui.commands.export_dataset_gui(
+                self.labels,
+                tmp_dir.name + "/" + labels_pkg_filename,
+                all_labeled=False,
+                suggested=include_suggestions,
+            )
+            if ret == "canceled":
+                # Quit if user canceled during export.
+                tmp_dir.cleanup()
+                return
+        else:
+            self.labels.save(
+                tmp_dir.name + "/" + labels_pkg_filename,
+                with_images=True,
+                embed_all_labeled=False,
+                embed_suggested=include_suggestions,
+            )
+
+        # Save config and scripts.
+        self.save(tmp_dir.name, labels_filename=labels_pkg_filename)
+
+        # Package everything.
+        shutil.make_archive(
+            base_name=tmp_zip.name.replace(".zip", ""),
+            format="zip",
+            root_dir=tmp_dir.name,
+        )
+
+        # Upload to remote worker (GPU cluster).
+        await run_client(
+            peer_id="client1", 
+            DNS="ws://ec2-54-176-92-10.us-west-1.compute.amazonaws.com", 
+            port_number=8080, 
+            file_path=tmp_zip.name,
+            CLI=False
+        )
+
+        # Close training editor.
+        self.accept()
+
 
     def export_package(self, output_path: Optional[str] = None, gui: bool = True):
         """Export training job package."""
