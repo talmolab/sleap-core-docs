@@ -958,6 +958,8 @@ def test_exportLabelsPackage_with_category(
     name_3 = "empty"
     category3 = CameraCategory(name=name_3)
     labels.camera_categories.append(category3)
+    labels.camera_categories.append(category_1)
+    labels.camera_categories.append(category_2)
 
     # Avoid the GUI parts of the ask method.
 
@@ -973,7 +975,30 @@ def test_exportLabelsPackage_with_category(
     ExportLabelsPackage.show_export_dialog = show_export_dialog
     ExportLabelsPackage.show_filename_dialog = lambda context, params: True
 
-    # TODO: finish test
+    # Execute the export command
+    command = ExportLabelsPackage()
+    command.execute(context, params)
+
+    # Load the exported file and verify its contents
+    exported_labels = Labels.load_file(path_to_pkg)
+
+    # Verify that only cameras from the selected category were exported
+    assert len(exported_labels.videos) == 1
+    assert exported_labels.videos[0] == video_3
+
+    # Verify that camera categories were preserved
+    assert len(exported_labels.camera_categories) == 3
+    assert any(cat.name == "cam3" for cat in exported_labels.camera_categories)
+    assert any(cat.name == "cam 1 and 2" for cat in exported_labels.camera_categories)
+    assert any(cat.name == "empty" for cat in exported_labels.camera_categories)
+
+    # Verify that only frames from the selected camera category were exported
+    for frame in exported_labels.labeled_frames:
+        assert frame.video == video_3
+
+    # Verify that the export type settings were correct
+    assert not params.get("all_labeled", True)
+    assert not params.get("suggested", True)
 
 
 def test_AddSession(
