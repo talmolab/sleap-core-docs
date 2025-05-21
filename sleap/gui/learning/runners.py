@@ -21,7 +21,7 @@ from sleap import Labels, Video, LabeledFrame
 from sleap.gui.learning.configs import ConfigFileInfo
 from sleap.io.video import SingleImageVideo
 from sleap.nn import training
-from sleap.nn.config import TrainingJobConfig
+from sleap.gui.legacy.config import TrainingJobConfig
 
 logger = logging.getLogger(__name__)
 
@@ -862,6 +862,8 @@ def train_subprocess(
         training_job_path = os.path.join(temp_dir, temp_filename)
         job_config.save_json(training_job_path)
 
+        # TODO :sleap-nn: convert to sleap-nn cfg and save it to yaml
+
         # Build CLI arguments for training
         cli_args = [
             "sleap-train",
@@ -873,6 +875,8 @@ def train_subprocess(
             "--publish_port",
             str(inference_params["publish_port"]),
         ]
+
+        # TODO :sleap-nn: once we have vizs in sleap-nn, add these to config
 
         if save_viz:
             cli_args.append("--save_viz")

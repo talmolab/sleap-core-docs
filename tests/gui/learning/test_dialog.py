@@ -20,7 +20,7 @@ from sleap.gui.learning.scopedkeydict import (
 )
 from sleap.gui.app import MainWindow
 from sleap.io.dataset import Labels
-from sleap.nn.config import TrainingJobConfig, UNetConfig
+from sleap.gui.legacy import TrainingJobConfig, UNetConfig
 from sleap.util import get_package_file
 
 

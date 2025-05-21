@@ -7,7 +7,7 @@ from typing import Any, Dict, Optional, Text, Tuple, Union
 import attr
 import cattr
 
-from sleap.nn.config import TrainingJobConfig, ModelConfig
+from sleap.gui.legacy.config import TrainingJobConfig, ModelConfig
 
 
 @attr.s(auto_attribs=True)

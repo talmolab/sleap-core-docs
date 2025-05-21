@@ -28,10 +28,10 @@ import os
 import attr
 import cattr
 import sleap
-from sleap.nn.config.data import DataConfig
-from sleap.nn.config.model import ModelConfig
-from sleap.nn.config.optimization import OptimizationConfig
-from sleap.nn.config.outputs import OutputsConfig
+from sleap.gui.legacy.data import DataConfig
+from sleap.gui.legacy.model import ModelConfig
+from sleap.gui.legacy.optimization import OptimizationConfig
+from sleap.gui.legacy.outputs import OutputsConfig
 import json
 from jsmin import jsmin
 from typing import Text, Dict, Any, Optional
