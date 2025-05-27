@@ -18,10 +18,12 @@ from sleap.gui.legacy.config import (
     CenteredInstanceConfmapsHeadConfig,
     MultiInstanceConfig,
 )
-from sleap.nn.data import pipelines
-from sleap.nn.data.instance_cropping import find_instance_crop_size
-from sleap.nn.data.providers import LabelsReader
-from sleap.nn.data.resizing import Resizer
+
+# TODO :sleap-nn: add imports
+# from sleap.nn.data import pipelines
+# from sleap.nn.data.instance_cropping import find_instance_crop_size
+# from sleap.nn.data.providers import LabelsReader
+# from sleap.nn.data.resizing import Resizer
 
 
 MAX_FRAMES_TO_PREVIEW = 20

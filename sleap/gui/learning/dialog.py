@@ -14,7 +14,12 @@ import sleap
 from sleap import Labels, Video
 from sleap.gui.dialogs.filedialog import FileDialog
 from sleap.gui.dialogs.formbuilder import YamlFormWidget
-from sleap.gui.learning import configs, datagen, receptivefield, runners, scopedkeydict
+from sleap.gui.learning import (
+    configs,
+    receptivefield,
+    runners,
+    scopedkeydict,
+)  # datagen #TODO :sleap-nn:
 
 # List of fields which should show list of skeleton nodes
 NODE_LIST_FIELDS = [
