@@ -12,6 +12,7 @@ import shutil
 import yaml
 from pathlib import Path
 from datetime import datetime
+from omegaconf import OmegaConf
 from typing import Any, Callable, Dict, List, Optional, Text, Tuple
 import logging
 
@@ -19,11 +20,49 @@ from qtpy import QtWidgets
 
 from sleap import Labels, Video, LabeledFrame
 from sleap.gui.learning.configs import ConfigFileInfo
+from sleap.gui.legacy.config import OutputsConfig
 from sleap.io.video import SingleImageVideo
-from sleap.nn import training
 from sleap.gui.legacy.config import TrainingJobConfig
 
 logger = logging.getLogger(__name__)
+
+
+def get_timestamp() -> Text:
+    """Return the date and time as a string."""
+    return datetime.now().strftime("%y%m%d_%H%M%S")
+
+
+def setup_new_run_folder(
+    config: OutputsConfig, base_run_name: Optional[Text] = None
+) -> Text:
+    """Create a new run folder from config."""
+    run_path = None
+    if config.save_outputs:
+        # Auto-generate run name.
+        if config.run_name is None:
+            config.run_name = get_timestamp()
+            if isinstance(base_run_name, str):
+                config.run_name = config.run_name + "." + base_run_name
+
+        # Find new run name suffix if needed.
+        if config.run_name_suffix is None:
+            config.run_name_suffix = ""
+            run_path = os.path.join(
+                config.runs_folder, f"{config.run_name_prefix}{config.run_name}"
+            )
+            i = 0
+            while os.path.exists(run_path):
+                i += 1
+                config.run_name_suffix = f"_{i}"
+                run_path = os.path.join(
+                    config.runs_folder,
+                    f"{config.run_name_prefix}{config.run_name}{config.run_name_suffix}",
+                )
+
+        # Build run path.
+        run_path = config.run_path
+
+    return run_path
 
 
 def kill_process(pid: int):
@@ -431,7 +470,8 @@ def write_pipeline_files(
             # is the main reason we're setting it to the output directory rather
             # than just using normpath.
             # cfg_info.config.outputs.runs_folder = ""
-            training.setup_new_run_folder(cfg_info.config.outputs)
+            # TODO :sleap-nn: this should be moved to utils?
+            setup_new_run_folder(cfg_info.config.outputs)
             # training.setup_new_run_folder(
             #     cfg_info.config.outputs,
             #     # base_run_name=f"{model_type}.n={len(labels.user_labeled_frames)}",
@@ -665,7 +705,7 @@ def run_gui_training(
             job.outputs.runs_folder = os.path.join(
                 os.path.dirname(labels_filename), "models"
             )
-            training.setup_new_run_folder(
+            setup_new_run_folder(
                 job.outputs,
                 base_run_name=f"{model_type}.n={len(labels.user_labeled_frames)}",
             )
@@ -862,30 +902,55 @@ def train_subprocess(
         training_job_path = os.path.join(temp_dir, temp_filename)
         job_config.save_json(training_job_path)
 
-        # TODO :sleap-nn: convert to sleap-nn cfg and save it to yaml
+        # convert to sleap-nn cfg (.yaml) and save it
+        from sleap_nn.config.training_job_config import (
+            TrainingJobConfig as snn_TrainingJobConfig,
+        )
 
-        # Build CLI arguments for training
+        cfg_file_name = datetime.now().strftime("%y%m%d_%H%M%S") + "_config"
+        cfg_path = temp_dir
+        cfg = snn_TrainingJobConfig.load_sleap_config(training_job_path)
+        cfg.data_config.train_labels_path = labels_filename
+        OmegaConf.save(cfg, (Path(cfg_path) / f"{cfg_file_name}.yaml").as_posix())
+        OmegaConf.save(
+            cfg, "/Users/divyasesh/Desktop/its_me/fly_data/test_sleap_cfg_mapper.yaml"
+        )
+
+        # Build CLI args for training (sleap-nn)
         cli_args = [
-            "sleap-train",
-            training_job_path,
-            labels_filename,
-            "--zmq",
-            "--controller_port",
-            str(inference_params["controller_port"]),
-            "--publish_port",
-            str(inference_params["publish_port"]),
+            "python",
+            "-m",
+            "sleap_nn.train",
+            "--config-name",
+            f"{cfg_file_name}",
+            "--config-path",
+            f"{cfg_path}",
         ]
 
-        # TODO :sleap-nn: once we have vizs in sleap-nn, add these to config
+        # TODO :sleap-nn: zmq and controller port
 
-        if save_viz:
-            cli_args.append("--save_viz")
-        if keep_viz:
-            cli_args.append("--keep_viz")
+        # # Build CLI arguments for training
+        # cli_args = [
+        #     "sleap-train",
+        #     training_job_path,
+        #     labels_filename,
+        #     "--zmq",
+        #     "--controller_port",
+        #     str(inference_params["controller_port"]),
+        #     "--publish_port",
+        #     str(inference_params["publish_port"]),
+        # ]
 
-        # Use cli arg since cli ignores setting in config
-        if job_config.outputs.tensorboard.write_logs:
-            cli_args.append("--tensorboard")
+        # TODO :sleap-nn: once we have vizs in sleap-nn, add the below to config
+
+        # if save_viz:
+        #     cli_args.append("--save_viz")
+        # if keep_viz:
+        #     cli_args.append("--keep_viz")
+
+        # # Use cli arg since cli ignores setting in config
+        # if job_config.outputs.tensorboard.write_logs:
+        #     cli_args.append("--tensorboard")
 
         # Run training in a subprocess.
         print(cli_args)

@@ -9,7 +9,6 @@ from qtpy import QtWidgets, QtGui, QtCore
 from sleap import Video, Track, Skeleton
 from sleap.gui.legacy.config import ModelConfig
 from sleap.gui.widgets.video import GraphicsView
-from sleap.nn.model import Model
 
 
 def compute_rf(down_blocks: int, convs_per_block: int = 2, kernel_size: int = 3) -> int:
@@ -51,9 +50,30 @@ def receptive_field_info_from_model_cfg(model_cfg: ModelConfig) -> dict:
     )
 
     try:
-        # `Skeleton` and `Tracks` not important for receptive field computation, but
-        # required as check in `Model.from_config`
-        model = Model.from_config(model_cfg, skeleton=Skeleton(), tracks=[Track()])
+        from sleap_nn.config.model_config import model_mapper
+        from sleap_nn.architectures.model import get_backbone
+        from omegaconf import OmegaConf
+        from attrs import asdict
+
+        model_cfg_dict = {"model": asdict(model_cfg)}
+        model_cfg_snn = model_mapper(model_cfg_dict)
+        schema = OmegaConf.structured(model_cfg_snn)
+        model_config_omegaconf = OmegaConf.merge(
+            schema, OmegaConf.create(asdict(model_cfg_snn))
+        )
+        for backbone in model_config_omegaconf.backbone_config:
+            if model_config_omegaconf.backbone_config[f"{backbone}"] is not None:
+                backbone_type = backbone
+                break
+        for head in model_config_omegaconf.head_configs:
+            if model_config_omegaconf.head_configs[f"{head}"] is not None:
+                model_type = head
+                break
+        backbone = get_backbone(
+            backbone=backbone_type,
+            backbone_config=model_config_omegaconf.backbone_config[f"{backbone_type}"],
+        )
+
     except ZeroDivisionError:
         # Unable to create model from these config parameters
         return rf_info
@@ -61,21 +81,21 @@ def receptive_field_info_from_model_cfg(model_cfg: ModelConfig) -> dict:
     if hasattr(model_cfg.backbone.which_oneof(), "max_stride"):
         rf_info["max_stride"] = model_cfg.backbone.which_oneof().max_stride
 
-    if hasattr(model.backbone, "down_convs_per_block"):
-        rf_info["convs_per_block"] = model.backbone.down_convs_per_block
-    elif hasattr(model.backbone, "convs_per_block"):
-        rf_info["convs_per_block"] = model.backbone.convs_per_block
+    if hasattr(backbone, "down_convs_per_block"):
+        rf_info["convs_per_block"] = backbone.down_convs_per_block
+    elif hasattr(backbone, "convs_per_block"):
+        rf_info["convs_per_block"] = backbone.convs_per_block
 
-    if hasattr(model.backbone, "kernel_size"):
-        rf_info["kernel_size"] = model.backbone.kernel_size
+    if hasattr(backbone, "kernel_size"):
+        rf_info["kernel_size"] = backbone.kernel_size
 
-    rf_info["down_blocks"] = model.backbone.down_blocks
+    rf_info["down_blocks"] = backbone.down_blocks
 
     if rf_info["down_blocks"] and rf_info["convs_per_block"] and rf_info["kernel_size"]:
         rf_info["size"] = compute_rf(
             down_blocks=rf_info["down_blocks"],
-            convs_per_block=rf_info["convs_per_block"],
-            kernel_size=rf_info["kernel_size"],
+            convs_per_block=rf_info["convs_per_block"],  ##
+            kernel_size=rf_info["kernel_size"],  ##
         )
 
     return rf_info
