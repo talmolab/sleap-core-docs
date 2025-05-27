@@ -1732,7 +1732,7 @@ class Skeleton:
 
         # Write the dataset to JSON string, then store it in a string
         # attribute
-        all_sk_group.attrs[self.name] = np.string_(self.to_json())
+        all_sk_group.attrs[self.name] = np.bytes_(self.to_json())
 
     @classmethod
     def load_mat(cls, filename: str) -> "Skeleton":
