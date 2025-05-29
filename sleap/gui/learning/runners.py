@@ -911,6 +911,8 @@ def train_subprocess(
         cfg_path = temp_dir
         cfg = snn_TrainingJobConfig.load_sleap_config(training_job_path)
         cfg.data_config.train_labels_path = labels_filename
+        cfg.trainer_config.zmq.publish_address = f"tcp://127.0.0.1:{str(inference_params['publish_port'])}"
+        cfg.trainer_config.zmq.controller_address = f"tcp://127.0.0.1:{str(inference_params['controller_port'])}"
         OmegaConf.save(cfg, (Path(cfg_path) / f"{cfg_file_name}.yaml").as_posix())
         OmegaConf.save(
             cfg, "/Users/divyasesh/Desktop/its_me/fly_data/test_sleap_cfg_mapper.yaml"
@@ -926,20 +928,6 @@ def train_subprocess(
             "--config-path",
             f"{cfg_path}",
         ]
-
-        # TODO :sleap-nn: zmq and controller port
-
-        # # Build CLI arguments for training
-        # cli_args = [
-        #     "sleap-train",
-        #     training_job_path,
-        #     labels_filename,
-        #     "--zmq",
-        #     "--controller_port",
-        #     str(inference_params["controller_port"]),
-        #     "--publish_port",
-        #     str(inference_params["publish_port"]),
-        # ]
 
         # TODO :sleap-nn: once we have vizs in sleap-nn, add the below to config
 
