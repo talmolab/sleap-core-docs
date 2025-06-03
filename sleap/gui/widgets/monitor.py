@@ -254,7 +254,7 @@ class LossPlot(MplCanvas):
 
             # Add best epoch validation loss if available
             if best_val_x is not None:
-                best_epoch = (best_val_x // epoch_size)
+                best_epoch = best_val_x // epoch_size
                 best_val_text = self._get_best_validation_loss_text(
                     best_val_y, best_epoch
                 )
@@ -915,9 +915,9 @@ class LossViewer(QtWidgets.QMainWindow):
                     self._add_datapoint(
                         x=(self.epoch + 1) * self.epoch_size,
                         y=msg["logs"]["train_loss"],
-                        which="train_loss"
+                        which="train_loss",
                     )
-                    
+
                     if "val_loss" in msg["logs"].keys():
                         # update variables and add points to plot
                         self.penultimate_epoch_val_loss = self.last_epoch_val_loss
@@ -925,7 +925,9 @@ class LossViewer(QtWidgets.QMainWindow):
                         if self.best_epoch_loss is None:
                             self.best_epoch_loss = self.last_epoch_val_loss
                         else:
-                            self.best_epoch_loss = min(self.last_epoch_val_loss, self.best_epoch_loss)
+                            self.best_epoch_loss = min(
+                                self.last_epoch_val_loss, self.best_epoch_loss
+                            )
                         self._add_datapoint(
                             (self.epoch + 1) * self.epoch_size,
                             msg["logs"]["val_loss"],
@@ -942,9 +944,8 @@ class LossViewer(QtWidgets.QMainWindow):
                             self.eta_ten_epochs_min = (mean_epoch_time * 10) // 60
 
                             val_loss_delta = abs(
-                                self.best_epoch_loss
-                                - self.last_epoch_val_loss
-                            ) # assuming we do `abs` mode
+                                self.best_epoch_loss - self.last_epoch_val_loss
+                            )  # assuming we do `abs` mode
                             self.epoch_in_plateau_flag = (
                                 self.plateau_min_delta is not None
                             ) and (
@@ -962,7 +963,7 @@ class LossViewer(QtWidgets.QMainWindow):
                     self._add_datapoint(
                         x=(self.epoch * self.epoch_size) + msg["batch"],
                         y=msg["logs"]["train_loss"],
-                        which="batch"
+                        which="batch",
                     )
 
             # Check for messages again (up to times_to_check times).
