@@ -50,52 +50,36 @@ def receptive_field_info_from_model_cfg(model_cfg: ModelConfig) -> dict:
     )
 
     try:
-        from sleap_nn.config.model_config import model_mapper
-        from sleap_nn.architectures.model import get_backbone
-        from omegaconf import OmegaConf
-        from attrs import asdict
-
-        model_cfg_dict = {"model": asdict(model_cfg)}
-        model_cfg_snn = model_mapper(model_cfg_dict)
-        schema = OmegaConf.structured(model_cfg_snn)
-        model_config_omegaconf = OmegaConf.merge(
-            schema, OmegaConf.create(asdict(model_cfg_snn))
-        )
-        for backbone in model_config_omegaconf.backbone_config:
-            if model_config_omegaconf.backbone_config[f"{backbone}"] is not None:
-                backbone_type = backbone
-                break
-        for head in model_config_omegaconf.head_configs:
-            if model_config_omegaconf.head_configs[f"{head}"] is not None:
-                model_type = head
-                break
-        backbone = get_backbone(
-            backbone=backbone_type,
-            backbone_config=model_config_omegaconf.backbone_config[f"{backbone_type}"],
-        )
+        up_blocks = np.log2(model_cfg.backbone.which_oneof().max_stride / model_cfg.backbone.which_oneof().output_stride)
 
     except ZeroDivisionError:
         # Unable to create model from these config parameters
         return rf_info
+    
+    #TODO: sleap-nn: have a dict for each backbone (when adding backbones)
 
     if hasattr(model_cfg.backbone.which_oneof(), "max_stride"):
         rf_info["max_stride"] = model_cfg.backbone.which_oneof().max_stride
 
-    if hasattr(backbone, "down_convs_per_block"):
-        rf_info["convs_per_block"] = backbone.down_convs_per_block
-    elif hasattr(backbone, "convs_per_block"):
-        rf_info["convs_per_block"] = backbone.convs_per_block
+    rf_info["convs_per_block"] = 2
 
-    if hasattr(backbone, "kernel_size"):
-        rf_info["kernel_size"] = backbone.kernel_size
+    rf_info["kernel_size"] = 3
+    
+    stem_blocks = 0
+    if hasattr(model_cfg.backbone.which_oneof(), "stem_stride"):
+        cfg_stem_stride = model_cfg.backbone.which_oneof().stem_stride
+        if cfg_stem_stride is not None:
+            stem_blocks = np.log2(cfg_stem_stride).astype(int)
+            
+    down_blocks = np.log2(model_cfg.backbone.which_oneof().max_stride).astype(int) - stem_blocks
 
-    rf_info["down_blocks"] = backbone.down_blocks
+    rf_info["down_blocks"] = down_blocks
 
     if rf_info["down_blocks"] and rf_info["convs_per_block"] and rf_info["kernel_size"]:
         rf_info["size"] = compute_rf(
             down_blocks=rf_info["down_blocks"],
-            convs_per_block=rf_info["convs_per_block"],  ##
-            kernel_size=rf_info["kernel_size"],  ##
+            convs_per_block=rf_info["convs_per_block"],
+            kernel_size=rf_info["kernel_size"],
         )
 
     return rf_info
