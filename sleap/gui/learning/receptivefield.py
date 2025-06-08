@@ -50,13 +50,16 @@ def receptive_field_info_from_model_cfg(model_cfg: ModelConfig) -> dict:
     )
 
     try:
-        up_blocks = np.log2(model_cfg.backbone.which_oneof().max_stride / model_cfg.backbone.which_oneof().output_stride)
+        up_blocks = np.log2(
+            model_cfg.backbone.which_oneof().max_stride
+            / model_cfg.backbone.which_oneof().output_stride
+        )
 
     except ZeroDivisionError:
         # Unable to create model from these config parameters
         return rf_info
-    
-    #TODO: sleap-nn: have a dict for each backbone (when adding backbones)
+
+    # TODO: sleap-nn: have a dict for each backbone (when adding backbones)
 
     if hasattr(model_cfg.backbone.which_oneof(), "max_stride"):
         rf_info["max_stride"] = model_cfg.backbone.which_oneof().max_stride
@@ -64,14 +67,16 @@ def receptive_field_info_from_model_cfg(model_cfg: ModelConfig) -> dict:
     rf_info["convs_per_block"] = 2
 
     rf_info["kernel_size"] = 3
-    
+
     stem_blocks = 0
     if hasattr(model_cfg.backbone.which_oneof(), "stem_stride"):
         cfg_stem_stride = model_cfg.backbone.which_oneof().stem_stride
         if cfg_stem_stride is not None:
             stem_blocks = np.log2(cfg_stem_stride).astype(int)
-            
-    down_blocks = np.log2(model_cfg.backbone.which_oneof().max_stride).astype(int) - stem_blocks
+
+    down_blocks = (
+        np.log2(model_cfg.backbone.which_oneof().max_stride).astype(int) - stem_blocks
+    )
 
     rf_info["down_blocks"] = down_blocks
 
