@@ -922,12 +922,6 @@ class LossViewer(QtWidgets.QMainWindow):
                         # update variables and add points to plot
                         self.penultimate_epoch_val_loss = self.last_epoch_val_loss
                         self.last_epoch_val_loss = msg["logs"]["val_loss"]
-                        if self.best_epoch_loss is None:
-                            self.best_epoch_loss = self.last_epoch_val_loss
-                        else:
-                            self.best_epoch_loss = min(
-                                self.last_epoch_val_loss, self.best_epoch_loss
-                            )
                         self._add_datapoint(
                             (self.epoch + 1) * self.epoch_size,
                             msg["logs"]["val_loss"],
@@ -943,20 +937,27 @@ class LossViewer(QtWidgets.QMainWindow):
                             )
                             self.eta_ten_epochs_min = (mean_epoch_time * 10) // 60
 
-                            val_loss_delta = abs(
-                                self.best_epoch_loss - self.last_epoch_val_loss
-                            )  # assuming we do `abs` mode
-                            self.epoch_in_plateau_flag = (
-                                self.plateau_min_delta is not None
-                            ) and (
-                                (val_loss_delta < self.plateau_min_delta)
-                                or (self.best_val_y < self.last_epoch_val_loss)
-                            )
+                            if self.plateau_min_delta is not None:
+                                # check plateau condition according to `rel` threshold model in pytorch.
+                                is_better = (
+                                    self.last_epoch_val_loss
+                                    < self.best_epoch_loss
+                                    * (1.0 - self.plateau_min_delta)
+                                )
+                            else:
+                                is_better = (
+                                    self.last_epoch_val_loss < self.best_epoch_loss
+                                )
+
+                            self.epoch_in_plateau_flag = not is_better
                             self.epochs_in_plateau = (
                                 self.epochs_in_plateau + 1
                                 if self.epoch_in_plateau_flag
                                 else 0
                             )
+                            if is_better:
+                                self.best_epoch_loss = self.last_epoch_val_loss
+
                     self.on_epoch.emit()
                 elif msg["event"] == "batch_end":
                     self.last_batch_number = msg["batch"]
