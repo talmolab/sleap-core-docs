@@ -276,13 +276,18 @@ class InferenceTask:
 
         cli_args.extend(["-o", output_path])
 
-        cli_args.extend(["--batch_size", str(self.inference_params["batch_size"])])
+        if "batch_size" in self.inference_params:
+            cli_args.extend(["--batch_size", str(self.inference_params["batch_size"])])
 
         if self.inference_params["max_instances"] is not None:
             cli_args.extend(["--max_instances", self.inference_params["max_instances"]])
 
+        print()
         # add tracking args
-        if self.inference_params["tracking.tracker"] is not None:
+        if (
+            "tracking.tracker" in self.inference_params
+            and self.inference_params["tracking.tracker"] != "none"
+        ):
             cli_args.extend(["--tracking", "True"])
             cli_args.extend(
                 ["--track_matching_method", self.inference_params["tracking.match"]]
@@ -916,9 +921,6 @@ def train_subprocess(
         )
         cfg.trainer_config.visualize_preds_during_training = save_viz
         OmegaConf.save(cfg, (Path(cfg_path) / f"{cfg_file_name}.yaml").as_posix())
-        OmegaConf.save(
-            cfg, "/Users/divyasesh/Desktop/its_me/fly_data/test_sleap_cfg_mapper.yaml"
-        )
 
         # Build CLI args for training (sleap-nn)
         cli_args = [

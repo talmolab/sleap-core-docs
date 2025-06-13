@@ -376,6 +376,11 @@ class TrainingConfigsGetter:
             json_files = sleap_utils.find_files_by_suffix(
                 config_dir, ".json", depth=self.search_depth
             )
+            json_files.extend(
+                sleap_utils.find_files_by_suffix(
+                    config_dir, "training_config.yaml", depth=self.search_depth
+                )
+            )
 
             if Path(config_dir).as_posix().endswith("sleap/training_profiles"):
                 # Use hardcoded sort.

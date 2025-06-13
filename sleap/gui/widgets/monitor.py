@@ -937,6 +937,9 @@ class LossViewer(QtWidgets.QMainWindow):
                             )
                             self.eta_ten_epochs_min = (mean_epoch_time * 10) // 60
 
+                            if self.best_epoch_loss is None:
+                                self.best_epoch_loss = self.last_epoch_val_loss
+
                             if self.plateau_min_delta is not None:
                                 # check plateau condition according to `rel` threshold model in pytorch.
                                 is_better = (
