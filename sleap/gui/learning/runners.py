@@ -912,7 +912,7 @@ def train_subprocess(
         cfg_file_name = datetime.now().strftime("%y%m%d_%H%M%S") + "_config"
         cfg_path = temp_dir
         cfg = snn_TrainingJobConfig.load_sleap_config(training_job_path)
-        cfg.data_config.train_labels_path = labels_filename
+        cfg.data_config.train_labels_path.append(labels_filename)
         cfg.trainer_config.zmq.publish_address = (
             f"tcp://127.0.0.1:{str(inference_params['publish_port'])}"
         )

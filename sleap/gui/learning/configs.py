@@ -474,6 +474,9 @@ class TrainingConfigsGetter:
                         key = head
                         break
 
+                if key == "bottomup":
+                    key = "multi_instance"
+
                 filename = os.path.basename(path)
 
                 # If filter isn't set or matches head name, add config to list

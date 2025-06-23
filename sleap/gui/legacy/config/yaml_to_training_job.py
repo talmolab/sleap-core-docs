@@ -19,6 +19,7 @@ from sleap.gui.legacy.config import (
     PartAffinityFieldsHeadConfig,
     AugmentationConfig,
     LearningRateScheduleConfig,
+    HardKeypointMiningConfig,
     EarlyStoppingConfig,
 )
 
@@ -33,8 +34,10 @@ def mapper(config: OmegaConf):
     crop_size = OmegaConf.select(data_cfg, "preprocessing.crop_hw", default=None)
     data = DataConfig(
         labels=LabelsConfig(
-            training_labels=data_cfg.train_labels_path,
-            validation_labels=data_cfg.val_labels_path,
+            training_labels=data_cfg.train_labels_path[0],
+            validation_labels=data_cfg.val_labels_path[0]
+            if data_cfg.val_labels_path is not None
+            else None,
             validation_fraction=data_cfg.validation_fraction,
             test_labels=data_cfg.test_file_path,
         ),
@@ -148,6 +151,13 @@ def mapper(config: OmegaConf):
             plateau_patience=trainer_cfg.lr_scheduler.reduce_lr_on_plateau.patience,
             plateau_cooldown=trainer_cfg.lr_scheduler.reduce_lr_on_plateau.cooldown,
             min_learning_rate=trainer_cfg.lr_scheduler.reduce_lr_on_plateau.min_lr,
+        ),
+        hard_keypoint_mining=HardKeypointMiningConfig(
+            online_mining=trainer_cfg.online_hard_keypoint_mining.online_mining,
+            hard_to_easy_ratio=trainer_cfg.online_hard_keypoint_mining.hard_to_easy_ratio,
+            min_hard_keypoints=trainer_cfg.online_hard_keypoint_mining.min_hard_keypoints,
+            max_hard_keypoints=trainer_cfg.online_hard_keypoint_mining.max_hard_keypoints,
+            loss_scale=trainer_cfg.online_hard_keypoint_mining.loss_scale,
         ),
         early_stopping=EarlyStoppingConfig(
             stop_training_on_plateau=trainer_cfg.early_stopping.stop_training_on_plateau,
