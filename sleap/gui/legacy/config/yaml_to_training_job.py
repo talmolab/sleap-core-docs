@@ -36,7 +36,7 @@ def mapper(config: OmegaConf):
         labels=LabelsConfig(
             training_labels=data_cfg.train_labels_path[0],
             validation_labels=data_cfg.val_labels_path[0]
-            if data_cfg.val_labels_path is not None
+            if data_cfg.val_labels_path is not None and len(data_cfg.val_labels_path)
             else None,
             validation_fraction=data_cfg.validation_fraction,
             test_labels=data_cfg.test_file_path,
