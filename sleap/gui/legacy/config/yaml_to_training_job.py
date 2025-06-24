@@ -42,8 +42,8 @@ def mapper(config: OmegaConf):
             test_labels=data_cfg.test_file_path,
         ),
         preprocessing=PreprocessingConfig(
-            ensure_rgb=data_cfg.preprocessing.is_rgb,
-            ensure_grayscale=not data_cfg.preprocessing.is_rgb,
+            ensure_rgb=data_cfg.preprocessing.ensure_rgb,
+            ensure_grayscale=data_cfg.preprocessing.ensure_grayscale,
             input_scaling=data_cfg.preprocessing.scale,
             resize_and_pad_to_target=True,
             target_height=data_cfg.preprocessing.max_height,
