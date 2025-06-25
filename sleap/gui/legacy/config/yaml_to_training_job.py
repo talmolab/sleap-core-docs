@@ -173,10 +173,15 @@ def mapper(config: OmegaConf):
             latest_model=trainer_cfg.model_ckpt.save_last,
         ),
         zmq=ZMQConfig(
-            subscribe_to_controller=True,
+            subscribe_to_controller=True
+            if trainer_cfg.zmq.controller_address is not None
+            else False,
             controller_address=trainer_cfg.zmq.controller_address,
-            publish_updates=True,
+            publish_updates=True
+            if trainer_cfg.zmq.publish_address is not None
+            else False,
             publish_address=trainer_cfg.zmq.publish_address,
+            controller_polling_timeout=trainer_cfg.zmq.controller_polling_timeout,
         ),
     )
     filename = trainer_cfg.save_ckpt_path + "/training_config.yaml"
