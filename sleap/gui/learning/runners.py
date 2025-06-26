@@ -481,18 +481,31 @@ def write_pipeline_files(
             # )
 
             # Now we set the filename for the training config file
-            new_cfg_filename = f"{cfg_info.head_name}.json"
+            new_cfg_filename = f"{cfg_info.head_name}.yaml"
 
-            # Save the config file
-            cfg_info.config.save_json(new_cfg_filename)
+            # Save the config file (convert to yaml)
+            from omegaconf import OmegaConf
+            from sleap_nn.config.training_job_config import (
+                TrainingJobConfig as snn_TrainingJobConfig,
+            )
+
+            cfg = snn_TrainingJobConfig.load_sleap_config_from_json(
+                json.loads(cfg_info.config.to_json())
+            )
+            cfg.data_config.train_labels_path.append(os.path.basename(labels_filename))
+            cfg.trainer_config.zmq.publish_address = (
+                f"tcp://127.0.0.1:{str(inference_params['publish_port'])}"
+            )
+            cfg.trainer_config.zmq.controller_address = (
+                f"tcp://127.0.0.1:{str(inference_params['controller_port'])}"
+            )
+            OmegaConf.save(cfg, new_cfg_filename)
 
             # Keep track of the path where we'll find the trained model
             new_cfg_filenames.append(cfg_info.config.outputs.run_path)
 
             # Add a line to the script for training this model
-            train_script += (
-                f"sleap-train {new_cfg_filename} {os.path.basename(labels_filename)}\n"
-            )
+            train_script += f"python -m sleap_nn.train --config-name {new_cfg_filename} --config-path {''} hydra.run.dir=. hydra.output_subdir=null"
 
             # Setup job params
             training_jobs.append(
