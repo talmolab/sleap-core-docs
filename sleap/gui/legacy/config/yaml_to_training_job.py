@@ -141,6 +141,8 @@ def mapper(config: OmegaConf):
         batch_size=trainer_cfg.train_data_loader.batch_size,
         epochs=trainer_cfg.max_epochs,
         optimizer=trainer_cfg.optimizer_name,
+        min_batches_per_epoch=trainer_cfg.min_train_steps_per_epoch,
+        batches_per_epoch=trainer_cfg.train_steps_per_epoch,
         initial_learning_rate=trainer_cfg.optimizer.lr,
         learning_rate_schedule=LearningRateScheduleConfig(
             reduce_on_plateau=True
