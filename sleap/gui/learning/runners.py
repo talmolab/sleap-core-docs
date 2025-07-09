@@ -245,7 +245,7 @@ class InferenceTask:
         ]
         cli_args.extend(
             item_for_inference.cli_args
-        )  # INFERENCE CLI ARGS-----------------------:['--data_path', '/Users/divyasesh/Desktop/its_me/slp_datasets_models/wt_13/clips/190719_090330_wt_18159206_rig1.2@15000-17560.slp', '--video_index', '0', '--video_input_format', 'channels_last', '--frames', '0,-2559']
+        )  # sample inference CLI args-----------------------:['--data_path', '/Users/divyasesh/Desktop/its_me/slp_datasets_models/wt_13/clips/190719_090330_wt_18159206_rig1.2@15000-17560.slp', '--video_index', '0', '--video_input_format', 'channels_last', '--frames', '0,-2559']
 
         # Make path where we'll save predictions (if not specified)
         if output_path is None:
@@ -305,8 +305,19 @@ class InferenceTask:
                 )
             if "flow" in self.inference_params["tracking.tracker"]:
                 cli_args.extend(["--use_flow", "True"])
-            # TODO: sleap-nn: only support oks score for ismilarity (not instance similarity)
-            # TODO: ['tracking.robust', 'tracking.oks_errors', 'tracking.oks_score_weighting', 'tracking.post_connect_single_breaks']
+
+            if self.inference_params["tracking.post_connect_single_breaks"] == 1:
+                cli_args.extend(["--post_connect_single_breaks"])
+
+            if self.inference_params["tracking.robust"] != 1.0:
+                cli_args.extend(["--scoring_reduction", "robust_quantile"])
+                cli_args.extend(
+                    [
+                        "--robust_best_instance",
+                        str(self.inference_params["tracking.robust"]),
+                    ]
+                )
+
             if self.inference_params["tracking.similarity"] in [
                 "instance",
                 "normalized_instance",
@@ -472,8 +483,7 @@ def write_pipeline_files(
             # is the main reason we're setting it to the output directory rather
             # than just using normpath.
             # cfg_info.config.outputs.runs_folder = ""
-            # TODO :sleap-nn: this should be moved to utils?
-            setup_new_run_folder(cfg_info.config.outputs)
+            ckpt_path = setup_new_run_folder(cfg_info.config.outputs)
             # training.setup_new_run_folder(
             #     cfg_info.config.outputs,
             #     # base_run_name=f"{model_type}.n={len(labels.user_labeled_frames)}",
@@ -499,6 +509,7 @@ def write_pipeline_files(
             cfg.trainer_config.zmq.controller_address = (
                 f"tcp://127.0.0.1:{str(inference_params['controller_port'])}"
             )
+            cfg.trainer_config.save_ckpt_path = ckpt_path
             OmegaConf.save(cfg, new_cfg_filename)
 
             # Keep track of the path where we'll find the trained model
@@ -933,6 +944,7 @@ def train_subprocess(
             f"tcp://127.0.0.1:{str(inference_params['controller_port'])}"
         )
         cfg.trainer_config.visualize_preds_during_training = save_viz
+        cfg.trainer_config.save_ckpt_path = run_path
         OmegaConf.save(cfg, (Path(cfg_path) / f"{cfg_file_name}.yaml").as_posix())
 
         # Build CLI args for training (sleap-nn)
