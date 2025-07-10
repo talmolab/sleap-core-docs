@@ -297,9 +297,7 @@ training:
   options: current frame,random frames
   default: current frame
 
-- name: _view_datagen
-  label: View Training Image Inputs...
-  type: button
+
 
 inference:
 

@@ -48,11 +48,13 @@ def receptive_field_info_from_model_cfg(model_cfg: ModelConfig) -> dict:
         convs_per_block=None,
         kernel_size=None,
     )
-
+    # Currently, this works only for UNet backbones.
+    # TODO: Add support for other backbones.
     try:
-        # `Skeleton` and `Tracks` not important for receptive field computation, but
-        # required as check in `Model.from_config`
-        model = Model.from_config(model_cfg, skeleton=Skeleton(), tracks=[Track()])
+        up_blocks = np.log2(
+            model_cfg.backbone.which_oneof().max_stride
+            / model_cfg.backbone.which_oneof().output_stride
+        )
     except ZeroDivisionError:
         # Unable to create model from these config parameters
         return rf_info
@@ -60,15 +62,21 @@ def receptive_field_info_from_model_cfg(model_cfg: ModelConfig) -> dict:
     if hasattr(model_cfg.backbone.which_oneof(), "max_stride"):
         rf_info["max_stride"] = model_cfg.backbone.which_oneof().max_stride
 
-    if hasattr(model.backbone, "down_convs_per_block"):
-        rf_info["convs_per_block"] = model.backbone.down_convs_per_block
-    elif hasattr(model.backbone, "convs_per_block"):
-        rf_info["convs_per_block"] = model.backbone.convs_per_block
+    rf_info["convs_per_block"] = 2
 
-    if hasattr(model.backbone, "kernel_size"):
-        rf_info["kernel_size"] = model.backbone.kernel_size
+    rf_info["kernel_size"] = 3
 
-    rf_info["down_blocks"] = model.backbone.down_blocks
+    stem_blocks = 0
+    if hasattr(model_cfg.backbone.which_oneof(), "stem_stride"):
+        cfg_stem_stride = model_cfg.backbone.which_oneof().stem_stride
+        if cfg_stem_stride is not None:
+            stem_blocks = np.log2(cfg_stem_stride).astype(int)
+
+    down_blocks = (
+        np.log2(model_cfg.backbone.which_oneof().max_stride).astype(int) - stem_blocks
+    )
+
+    rf_info["down_blocks"] = down_blocks
 
     if rf_info["down_blocks"] and rf_info["convs_per_block"] and rf_info["kernel_size"]:
         rf_info["size"] = compute_rf(

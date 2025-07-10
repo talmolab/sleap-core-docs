@@ -14,7 +14,7 @@ import sleap
 from sleap import Labels, Video
 from sleap.gui.dialogs.filedialog import FileDialog
 from sleap.gui.dialogs.formbuilder import YamlFormWidget
-from sleap.gui.learning import configs, datagen, receptivefield, runners, scopedkeydict
+from sleap.gui.learning import configs, receptivefield, runners, scopedkeydict
 
 # List of fields which should show list of skeleton nodes
 NODE_LIST_FIELDS = [
@@ -159,12 +159,6 @@ class LearningDialog(QtWidgets.QDialog):
         self.export_button.clicked.connect(self.export_package)
         self.cancel_button.clicked.connect(self.reject)
         self.run_button.clicked.connect(self.run)
-
-        # Connect button for previewing the training data
-        if "_view_datagen" in self.pipeline_form_widget.buttons:
-            self.pipeline_form_widget.buttons["_view_datagen"].clicked.connect(
-                self.view_datagen
-            )
 
     def adjust_initial_size(self):
         # Get screen size
@@ -723,12 +717,6 @@ class LearningDialog(QtWidgets.QDialog):
 
         self.message_widget.setText(message)
         self.run_button.setEnabled(can_run)
-
-    def view_datagen(self):
-        pipeline_form_data = self.pipeline_form_widget.get_form_data()
-        config_info_list = self.get_every_head_config_data(pipeline_form_data)
-        datagen.show_datagen_preview(self.labels, config_info_list)
-        self.hide()
 
     def run(self):
         """Run with current dialog settings."""
