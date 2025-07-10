@@ -24,7 +24,7 @@ dependencies:
     - conda-forge::psutil
     - conda-forge::pykalman
     - conda-forge::pyside2 >=5.12  # To ensure application works correctly with QtPy.
-    - conda-forge::pyqt5  # For pytest-qt compatibility
+    - conda-forge::pyqt >=5.15.0,<6.0  # For pytest-qt compatibility (PyQt5 only)
     - conda-forge::python  ~=3.9
     - conda-forge::python-rapidjson
     - conda-forge::pyyaml
