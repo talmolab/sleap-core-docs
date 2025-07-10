@@ -1,6 +1,6 @@
 # Use this environment file if your computer does not have a nvidia GPU and runs Windows
-# or Linux. This environment file has exactly the same dependencies listed as 
-# environment.yaml, minus the packages required by tensorflow to find/use GPUs. 
+# or Linux. This environment file has the same dependencies as environment.yaml 
+# without GPU-specific packages. 
 
 name: sleap_ci
 
@@ -36,9 +36,6 @@ dependencies:
     - conda-forge::scikit-learn ==1.0
     - conda-forge::scikit-video
     - conda-forge::seaborn
-    # - sleap::tensorflow >=2.6.3,<2.11  # No windows GPU support for >2.10
-    - sleap/label/dev::tensorflow ==2.7.0
-    - conda-forge::tensorflow-hub
     - conda-forge::qudida
     - conda-forge::albumentations
     - conda-forge::ndx-pose <0.2.0

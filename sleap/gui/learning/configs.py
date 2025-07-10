@@ -16,7 +16,7 @@ from sleap import Labels, Skeleton
 from sleap import util as sleap_utils
 from sleap.gui.dialogs.filedialog import FileDialog
 from sleap.gui.dialogs.formbuilder import FieldComboWidget
-from sleap.nn.config import TrainingJobConfig
+from sleap.gui.legacy.config import TrainingJobConfig
 
 
 @attr.s(auto_attribs=True, slots=True)

@@ -1,6 +1,6 @@
 import attr
 from typing import Optional, Text, List, Sequence, Tuple
-from sleap.nn.config.utils import oneof
+from sleap.gui.legacy.config.utils import oneof
 
 
 @attr.s(auto_attribs=True)

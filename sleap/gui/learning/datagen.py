@@ -12,7 +12,7 @@ from sleap import Labels, Video
 from sleap.gui.learning.configs import ConfigFileInfo
 from sleap.gui.overlays.confmaps import demo_confmaps
 from sleap.gui.overlays.pafs import demo_pafs
-from sleap.nn.config import (
+from sleap.gui.legacy.config import (
     TrainingJobConfig,
     CentroidsHeadConfig,
     CenteredInstanceConfmapsHeadConfig,

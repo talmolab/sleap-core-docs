@@ -21,7 +21,7 @@ from sleap import Labels, Video, LabeledFrame
 from sleap.gui.learning.configs import ConfigFileInfo
 from sleap.io.video import SingleImageVideo
 from sleap.nn import training
-from sleap.nn.config import TrainingJobConfig
+from sleap.gui.legacy.config import TrainingJobConfig
 
 logger = logging.getLogger(__name__)
 

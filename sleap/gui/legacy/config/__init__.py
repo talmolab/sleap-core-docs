@@ -1,10 +1,10 @@
-from sleap.nn.config.data import (
+from sleap.gui.legacy.config.data import (
     LabelsConfig,
     PreprocessingConfig,
     InstanceCroppingConfig,
     DataConfig,
 )
-from sleap.nn.config.model import (
+from sleap.gui.legacy.config.model import (
     CentroidsHeadConfig,
     SingleInstanceConfmapsHeadConfig,
     CenteredInstanceConfmapsHeadConfig,
@@ -25,17 +25,17 @@ from sleap.nn.config.model import (
     BackboneConfig,
     ModelConfig,
 )
-from sleap.nn.config.optimization import (
+from sleap.gui.legacy.config.optimization import (
     AugmentationConfig,
     HardKeypointMiningConfig,
     LearningRateScheduleConfig,
     EarlyStoppingConfig,
     OptimizationConfig,
 )
-from sleap.nn.config.outputs import (
+from sleap.gui.legacy.config.outputs import (
     CheckpointingConfig,
     TensorBoardConfig,
     ZMQConfig,
     OutputsConfig,
 )
-from sleap.nn.config.training_job import TrainingJobConfig, load_config
+from sleap.gui.legacy.config.training_job import TrainingJobConfig, load_config
