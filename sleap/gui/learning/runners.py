@@ -14,16 +14,55 @@ from pathlib import Path
 from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional, Text, Tuple
 import logging
+from sleap.gui.legacy.config import OutputsConfig
+from sleap.gui.legacy.config import TrainingJobConfig
 
 from qtpy import QtWidgets
 
 from sleap import Labels, Video, LabeledFrame
 from sleap.gui.learning.configs import ConfigFileInfo
 from sleap.io.video import SingleImageVideo
-from sleap.nn import training
 from sleap.gui.legacy.config import TrainingJobConfig
 
 logger = logging.getLogger(__name__)
+
+
+def get_timestamp() -> Text:
+    """Return the date and time as a string."""
+    return datetime.now().strftime("%y%m%d_%H%M%S")
+
+
+def setup_new_run_folder(
+    config: OutputsConfig, base_run_name: Optional[Text] = None
+) -> Text:
+    """Create a new run folder from config."""
+    run_path = None
+    if config.save_outputs:
+        # Auto-generate run name.
+        if config.run_name is None:
+            config.run_name = get_timestamp()
+            if isinstance(base_run_name, str):
+                config.run_name = config.run_name + "." + base_run_name
+
+        # Find new run name suffix if needed.
+        if config.run_name_suffix is None:
+            config.run_name_suffix = ""
+            run_path = os.path.join(
+                config.runs_folder, f"{config.run_name_prefix}{config.run_name}"
+            )
+            i = 0
+            while os.path.exists(run_path):
+                i += 1
+                config.run_name_suffix = f"_{i}"
+                run_path = os.path.join(
+                    config.runs_folder,
+                    f"{config.run_name_prefix}{config.run_name}{config.run_name_suffix}",
+                )
+
+        # Build run path.
+        run_path = config.run_path
+
+    return run_path
 
 
 def kill_process(pid: int):
@@ -431,7 +470,7 @@ def write_pipeline_files(
             # is the main reason we're setting it to the output directory rather
             # than just using normpath.
             # cfg_info.config.outputs.runs_folder = ""
-            training.setup_new_run_folder(cfg_info.config.outputs)
+            setup_new_run_folder(cfg_info.config.outputs)
             # training.setup_new_run_folder(
             #     cfg_info.config.outputs,
             #     # base_run_name=f"{model_type}.n={len(labels.user_labeled_frames)}",
@@ -665,7 +704,7 @@ def run_gui_training(
             job.outputs.runs_folder = os.path.join(
                 os.path.dirname(labels_filename), "models"
             )
-            training.setup_new_run_folder(
+            setup_new_run_folder(
                 job.outputs,
                 base_run_name=f"{model_type}.n={len(labels.user_labeled_frames)}",
             )

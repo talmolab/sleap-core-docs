@@ -9,7 +9,6 @@ from qtpy import QtWidgets, QtGui, QtCore
 from sleap import Video, Track, Skeleton
 from sleap.gui.legacy.config import ModelConfig
 from sleap.gui.widgets.video import GraphicsView
-from sleap.nn.model import Model
 
 
 def compute_rf(down_blocks: int, convs_per_block: int = 2, kernel_size: int = 3) -> int:
