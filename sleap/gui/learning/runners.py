@@ -129,19 +129,19 @@ class VideoItemForInference(ItemForInference):
     @property
     def cli_args(self):
         arg_list = list()
-        arg_list.append(self.path)
+        arg_list.extend(["--data_path", f"{self.path}"])
         if self.labels_path is not None:
-            arg_list.extend(["--video.index", str(self.video_idx)])
+            arg_list.extend(["--video_index", str(self.video_idx)])
 
         # TODO: better support for video params
         if hasattr(self.video.backend, "dataset") and self.video.backend.dataset:
-            arg_list.extend(("--video.dataset", self.video.backend.dataset))
+            arg_list.extend(("--video_dataset", self.video.backend.dataset))
 
         if (
             hasattr(self.video.backend, "input_format")
             and self.video.backend.input_format
         ):
-            arg_list.extend(("--video.input_format", self.video.backend.input_format))
+            arg_list.extend(("--video_input_format", self.video.backend.input_format))
 
         # -Y represents endpoint of [X, Y) range but inference cli expects
         # [X, Y-1] range (so add 1 since negative).
@@ -178,10 +178,11 @@ class DatasetItemForInference(ItemForInference):
     @property
     def cli_args(self):
         args_list = [self.path]
+        args_list = ["--data_path", self.path]
         if self.frame_filter == "user":
-            args_list.append("--only-labeled-frames")
+            args_list.append("--only_labeled_frames")
         elif self.frame_filter == "suggested":
-            args_list.append("--only-suggested-frames")
+            args_list.append("--only_suggested_frames")
         return args_list
 
 
@@ -238,8 +239,14 @@ class InferenceTask:
         gui: bool = True,
     ) -> List[Text]:
         """Makes list of CLI arguments needed for running inference."""
-        cli_args = ["sleap-track"]
-        cli_args.extend(item_for_inference.cli_args)
+        cli_args = [
+            "python",
+            "-m",
+            "sleap_nn.predict",
+        ]
+        cli_args.extend(
+            item_for_inference.cli_args
+        )  # sample inference CLI args:['--data_path', '/Users/divyasesh/Desktop/its_me/slp_datasets_models/wt_13/clips/190719_090330_wt_18159206_rig1.2@15000-17560.slp', '--video_index', '0', '--video_input_format', 'channels_last', '--frames', '0,-2559']
 
         # Make path where we'll save predictions (if not specified)
         if output_path is None:
@@ -264,65 +271,68 @@ class InferenceTask:
             )
 
         for job_path in self.trained_job_paths:
-            cli_args.extend(("-m", job_path))
+            if job_path.endswith(".yaml"):
+                job_path = str(
+                    Path(job_path).parent
+                )  # get the model ckpt folder path from the path of `training_config.yaml`
+            cli_args.extend(("--model_paths", job_path))
 
-        optional_items_as_nones = (
-            "tracking.target_instance_count",
-            "tracking.max_tracks",
-            "tracking.kf_init_frame_count",
-            "tracking.robust",
-            "max_instances",
-        )
+        cli_args.extend(["-o", output_path])
 
-        for key in optional_items_as_nones:
-            if key in self.inference_params and self.inference_params[key] is None:
-                del self.inference_params[key]
+        if "batch_size" in self.inference_params:
+            cli_args.extend(["--batch_size", str(self.inference_params["batch_size"])])
 
-        # Setting max_tracks to True means we want to use the max_tracking mode.
-        if "tracking.max_tracks" in self.inference_params:
-            self.inference_params["tracking.max_tracking"] = True
+        if self.inference_params["max_instances"] is not None:
+            cli_args.extend(["--max_instances", self.inference_params["max_instances"]])
 
-            # Hacky:  Update the tracker name to include "maxtracks" suffix.
-            if self.inference_params["tracking.tracker"] in ("simple", "flow"):
-                self.inference_params["tracking.tracker"] = (
-                    self.inference_params["tracking.tracker"] + "maxtracks"
+        # add tracking args
+        if (
+            "tracking.tracker" in self.inference_params
+            and self.inference_params["tracking.tracker"] != "none"
+        ):
+            cli_args.extend(["--tracking", "True"])
+            cli_args.extend(
+                ["--track_matching_method", self.inference_params["tracking.match"]]
+            )
+            cli_args.extend(
+                [
+                    "--tracking_window_size",
+                    str(self.inference_params["tracking.track_window"]),
+                ]
+            )
+            if self.inference_params["tracking.max_tracks"] is not None:
+                cli_args.extend(["--candidates_method", "local_queues"])
+                cli_args.extend(
+                    ["--max_tracks", str(self.inference_params["tracking.max_tracks"])]
+                )
+            if "flow" in self.inference_params["tracking.tracker"]:
+                cli_args.extend(["--use_flow", "True"])
+
+            if self.inference_params["tracking.post_connect_single_breaks"] == 1:
+                cli_args.extend(["--post_connect_single_breaks"])
+
+            if self.inference_params["tracking.robust"] != 1.0:
+                cli_args.extend(["--scoring_reduction", "robust_quantile"])
+                cli_args.extend(
+                    [
+                        "--robust_best_instance",
+                        str(self.inference_params["tracking.robust"]),
+                    ]
                 )
 
-        # --tracking.kf_init_frame_count enables the kalman filter tracking
-        # so if not set, then remove other (unused) args
-        if "tracking.kf_init_frame_count" not in self.inference_params:
-            if "tracking.kf_node_indices" in self.inference_params:
-                del self.inference_params["tracking.kf_node_indices"]
-
-        bool_items_as_ints = (
-            "tracking.pre_cull_to_target",
-            "tracking.max_tracking",
-            "tracking.post_connect_single_breaks",
-            "tracking.save_shifted_instances",
-            "tracking.oks_score_weighting",
-        )
-
-        for key in bool_items_as_ints:
-            if key in self.inference_params:
-                self.inference_params[key] = int(self.inference_params[key])
-
-        remove_spaces_items = ("tracking.similarity",)
-
-        for key in remove_spaces_items:
-            if key in self.inference_params:
-                value = self.inference_params[key]
-                self.inference_params[key] = value.replace(" ", "_")
-
-        for key, val in self.inference_params.items():
-            if not key.startswith(("_", "outputs.", "model.", "data.")):
-                cli_args.extend((f"--{key}", str(val)))
-
-        cli_args.extend(("-o", output_path))
-
-        if gui:
-            cli_args.extend(("--verbosity", "json"))
-
-        cli_args.extend(("--no-empty-frames",))
+            if self.inference_params["tracking.similarity"] in [
+                "instance",
+                "normalized_instance",
+                "object_keypoint",
+            ]:
+                cli_args.extend(["--features", "keypoints"])
+                cli_args.extend(["--scoring_method", "oks"])
+            elif self.inference_params["tracking.similarity"] == "centroid":
+                cli_args.extend(["--features", "centroids"])
+                cli_args.extend(["--scoring_method", "euclidean_dist"])
+            elif self.inference_params["tracking.similarity"] == "iou":
+                cli_args.extend(["--features", "bboxes"])
+                cli_args.extend(["--scoring_method", "iou"])
 
         return cli_args, output_path
 
@@ -470,7 +480,7 @@ def write_pipeline_files(
             # is the main reason we're setting it to the output directory rather
             # than just using normpath.
             # cfg_info.config.outputs.runs_folder = ""
-            setup_new_run_folder(cfg_info.config.outputs)
+            ckpt_path = setup_new_run_folder(cfg_info.config.outputs)
             # training.setup_new_run_folder(
             #     cfg_info.config.outputs,
             #     # base_run_name=f"{model_type}.n={len(labels.user_labeled_frames)}",
@@ -478,18 +488,26 @@ def write_pipeline_files(
             # )
 
             # Now we set the filename for the training config file
-            new_cfg_filename = f"{cfg_info.head_name}.json"
+            new_cfg_filename = f"{cfg_info.head_name}.yaml"
+
+            # Save the config file (convert to yaml)
+            from omegaconf import OmegaConf
+            from sleap_nn.config.training_job_config import (
+                TrainingJobConfig as snn_TrainingJobConfig,
+            )
 
             # Save the config file
-            cfg_info.config.save_json(new_cfg_filename)
+            cfg = snn_TrainingJobConfig.load_sleap_config_from_json(
+                json.loads(cfg_info.config.to_json())
+            )
+            cfg.data_config.train_labels_path.append(os.path.basename(labels_filename))
+            OmegaConf.save(cfg, new_cfg_filename)
 
             # Keep track of the path where we'll find the trained model
             new_cfg_filenames.append(cfg_info.config.outputs.run_path)
 
             # Add a line to the script for training this model
-            train_script += (
-                f"sleap-train {new_cfg_filename} {os.path.basename(labels_filename)}\n"
-            )
+            train_script += f"python -m sleap_nn.train --config-name {new_cfg_filename} --config-path {''} hydra.run.dir=. hydra.output_subdir=null trainer_config.save_ckpt_path={ckpt_path} trainer_config.zmq.controller_address=tcp://127.0.0.1:{str(inference_params['controller_port'])} trainer_config.zmq.publish_address=tcp://127.0.0.1:{str(inference_params['publish_port'])}"
 
             # Setup job params
             training_jobs.append(
@@ -901,26 +919,34 @@ def train_subprocess(
         training_job_path = os.path.join(temp_dir, temp_filename)
         job_config.save_json(training_job_path)
 
+        from omegaconf import OmegaConf
+        from sleap_nn.config.training_job_config import (
+            TrainingJobConfig as snn_TrainingJobConfig,
+        )
+
+        # convert json to yaml (to sleap-nn config format)
+        cfg_file_name = datetime.now().strftime("%y%m%d_%H%M%S") + "_config"
+        cfg = snn_TrainingJobConfig.load_sleap_config(training_job_path)
+        cfg.data_config.train_labels_path.append(labels_filename)
+
+        OmegaConf.save(cfg, (Path(temp_dir) / f"{cfg_file_name}.yaml").as_posix())
+
         # Build CLI arguments for training
         cli_args = [
-            "sleap-train",
-            training_job_path,
-            labels_filename,
-            "--zmq",
-            "--controller_port",
-            str(inference_params["controller_port"]),
-            "--publish_port",
-            str(inference_params["publish_port"]),
+            "python",
+            "-m",
+            "sleap_nn.train",
+            "--config-name",
+            f"{cfg_file_name}",
+            "--config-path",
+            f"{temp_dir}",
+            "hydra.run.dir=.",
+            "hydra.output_subdir=null",
+            f"trainer_config.save_ckpt_path={run_path}",
+            f"trainer_config.visualize_preds_during_training={save_viz}",
+            f"trainer_config.zmq.controller_address=tcp://127.0.0.1:{str(inference_params['controller_port'])}",
+            f"trainer_config.zmq.publish_address=tcp://127.0.0.1:{str(inference_params['publish_port'])}",
         ]
-
-        if save_viz:
-            cli_args.append("--save_viz")
-        if keep_viz:
-            cli_args.append("--keep_viz")
-
-        # Use cli arg since cli ignores setting in config
-        if job_config.outputs.tensorboard.write_logs:
-            cli_args.append("--tensorboard")
 
         # Run training in a subprocess.
         print(cli_args)
