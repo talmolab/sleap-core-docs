@@ -220,6 +220,7 @@ def mapper(config: OmegaConf):
     outputs = OutputsConfig(
         run_name=trainer_cfg.save_ckpt_path.split("/")[-1],
         save_visualizations=trainer_cfg.visualize_preds_during_training,
+        keep_viz_images=trainer_cfg.keep_viz,
         checkpointing=CheckpointingConfig(
             best_model=trainer_cfg.save_ckpt,
             latest_model=trainer_cfg.model_ckpt.save_last,

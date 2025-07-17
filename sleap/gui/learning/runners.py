@@ -944,6 +944,7 @@ def train_subprocess(
             "hydra.output_subdir=null",
             f"trainer_config.save_ckpt_path={run_path}",
             f"trainer_config.visualize_preds_during_training={save_viz}",
+            f"trainer_config.keep_viz={keep_viz}",
             f"trainer_config.zmq.controller_address=tcp://127.0.0.1:{str(inference_params['controller_port'])}",
             f"trainer_config.zmq.publish_address=tcp://127.0.0.1:{str(inference_params['publish_port'])}",
         ]
