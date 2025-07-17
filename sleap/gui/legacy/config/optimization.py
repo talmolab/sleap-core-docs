@@ -70,7 +70,7 @@ class AugmentationConfig:
     scale_max: float = 1.1
     uniform_noise: bool = False
     uniform_noise_min_val: float = 0.0
-    uniform_noise_max_val: float = 10.0
+    uniform_noise_max_val: float = 1.0
     gaussian_noise: bool = False
     gaussian_noise_mean: float = 5.0
     gaussian_noise_stddev: float = 1.0

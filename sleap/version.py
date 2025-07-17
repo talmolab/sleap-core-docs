@@ -16,13 +16,11 @@ __version__ = "1.4.1"
 
 def versions():
     """Print versions of SLEAP and other libraries."""
-    import tensorflow as tf
     import numpy as np
     import platform
 
     vers = {}
     vers["SLEAP"] = __version__
-    vers["TensorFlow"] = tf.__version__
     vers["Numpy"] = np.__version__
     vers["Python"] = platform.python_version()
     vers["OS"] = platform.platform()
