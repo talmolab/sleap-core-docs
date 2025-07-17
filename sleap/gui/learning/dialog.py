@@ -770,10 +770,17 @@ class LearningDialog(QtWidgets.QDialog):
         for config_info in config_info_list:
             config_info = config_info.config.to_json()
             config_info = json.loads(config_info)
-            config_info = json.dumps(config_info, indent=2)
-            output.append(config_info)
-        output = "\n".join(output)
+            # convert to sleap-nn cfg (yaml)
+            from omegaconf import OmegaConf
+            from sleap_nn.config.training_job_config import (
+                TrainingJobConfig as snn_TrainingJobConfig,
+            )
 
+            cfg = snn_TrainingJobConfig.load_sleap_config_from_json(config_info)
+            cfg.data_config.train_labels_path.append(self.labels_filename)
+            output.append(OmegaConf.to_yaml(cfg))
+
+        output = "\n".join(output)
         # Set the clipboard text
         clipboard = QtWidgets.QApplication.clipboard()
         clipboard.setText(output)
