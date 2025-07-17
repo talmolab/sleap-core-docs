@@ -467,34 +467,26 @@ class TrainingConfigsGetter:
     def try_loading_path(self, path: Text) -> Optional[ConfigFileInfo]:
         """Attempts to load config file and wrap in `ConfigFileInfo` object."""
         if path.endswith("yaml") or path.endswith("yml"):
-            try:
-                # cfg = TrainingJobConfig.load_json(path)
-                pass
-            except Exception as e:
-                # Couldn't load so just ignore
-                print(e)
-                pass
-            else:
-                # Get the head from the model (i.e., what the model will predict)
-                from omegaconf import OmegaConf
-                from sleap.gui.legacy.config.yaml_to_training_job import mapper
+            # Get the head from the model (i.e., what the model will predict)
+            from omegaconf import OmegaConf
+            from sleap.gui.legacy.config.yaml_to_training_job import mapper
 
-                cfg = OmegaConf.load(path)
-                for head in cfg.model_config.head_configs:
-                    if cfg.model_config.head_configs[f"{head}"] is not None:
-                        key = head
-                        break
+            cfg = OmegaConf.load(path)
+            for head in cfg.model_config.head_configs:
+                if cfg.model_config.head_configs[f"{head}"] is not None:
+                    key = head
+                    break
 
-                if key == "bottomup":
-                    key = "multi_instance"
+            if key == "bottomup":
+                key = "multi_instance"
 
-                filename = os.path.basename(path)
+            filename = os.path.basename(path)
 
-                # If filter isn't set or matches head name, add config to list
-                if self.head_filter in (None, key):
-                    return ConfigFileInfo(
-                        path=path, filename=filename, config=mapper(cfg), head_name=key
-                    )
+            # If filter isn't set or matches head name, add config to list
+            if self.head_filter in (None, key):
+                return ConfigFileInfo(
+                    path=path, filename=filename, config=mapper(cfg), head_name=key
+                )
         else:
             # Get the head from the model (i.e., what the model will predict)
             try:
