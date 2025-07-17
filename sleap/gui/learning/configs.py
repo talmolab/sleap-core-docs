@@ -53,11 +53,17 @@ class ConfigFileInfo:
         #  what we'll do here, but both should check for other models
         #  depending on the training config settings.
 
-        return self._get_file_path("best_model.h5") is not None
+        # allow to run inference on both torch weights (`.ckpt`) and keras weights (`.h5`).
+        # sleap-nn supports running inference on the keras weights (Note: currently only for unet models).
+        # TODO: add support for running inference on the keras weights for other models.
+        return (
+            self._get_file_path("best.ckpt") is not None
+            or self._get_file_path("best_model.h5") is not None
+        )
 
     @property
     def path_dir(self):
-        return os.path.dirname(self.path) if self.path.endswith("json") else self.path
+        return os.path.dirname(self.path) if self.path.endswith("yaml") else self.path
 
     def _get_file_path(self, shortname) -> Optional[Text]:
         """
@@ -161,7 +167,16 @@ class ConfigFileInfo:
 
     @classmethod
     def from_config_file(cls, path: Text) -> "ConfigFileInfo":
-        cfg = TrainingJobConfig.load_json(path)
+        if path.endswith("yaml") or path.endswith("yml"):
+            # convert yaml to legacy GUI config.
+            from omegaconf import OmegaConf
+            from sleap.gui.legacy.config.yaml_to_training_job import mapper
+
+            omegaconf_cfg = OmegaConf.load(path)
+            cfg = mapper(omegaconf_cfg)
+
+        else:
+            cfg = TrainingJobConfig.load_json(path)
         head_name = cfg.model.heads.which_oneof_attrib_name()
         filename = os.path.basename(path)
         return cls(config=cfg, path=path, filename=filename, head_name=head_name)
@@ -298,7 +313,7 @@ class TrainingConfigFilesWidget(FieldComboWidget):
             None,
             dir=None,
             caption="Select training configuration file...",
-            filter="JSON (*.json)",
+            filter="JSON (*.json) | YAML (*.yaml) | YML (*.yml)",
         )
         return self._cfg_getter.try_loading_path(filename) if filename else None
 
@@ -366,6 +381,16 @@ class TrainingConfigsGetter:
             # Find all json files in dir and subdirs to specified depth
             json_files = sleap_utils.find_files_by_suffix(
                 config_dir, ".json", depth=self.search_depth
+            )
+            json_files.extend(
+                sleap_utils.find_files_by_suffix(
+                    config_dir, ".yaml", depth=self.search_depth
+                )
+            )
+            json_files.extend(
+                sleap_utils.find_files_by_suffix(
+                    config_dir, ".yml", depth=self.search_depth
+                )
             )
 
             if Path(config_dir).as_posix().endswith("sleap/training_profiles"):
@@ -441,23 +466,54 @@ class TrainingConfigsGetter:
 
     def try_loading_path(self, path: Text) -> Optional[ConfigFileInfo]:
         """Attempts to load config file and wrap in `ConfigFileInfo` object."""
-        try:
-            cfg = TrainingJobConfig.load_json(path)
-        except Exception as e:
-            # Couldn't load so just ignore
-            print(e)
-            pass
+        if path.endswith("yaml") or path.endswith("yml"):
+            try:
+                # cfg = TrainingJobConfig.load_json(path)
+                pass
+            except Exception as e:
+                # Couldn't load so just ignore
+                print(e)
+                pass
+            else:
+                # Get the head from the model (i.e., what the model will predict)
+                from omegaconf import OmegaConf
+                from sleap.gui.legacy.config.yaml_to_training_job import mapper
+
+                cfg = OmegaConf.load(path)
+                for head in cfg.model_config.head_configs:
+                    if cfg.model_config.head_configs[f"{head}"] is not None:
+                        key = head
+                        break
+
+                if key == "bottomup":
+                    key = "multi_instance"
+
+                filename = os.path.basename(path)
+
+                # If filter isn't set or matches head name, add config to list
+                if self.head_filter in (None, key):
+                    return ConfigFileInfo(
+                        path=path, filename=filename, config=mapper(cfg), head_name=key
+                    )
         else:
             # Get the head from the model (i.e., what the model will predict)
-            key = cfg.model.heads.which_oneof_attrib_name()
+            try:
+                cfg = TrainingJobConfig.load_json(path)
+            except Exception as e:
+                # Couldn't load so just ignore
+                print(e)
+                pass
+            else:
+                # Get the head from the model (i.e., what the model will predict)
+                key = cfg.model.heads.which_oneof_attrib_name()
 
-            filename = os.path.basename(path)
+                filename = os.path.basename(path)
 
-            # If filter isn't set or matches head name, add config to list
-            if self.head_filter in (None, key):
-                return ConfigFileInfo(
-                    path=path, filename=filename, config=cfg, head_name=key
-                )
+                # If filter isn't set or matches head name, add config to list
+                if self.head_filter in (None, key):
+                    return ConfigFileInfo(
+                        path=path, filename=filename, config=cfg, head_name=key
+                    )
 
         return None
 
