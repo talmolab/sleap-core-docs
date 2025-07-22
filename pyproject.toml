@@ -1,0 +1,86 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sleap"
+dynamic = ["version", "readme"]
+description = "SLEAP (Social LEAP Estimates Animal Poses) is a deep learning framework for animal pose tracking."
+authors = [
+    { name = "Talmo Pereira", email = "talmo@salk.edu" }
+]
+requires-python = ">=3.11"
+license = {text = "BSD-3-Clause"}
+keywords = ["sleap", "pose estimation", "tracking", "neuroscience", "deep learning", "computer vision"]
+classifiers = [
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: BSD License",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
+dependencies = [
+    "attrs>=21.2.0,<=21.4.0",
+    "cattrs==1.1.1",
+    "jsmin",
+    "jsonpickle",
+    "networkx",
+    "numpy",
+    "opencv-python",
+    "h5py",
+    "imageio",
+    "imageio-ffmpeg",
+    "imgstore",
+    "pandas",
+    "pillow",
+    "psutil",
+    "Pyside6",
+    "qtpy",
+    "pyzmq",
+    "python-rapidjson",
+    "rich",
+    "scipy",
+    "scikit-learn",
+    "scikit-image",
+    "seaborn",
+    "ndx-pose",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "black",
+    "ruff",
+    "pydocstyle",
+    "toml",
+    "twine",
+    "build",
+    "ipython",
+    "jupyterlab",
+]
+
+[project.scripts]
+sleap-convert = "sleap.io.convert:main"
+sleap-render = "sleap.io.visuals:main"
+sleap-label = "sleap.gui.app:main"
+sleap-inspect = "sleap.info.labels:main"
+sleap-diagnostic = "sleap.diagnostic:main"
+
+[project.urls]
+Homepage = "https://sleap.ai"
+Repository = "https://github.com/talmolab/sleap"
+
+[tool.setuptools]
+packages = ["sleap"]
+
+[tool.setuptools.dynamic]
+version = {attr = "sleap.version.__version__"}
+readme = {file = ["README.md"]}
+
+[tool.black]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["D"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
