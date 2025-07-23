@@ -23,7 +23,7 @@ dependencies = [
     "jsmin",
     "jsonpickle",
     "networkx",
-    "numpy",
+    "numpy<2.0.0",
     "opencv-python",
     "h5py",
     "imageio",
