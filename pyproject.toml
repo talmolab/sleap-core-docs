@@ -43,6 +43,7 @@ dependencies = [
     "seaborn",
     "ndx-pose",
     "nixio",
+    "qimage2ndarray",
 ]
 
 [project.optional-dependencies]
