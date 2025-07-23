@@ -42,6 +42,7 @@ dependencies = [
     "scikit-image",
     "seaborn",
     "ndx-pose",
+    "nixio",
 ]
 
 [project.optional-dependencies]
