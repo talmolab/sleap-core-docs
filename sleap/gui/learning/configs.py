@@ -170,7 +170,7 @@ class ConfigFileInfo:
         if path.endswith("yaml") or path.endswith("yml"):
             # convert yaml to legacy GUI config.
             from omegaconf import OmegaConf
-            from sleap.gui.legacy.config.yaml_to_training_job import mapper
+            from sleap.gui.legacy.config.yaml_cfg_sleap_trainingjob_cfg import mapper
 
             omegaconf_cfg = OmegaConf.load(path)
             cfg = mapper(omegaconf_cfg)
@@ -309,11 +309,12 @@ class TrainingConfigFilesWidget(FieldComboWidget):
 
     def doFileSelection(self):
         """Shows file browser to add training profile for given model type."""
+        filters = ["JSON (*.json)", "YAML (*.yaml)", "YML (*.yml)"]
         filename, _ = FileDialog.open(
             None,
             dir=None,
             caption="Select training configuration file...",
-            filter="JSON (*.json) | YAML (*.yaml) | YML (*.yml)",
+            filter=";;".join(filters),
         )
         return self._cfg_getter.try_loading_path(filename) if filename else None
 
@@ -384,12 +385,12 @@ class TrainingConfigsGetter:
             )
             json_files.extend(
                 sleap_utils.find_files_by_suffix(
-                    config_dir, ".yaml", depth=self.search_depth
+                    config_dir, "training_config.yaml", depth=self.search_depth
                 )
             )
             json_files.extend(
                 sleap_utils.find_files_by_suffix(
-                    config_dir, ".yml", depth=self.search_depth
+                    config_dir, "training_config.yml", depth=self.search_depth
                 )
             )
 
@@ -469,7 +470,7 @@ class TrainingConfigsGetter:
         if path.endswith("yaml") or path.endswith("yml"):
             # Get the head from the model (i.e., what the model will predict)
             from omegaconf import OmegaConf
-            from sleap.gui.legacy.config.yaml_to_training_job import mapper
+            from sleap.gui.legacy.config.yaml_cfg_sleap_trainingjob_cfg import mapper
 
             cfg = OmegaConf.load(path)
             for head in cfg.model_config.head_configs:
