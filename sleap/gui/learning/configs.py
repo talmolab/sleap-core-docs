@@ -63,7 +63,13 @@ class ConfigFileInfo:
 
     @property
     def path_dir(self):
-        return os.path.dirname(self.path) if self.path.endswith("yaml") else self.path
+        return (
+            os.path.dirname(self.path)
+            if self.path.endswith("yaml")
+            or self.path.endswith("json")
+            or self.path.endswith("yml")
+            else self.path
+        )
 
     def _get_file_path(self, shortname) -> Optional[Text]:
         """

@@ -271,7 +271,11 @@ class InferenceTask:
             )
 
         for job_path in self.trained_job_paths:
-            if job_path.endswith(".yaml"):
+            if (
+                job_path.endswith(".yaml")
+                or job_path.endswith(".json")
+                or job_path.endswith(".yml")
+            ):
                 job_path = str(
                     Path(job_path).parent
                 )  # get the model ckpt folder path from the path of `training_config.yaml`
