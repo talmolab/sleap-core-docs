@@ -79,6 +79,14 @@ from sleap.nn.model import Model
 from sleap.nn.viz import plot_confmaps, plot_peaks
 from sleap.util import get_package_file, plot_img
 
+# sleapRTC
+import asyncio
+import zipfile
+from qtpy import QtWidgets
+from pathlib import Path
+from sleap.gui.learning.dialog import LearningDialog
+from sleap_client.client import run_client  
+
 logger = logging.getLogger(__name__)
 
 
@@ -1901,6 +1909,11 @@ def create_trainer_using_cli(args: Optional[List] = None):
     )
     parser.add_argument("--prefix", default="", help="Prefix to prepend to run name.")
     parser.add_argument("--suffix", default="", help="Suffix to append to run name.")
+    parser.add_argument(
+        "--remote_worker",
+        action="store_true",
+        help="Run the training job on a remote worker. This is not yet implemented.",
+    )
 
     device_group = parser.add_mutually_exclusive_group(required=False)
     device_group.add_argument(
@@ -1969,6 +1982,12 @@ def create_trainer_using_cli(args: Optional[List] = None):
     if args.base_checkpoint is not None:
         job_config.model.base_checkpoint = args.base_checkpoint
 
+    if args.remote_worker != "":
+        job_config.outputs.remote_worker = args.remote_worker
+        job_config.outputs.job_path = job_filename
+        job_config.outputs.labels_path = args.labels_path
+        job_config.outputs.video_paths = args.video_paths
+
     logger.info("Versions:")
     sleap.versions()
 
@@ -2035,10 +2054,36 @@ def create_trainer_using_cli(args: Optional[List] = None):
     return trainer
 
 
+async def run_remote_worker(trainer: Trainer):
+    """Run sleap-train on a remote worker."""
+    logger.info("Running training job on remote worker...")
+
+    labels_pkg_filename = trainer.config.outputs.labels_path # ex. dancing_labels.v001.pkg.slp
+    cfg_filename = trainer.config.outputs.job_path # ex. sleap/training_profiles/baseline.centroid.json
+
+    app = QtWidgets.QApplication()
+    dialog = LearningDialog(mode='training', labels_filename=labels_pkg_filename)
+    dialog.remote_worker(gui=False)
+
+    # dialog = LearningDialog(
+    #     mode="training",
+    #     labels_filename=trainer.config.outputs.labels_path,
+    # )
+    # dialog.remote_worker(gui=False)
+
+    return
+
+
 def main(args: Optional[List] = None):
     """Create CLI for training and run."""
     trainer = create_trainer_using_cli(args=args)
-    trainer.train()
+
+    # Check for remote worker.
+    if trainer.config.outputs.remote_worker:
+        logger.info("Running remote worker...")
+        asyncio.run(run_remote_worker(trainer))
+    else:
+        trainer.train()
 
 
 if __name__ == "__main__":

@@ -17,7 +17,6 @@ from sleap.gui.dialogs.filedialog import FileDialog
 from sleap.gui.dialogs.formbuilder import YamlFormWidget
 from sleap.gui.learning import configs, datagen, receptivefield, runners, scopedkeydict
 
-import sleap_client
 from sleap_client.client import run_client
 
 # List of fields which should show list of skeleton nodes
@@ -824,16 +823,22 @@ class LearningDialog(QtWidgets.QDialog):
         if labels_filename is None:
             labels_filename = self.labels_filename
 
+        print(output_dir)
+        print(labels_filename)
+        print(config_info_list)
+        print(pipeline_form_data)
+        print(items_for_inference)
+
         runners.write_pipeline_files(
             output_dir=output_dir,
-            labels_filename=labels_filename,
+            labels_filename=labels_filename, 
             config_info_list=config_info_list,
             inference_params=pipeline_form_data,
             items_for_inference=items_for_inference,
         )
 
 
-    async def remote_worker(self, gui: bool = True):
+    async def remote_worker(self, config_filename, gui: bool = True):
         """Run pipeline on remote worker (GPU cluster)."""
         # Create temp dir before packaging.
         tmp_dir = tempfile.TemporaryDirectory()
@@ -937,7 +942,7 @@ class LearningDialog(QtWidgets.QDialog):
             ret = sleap.gui.commands.export_dataset_gui(
                 self.labels,
                 tmp_dir.name + "/" + labels_pkg_filename,
-                all_labeled=False,
+                all_labeled=False, 
                 suggested=include_suggestions,
             )
             if ret == "canceled":
