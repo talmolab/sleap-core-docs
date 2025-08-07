@@ -31,11 +31,30 @@ from sleap.gui.legacy.config.outputs import CheckpointingConfig, ZMQConfig
 
 
 def mapper(config: OmegaConf):
+    import sleap_io as sio
+    from sleap_io.io.skeleton import SkeletonEncoder
+
     data_cfg = config.data_config
     backbone_cfg = config.model_config.backbone_config
     head_cfgs = config.model_config.head_configs
     trainer_cfg = config.trainer_config
     crop_size = OmegaConf.select(data_cfg, "preprocessing.crop_hw", default=None)
+
+    skeletons = []
+    for skel_cfg in data_cfg.skeletons:
+
+        skel = sio.Skeleton(
+            nodes=[n["name"] for n in skel_cfg.nodes], name=skel_cfg.name
+        )
+        skel.add_edges(
+            [(e["source"]["name"], e["destination"]["name"]) for e in skel_cfg.edges]
+        )
+        if skel_cfg.symmetries:
+            for n1, n2 in skel_cfg.symmetries:
+                skel.add_symmetry(n1["name"], n2["name"])
+
+        skeletons.append(skel)
+
     data = DataConfig(
         labels=LabelsConfig(
             training_labels=data_cfg.train_labels_path[0],
@@ -44,6 +63,7 @@ def mapper(config: OmegaConf):
             else None,
             validation_fraction=data_cfg.validation_fraction,
             test_labels=data_cfg.test_file_path,
+            skeletons=SkeletonEncoder().encode(skeletons),
         ),
         preprocessing=PreprocessingConfig(
             ensure_rgb=data_cfg.preprocessing.ensure_rgb,
@@ -165,11 +185,11 @@ def mapper(config: OmegaConf):
     aug_cfg = data_cfg.augmentation_config
     ac = AugmentationConfig(
         rotate=True if aug_cfg.geometric.affine_p > 0 else False,
-        rotation_min_angle=-aug_cfg.geometric.rotation,
-        rotation_max_angle=aug_cfg.geometric.rotation,
+        rotation_min_angle=-aug_cfg.geometric.rotation_min,
+        rotation_max_angle=aug_cfg.geometric.rotation_max,
         scale=True if aug_cfg.geometric.affine_p > 0 else False,
-        scale_min=aug_cfg.geometric.scale[0],
-        scale_max=aug_cfg.geometric.scale[1],
+        scale_min=aug_cfg.geometric.scale_min,
+        scale_max=aug_cfg.geometric.scale_max,
         uniform_noise=True if aug_cfg.intensity.uniform_noise_p > 0 else False,
         uniform_noise_min_val=aug_cfg.intensity.uniform_noise_min,
         uniform_noise_max_val=aug_cfg.intensity.uniform_noise_max,
@@ -180,8 +200,8 @@ def mapper(config: OmegaConf):
         contrast_min_gamma=aug_cfg.intensity.contrast_min,
         contrast_max_gamma=aug_cfg.intensity.contrast_max,
         brightness=True if aug_cfg.intensity.brightness_p > 0 else False,
-        brightness_min_val=aug_cfg.intensity.brightness[0],
-        brightness_max_val=aug_cfg.intensity.brightness[1],
+        brightness_min_val=aug_cfg.intensity.brightness_min,
+        brightness_max_val=aug_cfg.intensity.brightness_max,
     )
     augmentaion_config = (
         AugmentationConfig() if not data_cfg.use_augmentations_train else ac

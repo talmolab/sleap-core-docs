@@ -240,9 +240,7 @@ class InferenceTask:
     ) -> List[Text]:
         """Makes list of CLI arguments needed for running inference."""
         cli_args = [
-            "python",
-            "-m",
-            "sleap_nn.predict",
+            "sleap-nn-track",
         ]
         cli_args.extend(
             item_for_inference.cli_args
@@ -511,7 +509,7 @@ def write_pipeline_files(
             new_cfg_filenames.append(cfg_info.config.outputs.run_path)
 
             # Add a line to the script for training this model
-            train_script += f"python -m sleap_nn.train --config-name {new_cfg_filename} --config-path {''} hydra.run.dir=. hydra.output_subdir=null trainer_config.save_ckpt_path={ckpt_path} trainer_config.zmq.controller_address=tcp://127.0.0.1:{str(inference_params['controller_port'])} trainer_config.zmq.publish_address=tcp://127.0.0.1:{str(inference_params['publish_port'])}"
+            train_script += f"sleap-nn-train --config-name {new_cfg_filename} --config-path {''} hydra.run.dir=. hydra.output_subdir=null trainer_config.save_ckpt_path={ckpt_path} trainer_config.zmq.controller_address=tcp://127.0.0.1:{str(inference_params['controller_port'])} trainer_config.zmq.publish_address=tcp://127.0.0.1:{str(inference_params['publish_port'])}"
 
             # Setup job params
             training_jobs.append(
@@ -931,15 +929,14 @@ def train_subprocess(
         # convert json to yaml (to sleap-nn config format)
         cfg_file_name = datetime.now().strftime("%y%m%d_%H%M%S") + "_config"
         cfg = snn_TrainingJobConfig.load_sleap_config(training_job_path)
-        cfg.data_config.train_labels_path.append(labels_filename)
+        if len(cfg.data_config.train_labels_path) == 0:
+            cfg.data_config.train_labels_path.append(labels_filename)
 
         OmegaConf.save(cfg, (Path(temp_dir) / f"{cfg_file_name}.yaml").as_posix())
 
         # Build CLI arguments for training
         cli_args = [
-            "python",
-            "-m",
-            "sleap_nn.train",
+            "sleap-nn-train",
             "--config-name",
             f"{cfg_file_name}",
             "--config-path",
