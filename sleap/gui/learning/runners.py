@@ -514,7 +514,7 @@ def write_pipeline_files(
             new_cfg_filenames.append(cfg_info.config.outputs.run_path)
 
             # Add a line to the script for training this model
-            train_script += f"sleap-nn-train --config-name {new_cfg_filename} --config-path {''} hydra.run.dir=. hydra.output_subdir=null trainer_config.save_ckpt_path={ckpt_path} trainer_config.zmq.controller_address=tcp://127.0.0.1:{str(inference_params['controller_port'])} trainer_config.zmq.publish_address=tcp://127.0.0.1:{str(inference_params['publish_port'])}"
+            train_script += f"sleap-nn-train --config-name {new_cfg_filename} --config-dir {''} hydra.run.dir=. hydra.output_subdir=null trainer_config.save_ckpt_path={ckpt_path} trainer_config.zmq.controller_address=tcp://127.0.0.1:{str(inference_params['controller_port'])} trainer_config.zmq.publish_address=tcp://127.0.0.1:{str(inference_params['publish_port'])}"
 
             # Setup job params
             training_jobs.append(
@@ -946,7 +946,7 @@ def train_subprocess(
             "sleap-nn-train",
             "--config-name",
             f"{cfg_file_name}",
-            "--config-path",
+            "--config-dir",
             f"{temp_dir}",
             "hydra.run.dir=.",
             "hydra.output_subdir=null",
