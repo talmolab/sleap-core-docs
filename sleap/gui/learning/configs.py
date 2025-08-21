@@ -1,22 +1,26 @@
 """
 Find, load, and show lists of saved `TrainingJobConfig`.
 """
+
 import datetime
 import os
 import re
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Text
-
 import attr
 import h5py
 import numpy as np
+import logging
+
 from qtpy import QtCore, QtWidgets
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Text
 
 from sleap import Labels, Skeleton
 from sleap import util as sleap_utils
 from sleap.gui.dialogs.filedialog import FileDialog
 from sleap.gui.dialogs.formbuilder import FieldComboWidget
 from sleap.gui.legacy.config import TrainingJobConfig
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 @attr.s(auto_attribs=True, slots=True)
