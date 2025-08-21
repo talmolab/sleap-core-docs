@@ -1,22 +1,26 @@
 """
 Find, load, and show lists of saved `TrainingJobConfig`.
 """
+
 import datetime
 import os
 import re
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Text
-
 import attr
 import h5py
 import numpy as np
+import logging
+
 from qtpy import QtCore, QtWidgets
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Text
 
 from sleap import Labels, Skeleton
 from sleap import util as sleap_utils
 from sleap.gui.dialogs.filedialog import FileDialog
 from sleap.gui.dialogs.formbuilder import FieldComboWidget
 from sleap.gui.legacy.config import TrainingJobConfig
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 @attr.s(auto_attribs=True, slots=True)
@@ -315,14 +319,18 @@ class TrainingConfigFilesWidget(FieldComboWidget):
 
     def doFileSelection(self):
         """Shows file browser to add training profile for given model type."""
-        filters = ["JSON (*.json)", "YAML (*.yaml)", "YML (*.yml)"]
+        filters = ["JSON (*.json)", "YAML (*.yaml;*.yml)"]
         filename, _ = FileDialog.open(
             None,
             dir=None,
             caption="Select training configuration file...",
             filter=";;".join(filters),
         )
-        return self._cfg_getter.try_loading_path(filename) if filename else None
+        logging.debug(f"Selected training config file: {filename}")
+        if not filename:
+            logging.debug(f"No file selected for training config.")
+            return None
+        return self._cfg_getter.try_loading_path(filename)
 
     def _add_file_selection_to_menu(self, cfg_info: Optional[ConfigFileInfo] = None):
         if cfg_info:
@@ -488,12 +496,22 @@ class TrainingConfigsGetter:
                 key = "multi_instance"
 
             filename = os.path.basename(path)
+            logging.debug(f"Loaded YAML config file: {filename}")
 
             # If filter isn't set or matches head name, add config to list
             if self.head_filter in (None, key):
-                return ConfigFileInfo(
-                    path=path, filename=filename, config=mapper(cfg), head_name=key
-                )
+                logging.debug(f"Config file matches head filter: {self.head_filter}")
+                # Try mapping to TrainingJobConfig
+                try:
+                    cfg = mapper(cfg)
+                    logging.debug(f"Mapped YAML config to TrainingJobConfig.")
+                    return ConfigFileInfo(
+                        path=path, filename=filename, config=mapper(cfg), head_name=key
+                    )
+                except Exception as e:
+                    # Couldn't map so just ignore
+                    logging.error(f"Error mapping YAML config: {e}")
+                    return None
         else:
             # Get the head from the model (i.e., what the model will predict)
             try:
