@@ -590,10 +590,12 @@ augmentation:
   type: bool
 - default: 0.0
   help: Minimum value to add.
+  range: 0.0, 1.0
   label: Uniform Noise Min Val
   name: optimization.augmentation_config.uniform_noise_min_val
   type: double
-- default: 10.0
+- default: 1.0
+  range: 0.0, 1.0
   help: Maximum value to add.
   label: Uniform Noise Max Val
   name: optimization.augmentation_config.uniform_noise_max_val

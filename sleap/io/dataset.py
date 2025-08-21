@@ -307,16 +307,19 @@ class LabelsDataCache:
 
             def filter_func(lf):
                 return video is None or lf.video == video
+
         elif filter == "user":
 
             def filter_func(lf):
                 return (video is None or lf.video == video) and lf.has_user_instances
+
         elif filter == "predicted":
 
             def filter_func(lf):
                 return (
                     video is None or lf.video == video
                 ) and lf.has_predicted_instances
+
         else:
             raise ValueError(f"Invalid filter: {filter}")
 

@@ -115,6 +115,10 @@ jupyter = [
     "jupyterlab",
 ]
 
+sleap-nn = [
+    "sleap-nn[torch-cpu]"
+]
+
 [project.urls]
 Homepage = "https://sleap.ai"
 Documentation = "https://sleap.ai/"
