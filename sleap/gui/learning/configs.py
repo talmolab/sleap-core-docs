@@ -319,14 +319,18 @@ class TrainingConfigFilesWidget(FieldComboWidget):
 
     def doFileSelection(self):
         """Shows file browser to add training profile for given model type."""
-        filters = ["JSON (*.json)", "YAML (*.yaml)", "YML (*.yml)"]
+        filters = ["JSON (*.json)", "YAML (*.yaml;*.yml)"]
         filename, _ = FileDialog.open(
             None,
             dir=None,
             caption="Select training configuration file...",
             filter=";;".join(filters),
         )
-        return self._cfg_getter.try_loading_path(filename) if filename else None
+        logging.debug(f"Selected training config file: {filename}")
+        if not filename:
+            logging.debug(f"No file selected for training config.")
+            return None
+        return self._cfg_getter.try_loading_path(filename)
 
     def _add_file_selection_to_menu(self, cfg_info: Optional[ConfigFileInfo] = None):
         if cfg_info:
