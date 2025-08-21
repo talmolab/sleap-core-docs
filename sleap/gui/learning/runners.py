@@ -502,12 +502,7 @@ def write_pipeline_files(
             cfg = snn_TrainingJobConfig.load_sleap_config_from_json(
                 json.loads(cfg_info.config.to_json())
             )
-            if cfg.data_config.train_labels_path is None:
-                cfg.data_config.train_labels_path = [os.path.basename(labels_filename)]
-            else:
-                cfg.data_config.train_labels_path.append(
-                    os.path.basename(labels_filename)
-                )
+            cfg.data_config.train_labels_path = [os.path.basename(labels_filename)]
             OmegaConf.save(cfg, new_cfg_filename)
 
             # Keep track of the path where we'll find the trained model
@@ -934,10 +929,7 @@ def train_subprocess(
         # convert json to yaml (to sleap-nn config format)
         cfg_file_name = datetime.now().strftime("%y%m%d_%H%M%S") + "_config"
         cfg = snn_TrainingJobConfig.load_sleap_config(training_job_path)
-        if cfg.data_config.train_labels_path is None:
-            cfg.data_config.train_labels_path = [labels_filename]
-        else:
-            cfg.data_config.train_labels_path.append(labels_filename)
+        cfg.data_config.train_labels_path = [labels_filename]
 
         cfg.trainer_config.save_ckpt_path = run_path
         cfg.trainer_config.visualize_preds_during_training = save_viz
