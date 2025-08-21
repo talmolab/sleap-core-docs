@@ -496,9 +496,19 @@ class TrainingConfigsGetter:
                 key = "multi_instance"
 
             filename = os.path.basename(path)
+            logging.debug(f"Loaded YAML config file: {filename}")
 
             # If filter isn't set or matches head name, add config to list
             if self.head_filter in (None, key):
+                logging.debug(f"Config file matches head filter: {self.head_filter}")
+                # Try mapping to TrainingJobConfig
+                try:
+                    cfg = mapper(cfg)
+                    logging.debug(f"Mapped YAML config to TrainingJobConfig.")
+                except Exception as e:
+                    # Couldn't map so just ignore
+                    logging.error(f"Error mapping YAML config: {e}")
+                    return None
                 return ConfigFileInfo(
                     path=path, filename=filename, config=mapper(cfg), head_name=key
                 )
