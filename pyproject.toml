@@ -94,11 +94,20 @@ readme = {file = ["README.md"], content-type="text/markdown"}
 dev = [
     "pytest",
     "pytest-cov",
-    "black",
-    "pydocstyle",
-    "toml",
-    "twine",
-    "wheel",
+    "pytest-qt>=4.4.0",
+    "pytest-xvfb",
+    "ruff",
+]
+
+docs = [
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocs-jupyter",
+    "mkdocstrings[python]",
+    "mkdocs-gen-files",
+    "mkdocs-literate-nav",
+    "mkdocs-section-index",
+    "mike",
 ]
 
 jupyter = [
@@ -123,7 +132,24 @@ sleap-diagnostic = "sleap.diagnostic:main"
 # sleap-export = "sleap.nn.inference:export_cli"
 
 [tool.setuptools.packages.find]
-exclude = ["tensorflow", "tests", "tests.*", "docs"]
+exclude = ["tests", "tests.*", "docs"]
 
 [tool.setuptools.package-data]
 "*" = ["*.ui", "*.txt", "*.md"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = [
+    "E721",  # Use isinstance() for type comparisons
+    "E731",  # Do not assign a lambda expression
+    "E741",  # Ambiguous variable name
+    "F405",  # May be undefined, or defined from star imports
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "E402"]
+"tests/*" = ["F403", "F405"]

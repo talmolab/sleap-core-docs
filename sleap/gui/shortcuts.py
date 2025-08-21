@@ -70,7 +70,6 @@ class Shortcuts(object):
 
     def _process_shortcut_dict(self, shortcuts: dict) -> dict:
         for action in shortcuts.keys():
-
             # Ignore shortcuts which aren't in currently supported list
             if action not in self._names:
                 continue
@@ -85,7 +84,7 @@ class Shortcuts(object):
 
             try:
                 shortcuts[action] = eval(key_string)
-            except:
+            except Exception:
                 shortcuts[action] = QKeySequence.fromString(key_string)
         return shortcuts
 

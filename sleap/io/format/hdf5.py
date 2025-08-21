@@ -138,7 +138,6 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
         *args,
         **kwargs,
     ):
-
         f = file.file
         labels = cls.read_headers(file, video_search, match_to)
 
@@ -277,7 +276,6 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
         suggested: bool = False,
         progress_callback: Optional[Callable[[int, int], None]] = None,
     ):
-
         labels = source_object
 
         # Delete the file if it exists, we want to start from scratch since
@@ -319,7 +317,6 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
             d["videos"] = Video.cattr().unstructure(new_videos)
 
         with h5py.File(filename, "a") as f:
-
             # Add all the JSON metadata
             meta_group = f.require_group("metadata")
 
@@ -327,7 +324,6 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
 
             # If we are appending and there already exists JSON metadata
             if append and "json" in meta_group.attrs:
-
                 # Otherwise, we need to read the JSON and append to the lists
                 json = meta_group.attrs["json"]
                 if not isinstance(json, str):
@@ -374,7 +370,7 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
                 # group got to be too big.
                 for key in ("videos", "tracks", "suggestions"):
                     # Convert for saving in hdf5 dataset
-                    data = [np.string_(json_dumps(item)) for item in d[key]]
+                    data = [json_dumps(item).encode("utf-8") for item in d[key]]
 
                     hdf5_key = f"{key}_json"
 
@@ -385,7 +381,7 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
                     d[key] = []
 
             # Output the dict to JSON
-            meta_group.attrs["json"] = np.string_(json_dumps(d))
+            meta_group.attrs["json"] = json_dumps(d).encode("utf-8")
 
             # FIXME: We can probably construct these from attrs fields
             # We will store Instances and PredcitedInstances in the same
@@ -472,7 +468,6 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
                     instance_id + instance_id_offset + len(label.instances),
                 )
                 for instance in label.instances:
-
                     # Add this instance to our lookup structure we will need for
                     # from_predicted links
                     instance_to_idx[instance] = instance_id
@@ -515,9 +510,9 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
                     # If these are predicted points, copy them to the predicted point
                     # array otherwise, use the normal point array
                     if type(parray) is PredictedPointArray:
-                        pred_points[
-                            pred_point_id : (pred_point_id + len(parray))
-                        ] = parray
+                        pred_points[pred_point_id : (pred_point_id + len(parray))] = (
+                            parray
+                        )
                         pred_point_id = pred_point_id + len(parray)
                     else:
                         points[point_id : (point_id + len(parray))] = parray

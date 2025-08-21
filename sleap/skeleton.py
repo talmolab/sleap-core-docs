@@ -326,7 +326,8 @@ class SkeletonDecoder:
             return_bytes: whether to return the decoded image as bytes
 
         Returns:
-            Either a PIL.Image of the skeleton preview image or the decoded image as bytes
+            Either a PIL.Image of the skeleton preview image or the decoded image
+            as bytes
             (if `return_bytes` is True).
         """
         bytes = base64.b64decode(img_b64)
@@ -394,7 +395,8 @@ class SkeletonEncoder:
             ]
         }`
 
-    Where `name` and `weight` are the attributes of the `Node` class; weight is always 1.0.
+    Where `name` and `weight` are the attributes of the `Node` class; weight is
+    always 1.0.
     `EdgeType` is an enum with values `BODY = 1` and `SYMMETRY = 2`.
 
     See sleap.skeleton.Node and sleap.skeleton.EdgeType.
@@ -638,12 +640,8 @@ class Skeleton:
         edges = ", ".join([f"{s}->{d}" for (s, d) in self.edge_names])
         symm = ", ".join([f"{s}<->{d}" for (s, d) in self.symmetry_names])
         return (
-            "Skeleton("
-            f"description={description}, "
-            f"nodes=[{nodes}], "
-            f"edges=[{edges}], "
-            f"symmetries=[{symm}]"
-            ")"
+            f"Skeleton(description={description}, nodes=[{nodes}], "
+            f"edges=[{edges}], symmetries=[{symm}])"
         )
 
     def matches(self, other: "Skeleton") -> bool:
@@ -1353,7 +1351,6 @@ class Skeleton:
         Returns:
             None
         """
-        existing_nodes = self.nodes
         for old_name, new_name in mapping.items():
             if self.has_node(new_name):
                 raise ValueError("Cannot relabel a node to an existing name.")
@@ -1661,7 +1658,6 @@ class Skeleton:
 
     @classmethod
     def _load_hdf5(cls, file: h5py.File):
-
         skeletons = {}
         for name, json_str in file["skeleton"].attrs.items():
             skeletons[name] = cls.from_json(json_str)
@@ -1732,7 +1728,7 @@ class Skeleton:
 
         # Write the dataset to JSON string, then store it in a string
         # attribute
-        all_sk_group.attrs[self.name] = np.string_(self.to_json())
+        all_sk_group.attrs[self.name] = self.to_json().encode("utf-8")
 
     @classmethod
     def load_mat(cls, filename: str) -> "Skeleton":

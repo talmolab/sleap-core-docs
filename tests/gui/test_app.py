@@ -155,7 +155,7 @@ def test_app_workflow(
     assert len(app.state["labeled_frame"].instances) == 2
 
     inst_29_0 = app.state["labeled_frame"].instances[0]
-    inst_29_1 = app.state["labeled_frame"].instances[1]
+    app.state["labeled_frame"].instances[1]
 
     app.state["instance"] = inst_29_0
 
@@ -283,7 +283,8 @@ def test_app_workflow(
         assert lf.frame_idx == prev_idx + frame_delta
         prev_idx = l_suggestion.frame_idx
 
-    # Add video, add frame suggestions, remove the video, verify the frame suggestions are also removed
+    # Add video, add frame suggestions, remove the video, verify the frame suggestions
+    # are also removed
     app.labels.add_video(small_robot_mp4_vid)
     app.on_data_update([UpdateTopic.video])
 
@@ -305,7 +306,7 @@ def test_app_workflow(
     # Verify that suggestions contain frames from both videos
     video_source = []
     for sugg in app.labels.suggestions:
-        if not (sugg.video in video_source):
+        if sugg.video not in video_source:
             video_source.append(sugg.video)
     assert len(video_source) == 2
 
@@ -326,8 +327,8 @@ def test_app_new_window(qtbot):
     app.closeAllWindows()
     win = MainWindow(no_usage_data=True)
 
-    assert win.commands.has_any_changes == False
-    assert win.state["project_loaded"] == False
+    assert not win.commands.has_any_changes
+    assert not win.state["project_loaded"]
 
     start_wins = sum(
         (1 for widget in app.topLevelWidgets() if isinstance(widget, MainWindow))
@@ -338,7 +339,7 @@ def test_app_new_window(qtbot):
         win.commands, dict(filename="tests/data/json_format_v1/centered_pair.json")
     )
 
-    assert win.state["project_loaded"] == True
+    assert win.state["project_loaded"]
     wins = sum(
         (1 for widget in app.topLevelWidgets() if isinstance(widget, MainWindow))
     )

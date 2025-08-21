@@ -30,7 +30,7 @@ def call(command):
             command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=True
         )
         print_(result.stdout.decode())
-    except FileNotFoundError as e:
+    except FileNotFoundError:
         print_(f"unable to locate {command[0]}")
     except subprocess.CalledProcessError as e:
         print_(f"call to {command[0]} failed")
@@ -54,10 +54,11 @@ def system_section():
 
     label("utc", datetime.datetime.utcnow())
     label("python", platform.python_version())
-    label(
-        "system",
-        f"{platform.system()}, {platform.machine()}, {platform.release()}, {platform.version()}",
+    system_info = (
+        f"{platform.system()}, {platform.machine()}, "
+        f"{platform.release()}, {platform.version()}"
     )
+    label("system", system_info)
     label("path", os.getenv("PATH"))
 
 
@@ -74,7 +75,7 @@ def imports_section():
         if hasattr(sleap, "__version__"):
             sleap_version = sleap.__version__
         label("sleap version", sleap_version)
-    except:
+    except Exception:
         label("sleap import", False)
 
     try:
@@ -85,7 +86,7 @@ def imports_section():
 
         call_self(["--gui-check"])
 
-    except:
+    except Exception:
         label("pyside2 import", False)
 
     try:
@@ -96,14 +97,12 @@ def imports_section():
 
         call_self(["--gui-check"])
 
-    except:
+    except Exception:
         label("pyside6 import", False)
 
     try:
-        import cv2
-
         label("cv2 import", True)
-    except:
+    except Exception:
         label("cv2 import", False)
 
 

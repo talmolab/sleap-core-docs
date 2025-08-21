@@ -21,7 +21,7 @@ method while passing the user-selected params as the named parameters: ::
 """
 
 from qtpy.QtCore import Qt, QRectF, Signal
-from qtpy.QtWidgets import QApplication, QLayout, QVBoxLayout, QHBoxLayout, QFrame
+from qtpy.QtWidgets import QLayout, QVBoxLayout, QHBoxLayout, QFrame
 from qtpy.QtWidgets import QDialog, QWidget, QLabel, QScrollArea
 from qtpy.QtWidgets import (
     QPushButton,
@@ -67,7 +67,8 @@ class ImportVideos:
         2. Show import parameter dialog with widget for each file.
 
         Args:
-            filenames: List of filenames. If not provided, a file browser GUI will appear.
+            filenames: List of filenames. If not provided, a file browser GUI will
+                appear.
 
         Returns:
             List with dict of the parameters for each file to import.
@@ -75,7 +76,6 @@ class ImportVideos:
         messages = dict() if messages is None else messages
 
         if filenames is None:
-
             any_video_exts = " ".join(["*." + ext for ext in available_video_exts()])
             media_video_exts = " ".join(["*." + ext for ext in MediaVideo.EXTS])
             hdf5_video_exts = " ".join(["*." + ext for ext in HDF5Video.EXTS])
@@ -408,7 +408,8 @@ class ImportItemWidget(QFrame):
             self.preview_widget.load_video(self.video)
         except Exception as e:
             print(f"Unable to load video with these parameters. Error: {e}")
-            # if we got an error showing video with those settings, clear the video preview
+            # if we got an error showing video with those settings, clear the video
+            # preview
             self.video = None
             self.preview_widget.clear_video()
 
@@ -527,7 +528,7 @@ class ImportParamWidget(QWidget):
         param_list = self.import_type["params"]
         for param in param_list:
             name = param["name"]
-            type = param["type"]
+            param["type"]
 
             if hasattr(video, name):
                 val = getattr(video, name)
@@ -557,7 +558,7 @@ class ImportParamWidget(QWidget):
         try:
             with h5py.File(self.file_path, "r") as f:
                 options = self._find_h5_datasets("", f)
-        except Exception as e:
+        except Exception:
             options = []
         return options
 

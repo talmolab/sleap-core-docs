@@ -114,8 +114,6 @@ class VideoWriterImageio(VideoWriter):
         self.crf = crf
         self.preset = preset
 
-        import imageio_ffmpeg as ffmpeg
-
         # Imageio's ffmpeg writer parameters
         # https://imageio.readthedocs.io/en/stable/examples.html#writing-videos-with-ffmpeg-and-vaapi
         # Use `ffmpeg -h encoder=libx264`` to see all options for libx264 output_params
@@ -186,8 +184,8 @@ def augment_background(images: np.ndarray, background: str | None) -> np.ndarray
     fill_values = {"black": 0, "grey": 127, "white": 255}
     if background not in fill_values:
         raise ValueError(
-            f"Invalid background color: {background}. Options include: "
-            f"{', '.join(fill_values.keys())}"
+            f"Invalid background color: {background}. "
+            f"Options include: {', '.join(fill_values.keys())}"
         )
 
     # Fill the images with the specified color.
@@ -229,7 +227,6 @@ def reader(
         logger.info(f"Chunks: {chunk_count}, chunk size: {chunk_size}")
         i = 0
         for chunk_i in range(chunk_count):
-
             # Read the next chunk of frames
             frame_start = chunk_size * chunk_i
             frame_end = min(frame_start + chunk_size, total_count)
@@ -383,7 +380,8 @@ def progress_feedback(
             progress_win.setValue(frames_complete)
         else:
             print(
-                f"Finished {frames_complete} frames in {elapsed:.1f} s, fps = {round(fps)}, approx {remaining_time:.1f} s remaining"
+                f"Finished {frames_complete} frames in {elapsed:.1f} s, "
+                f"fps = {round(fps)}, approx {remaining_time:.1f} s remaining"
             )
 
 

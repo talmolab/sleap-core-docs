@@ -11,6 +11,7 @@ on the `ColorManager` object:
 Initial color palette (and other settings, like default line width) is read
 from user preferences but can be changed after object is created.
 """
+
 from typing import Any, Iterable, Optional, Union, Text, Tuple
 
 import yaml
@@ -18,6 +19,7 @@ import yaml
 from sleap.util import get_config_file
 from sleap.instance import Instance, Track, Node
 from sleap.io.dataset import Labels
+from sleap.skeleton import Skeleton
 from sleap.prefs import prefs
 
 
@@ -130,7 +132,7 @@ class ColorManager:
             try:
                 result = tuple(map(int, split_string))
                 return result
-            except:
+            except Exception:
                 raise ValueError(f"Color '{color}' is not 'r,g,b' string.")
 
         if len(color) != 3:
@@ -139,7 +141,7 @@ class ColorManager:
         try:
             result = tuple(map(int, color))
             return result
-        except:
+        except Exception:
             raise ValueError(f"Color '{color}' is not (r,g,b) tuple.")
 
     def get_pseudo_track_index(self, instance: "Instance") -> Union[Track, int]:
@@ -208,7 +210,6 @@ class ColorManager:
                 return self.thick_pen_width
 
             if self.is_predicted(parent_instance):
-
                 is_first_node = item == parent_instance.skeleton.nodes[0]
                 return self.thick_pen_width if is_first_node else self.medium_pen_width
             else:
@@ -237,7 +238,7 @@ class ColorManager:
         self,
         item: Any,
         parent_instance: Optional[Instance] = None,
-        parent_skeleton: Optional["Skeleton"] = None,
+        parent_skeleton: Optional[Skeleton] = None,
     ) -> ColorTupleType:
         """Gets (r, g, b) tuple of color to use for drawing item."""
 

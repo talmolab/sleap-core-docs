@@ -38,7 +38,21 @@ import traceback
 from enum import Enum
 from glob import glob
 from pathlib import Path, PurePath
-from typing import Callable, Dict, Iterator, List, Optional, Tuple, Type, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Callable,
+    Dict,
+    Iterator,
+    List,
+    Optional,
+    Tuple,
+    Type,
+    Union,
+    cast,
+)
+
+if TYPE_CHECKING:
+    from sleap.gui.app import MainWindow
 
 import attr
 import cv2
@@ -837,7 +851,7 @@ class ImportNWB(AppCommand):
         if len(filename) == 0:
             return False
 
-        file_dir = os.path.dirname(filename)
+        os.path.dirname(filename)
 
         params["filename"] = filename
 
@@ -1617,8 +1631,8 @@ def export_dataset_gui(
         win.setMaximum(n_total)
         win.setValue(n)
         win.setLabelText(
-            "Exporting dataset with frame images...<br>"
-            f"{n}/{n_total} (<b>{(n/n_total)*100:.1f}%</b>)"
+            f"Exporting dataset with frame images...<br>{n}/{n_total} "
+            f"(<b>{(n / n_total) * 100:.1f}%</b>)"
         )
         QtWidgets.QApplication.instance().processEvents()
         return True
@@ -1718,7 +1732,8 @@ class ExportLabelsSubset(ExportFullPackage):
         if not super().ask(context=context, params=params):
             return False
 
-        # If we are exporting as a pkg.slp, then we just need the frame range. # Not interested in opening the video.
+        # If we are exporting as a pkg.slp, then we just need the frame range.
+        # Not interested in opening the video.
         if params.get("as_package", False):
             ExportVideoClip.get_frame_range_params(context=context, params=params)
         # Otherwise, exporting as slp and need to get video clip parameters.
@@ -2099,7 +2114,7 @@ class ToggleGrayscale(EditCommand):
         def try_to_read_grayscale(video: Video):
             try:
                 return video.backend.grayscale
-            except:
+            except Exception:
                 return None
 
         # Check that current video is set
@@ -2120,7 +2135,7 @@ class ToggleGrayscale(EditCommand):
         for idx, video in enumerate(context.labels.videos):
             try:
                 video.backend.reset(grayscale=(not grayscale))
-            except:
+            except Exception:
                 print(
                     f"This video type {type(video.backend)} for video at index {idx} "
                     f"does not support grayscale yet."
@@ -2323,7 +2338,8 @@ class RemoveVideo(EditCommand):
             response = QtWidgets.QMessageBox.critical(
                 context.app,
                 "Removing video with labels",
-                f"{total_num_labeled_frames} labeled frames in {', '.join(video_file_names)} will be deleted, "
+                f"{total_num_labeled_frames} labeled frames in "
+                f"{', '.join(video_file_names)} will be deleted, "
                 "are you sure you want to remove the videos?",
                 QtWidgets.QMessageBox.Yes,
                 QtWidgets.QMessageBox.No,
@@ -2687,8 +2703,8 @@ class InstanceDeleteCommand(EditCommand):
 
         title = "Deleting instances"
         message = (
-            f"There are {len(lf_inst_list)} instances which "
-            f"would be deleted. Are you sure you want to delete these?"
+            f"There are {len(lf_inst_list)} instances which would be deleted. "
+            f"Are you sure you want to delete these?"
         )
 
         # Confirm that we want to delete
@@ -2828,7 +2844,8 @@ class DeleteAreaPredictions(InstanceDeleteCommand):
 
         # Prompt the user to select area
         context.app.updateStatusMessage(
-            f"Please select the area from which to remove instances. This will be applied to all frames."
+            "Please select the area from which to remove instances. "
+            "This will be applied to all frames."
         )
         context.app.player.onAreaSelection(delete_area_callback)
 
@@ -3176,7 +3193,7 @@ class GenerateSuggestions(EditCommand):
 
         # TODO: Progress bar
         win = MessageDialog(
-            "Generating list of suggested frames... " "This may take a few minutes.",
+            "Generating list of suggested frames... This may take a few minutes.",
             context.app,
         )
 
@@ -3201,7 +3218,7 @@ class GenerateSuggestions(EditCommand):
         except Exception as e:
             win.hide()
             QtWidgets.QMessageBox(
-                text=f"An error occurred while generating suggestions. "
+                text="An error occurred while generating suggestions. "
                 "Your command line terminal may have more information about "
                 "the error."
             ).exec_()
@@ -3403,7 +3420,8 @@ class AddInstance(EditCommand):
             None
         """
 
-        # mark the node as not "visible" if we're copying from a predicted instance without this node
+        # mark the node as not "visible" if we're copying from a predicted instance
+        # without this node
         is_visible = copy_instance is None or (not hasattr(copy_instance, "score"))
 
         if init_method == "force_directed":
@@ -3571,7 +3589,8 @@ class AddInstance(EditCommand):
             unused_predictions = context.state["labeled_frame"].unused_predictions
             if len(unused_predictions):
                 # If there are predicted instances that don't correspond to an instance
-                # in this frame, use the first predicted instance without matching instance.
+                # in this frame, use the first predicted instance without
+                # matching instance.
                 copy_instance = unused_predictions[0]
                 from_predicted = copy_instance
 
@@ -3621,7 +3640,7 @@ class AddInstance(EditCommand):
 
         try:
             next_idx = next(frames).frame_idx
-        except:
+        except Exception:
             return
 
         return next_idx

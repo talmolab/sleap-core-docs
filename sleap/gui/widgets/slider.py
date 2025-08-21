@@ -6,6 +6,9 @@ from qtpy import QtCore, QtWidgets, QtGui
 from qtpy.QtGui import QPen, QBrush, QColor, QKeyEvent, QPolygonF, QPainterPath
 
 from sleap.gui.color import ColorManager
+from sleap.instance import Track
+from sleap.io.dataset import Labels
+from sleap.io.video import Video
 
 import attr
 import itertools
@@ -281,7 +284,6 @@ class VideoSlider(QtWidgets.QGraphicsView):
         self.handle.setPos(x, 0)
 
         for mark in self._mark_items.keys():
-
             if mark.type == "track":
                 width_in_frames = mark.end_val - mark.val
                 width = max(2, self._toPos(width_in_frames))
@@ -552,7 +554,6 @@ class VideoSlider(QtWidgets.QGraphicsView):
         self._draw_zoom_box(current_val, self._zoom_start_val)
 
     def releaseZoomDrag(self, x, y):
-
         self.zoom_box.hide()
 
         val_a = self._zoom_start_val
@@ -571,7 +572,6 @@ class VideoSlider(QtWidgets.QGraphicsView):
         self._zoom_start_val = None
 
     def setZoomRange(self, start_val: float, end_val: float):
-
         zoom_val_range = end_val - start_val
         if zoom_val_range > 0:
             self.zoom_factor = self.value_range / zoom_val_range
@@ -1234,7 +1234,7 @@ def set_slider_marks_from_labels(
     # Make function which can be used to get tooltip text when hovering
     # over a given value (i.e., frame index) in the slider.
     def get_val_tooltip(idx: int) -> str:
-        tooltip = f"Frame {idx+1}"
+        tooltip = f"Frame {idx + 1}"
 
         frame_mark_types = {mark.type for mark in slider.getMarksAtVal(idx)}
 

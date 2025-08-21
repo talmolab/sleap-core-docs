@@ -13,21 +13,10 @@ Example usage: ::
 
 """
 
-from collections import deque
-
-# FORCE_REQUESTS controls whether we emit a signal to process frame requests
-# if we haven't processed any for a certain amount of time.
-# Usually the processing gets triggered by a timer but if the user is (e.g.)
-# dragging the mouse, the timer doesn't trigger.
-# FORCE_REQUESTS lets us update the frames in real time, assuming the load time
-# is short enough to do that.
-
-FORCE_REQUESTS = True
-
-
 import atexit
 import math
 import time
+from collections import deque
 from typing import Callable, List, Optional, Union
 
 import numpy as np
@@ -75,6 +64,14 @@ from sleap.instance import Instance, Point, PredictedInstance
 from sleap.io.video import Video
 from sleap.prefs import prefs
 from sleap.skeleton import Node
+
+# FORCE_REQUESTS controls whether we emit a signal to process frame requests
+# if we haven't processed any for a certain amount of time.
+# Usually the processing gets triggered by a timer but if the user is (e.g.)
+# dragging the mouse, the timer doesn't trigger.
+# FORCE_REQUESTS lets us update the frames in real time, assuming the load time
+# is short enough to do that.
+FORCE_REQUESTS = True
 
 
 class LoadImageWorker(QtCore.QObject):
@@ -143,7 +140,6 @@ class LoadImageWorker(QtCore.QObject):
         self.load_queue = []
 
         try:
-
             t0 = time.time()
 
             # Get image data
@@ -307,7 +303,7 @@ class QtVideoPlayer(QWidget):
         # Get image data
         try:
             frame = self.video.get_frame(frame_idx)
-        except:
+        except Exception:
             frame = None
 
         if frame is not None:
@@ -792,7 +788,8 @@ class GraphicsView(QGraphicsView):
     rightMouseButtonDoubleClicked = QtCore.Signal(float, float)
 
     def __init__(self, state=None, player=None, *args, **kwargs):
-        """https://github.com/marcel-goldschen-ohm/PyQtImageViewer/blob/master/QtImageViewer.py"""
+        """https://github.com/marcel-goldschen-ohm/PyQtImageViewer/blob/
+        master/QtImageViewer.py"""
         QGraphicsView.__init__(self)
         self.state = state or GuiState()
 
@@ -1019,7 +1016,6 @@ class GraphicsView(QGraphicsView):
         self._down_pos = event.pos()
         # behavior depends on which button is pressed
         if event.button() == Qt.LeftButton:
-
             if event.modifiers() == Qt.NoModifier:
                 if self.click_mode == "area":
                     self.setDragMode(QGraphicsView.RubberBandDrag)
@@ -1047,7 +1043,6 @@ class GraphicsView(QGraphicsView):
         # check if mouse moved during click
         has_moved = self._down_pos is not None and event.pos() != self._down_pos
         if event.button() == Qt.LeftButton:
-
             if self.in_zoom:
                 self.in_zoom = False
                 zoom_rect = self.scene.selectionArea().boundingRect()
@@ -1080,7 +1075,6 @@ class GraphicsView(QGraphicsView):
             # pass along event
             self.leftMouseButtonReleased.emit(scenePos.x(), scenePos.y())
         elif event.button() == Qt.RightButton:
-
             self.setDragMode(QGraphicsView.NoDrag)
             self.rightMouseButtonReleased.emit(scenePos.x(), scenePos.y())
 
@@ -1156,7 +1150,6 @@ class GraphicsView(QGraphicsView):
         """Custom event handler, clears zoom."""
         scenePos = self.mapToScene(event.pos())
         if event.button() == Qt.LeftButton:
-
             if event.modifiers() == Qt.AltModifier:
                 if self.canZoom:
                     self.clearZoom()
@@ -1460,7 +1453,8 @@ class QtNode(QGraphicsEllipseItem):
             self.pen_default = QPen(line_color, pen_width)
             self.pen_default.setCosmetic(
                 True
-            )  # https://stackoverflow.com/questions/13120486/adjusting-qpen-thickness-when-scaling-qgraphicsview
+            )  # https://stackoverflow.com/questions/13120486/
+            # adjusting-qpen-thickness-when-scaling-qgraphicsview
             self.pen_missing = QPen(line_color, 1)  # thin border
             self.pen_missing.setCosmetic(True)
             self.brush = QBrush(QColor(*self.color, a=128))
@@ -1496,11 +1490,9 @@ class QtNode(QGraphicsEllipseItem):
         y = self.scenePos().y()
 
         # Ensure node is placed within video boundaries
-        in_bounds = True
         w = self.player.video.width
         h = self.player.video.height
         if (x > w) or (x < 0) or (y > h) or (y < 0):
-            in_bounds = False
             if x > w:
                 x = w
             elif x < 0:
@@ -1705,7 +1697,6 @@ class QtEdge(QGraphicsPolygonItem):
         polygon = QPolygonF()
 
         if self.player.state.get("edge style", default="").lower() == "wedge":
-
             r = self.src.visible_radius / 2.0
 
             norm_a = line.normalVector()
@@ -2171,7 +2162,8 @@ class QtInstance(QGraphicsObject):
                     # Set this QtInstance to be movable
                     qt_inst.setFlag(QGraphicsItem.ItemIsMovable)
 
-                    # Optionally grab the mouse and change cursor, so user can immediately drag
+                    # Optionally grab the mouse and change cursor, so user can
+                    # immediately drag
                     qt_inst.setCursor(Qt.ClosedHandCursor)
                     qt_inst.grabMouse()
                     break
@@ -2489,7 +2481,6 @@ def plot_instances(scene, frame_idx, labels, video=None, fixed=True):
 
 
 if __name__ == "__main__":
-
     import argparse
 
     parser = argparse.ArgumentParser()

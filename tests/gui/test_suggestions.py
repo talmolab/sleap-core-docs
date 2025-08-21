@@ -1,10 +1,8 @@
 from typing import List
-import pytest
 from sleap.gui.suggestions import SuggestionFrame, VideoFrameSuggestions
 from sleap.io.dataset import Labels
 from sleap.io.video import Video
 from sleap.instance import LabeledFrame, PredictedInstance, Track, PredictedPoint
-from sleap.io.dataset import Labels
 from sleap.skeleton import Skeleton
 import numpy as np
 
@@ -120,7 +118,8 @@ def test_video_selection(
         },
     )
     for i in range(len(suggestions)):
-        # Confirming every suggestion is only for the video that is chosen and no other videos
+        # Confirming every suggestion is only for the video that is chosen and no other
+        # videos
         assert suggestions[i].video == centered_pair_predictions.videos[0]
 
     # Testing suggestion generation from Sample
@@ -135,7 +134,8 @@ def test_video_selection(
     )
 
     for i in range(len(suggestions)):
-        # Confirming every suggestion is only for the video that is chosen and no other videos
+        # Confirming every suggestion is only for the video that is chosen and no other
+        # videos
         assert suggestions[i].video == centered_pair_predictions.videos[0]
 
     # Testing suggestion generation from prediction score
@@ -151,7 +151,8 @@ def test_video_selection(
     )
 
     for i in range(len(suggestions)):
-        # Confirming every suggestion is only for the video that is chosen and no other videos
+        # Confirming every suggestion is only for the video that is chosen and no other
+        # videos
         assert suggestions[i].video == centered_pair_predictions.videos[0]
 
     # Testing suggestion generation from velocity
@@ -165,7 +166,8 @@ def test_video_selection(
         },
     )
     for i in range(len(suggestions)):
-        # Confirming every suggestion is only for the video that is chosen and no other videos
+        # Confirming every suggestion is only for the video that is chosen and no other
+        # videos
         assert suggestions[i].video == centered_pair_predictions.videos[0]
 
     # Ensure video target works given suggestions from another video already exist
@@ -180,7 +182,8 @@ def test_video_selection(
         },
     )
 
-    # Testing suggestion generation from frame chunk targeting selected video or all videos
+    # Testing suggestion generation from frame chunk targeting selected video or all
+    # videos
     suggestions = VideoFrameSuggestions.suggest(
         labels=centered_pair_predictions,
         params={
@@ -195,7 +198,8 @@ def test_video_selection(
         assert suggestions[i].video == centered_pair_predictions.videos[1]
 
     # Testing suggestion generation from frame chunk targeting all videos
-    # Clear existing suggestions so that generated suggestions will be kept intact at the uniqueness check step
+    # Clear existing suggestions so that generated suggestions will be kept intact at
+    # the uniqueness check step
     centered_pair_predictions.clear_suggestions()
     suggestions = VideoFrameSuggestions.suggest(
         labels=centered_pair_predictions,
@@ -503,7 +507,7 @@ def test_limits_prediction_score(centered_pair_predictions: Labels):
                 temp_suggest = SuggestionFrame(
                     labels.video, pred_instances[0].frame_idx
                 )
-                if not (temp_suggest in sugg):
+                if temp_suggest not in sugg:
                     return False
 
         return True

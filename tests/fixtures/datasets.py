@@ -1,4 +1,3 @@
-import os
 import pytest
 
 from sleap.instance import (
@@ -102,7 +101,8 @@ def min_tracks_2node_predictions():
     """
     Generated with:
     ```
-    sleap-track -m "tests/data/models/min_tracks_2node.UNet.bottomup_multiclass" "tests/data/tracks/clip.mp4"
+    sleap-track -m "tests/data/models/min_tracks_2node.UNet.bottomup_multiclass" \
+        "tests/data/tracks/clip.mp4"
     ```
     """
     return Labels.load_file(
@@ -153,7 +153,6 @@ def midpoint_grid_labels():
 
 @pytest.fixture
 def simple_predictions():
-
     video = Video.from_filename("video.mp4")
 
     skeleton = Skeleton()

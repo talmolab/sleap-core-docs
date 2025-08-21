@@ -1,6 +1,7 @@
 """
 Command line utility which prints data about labels file.
 """
+
 import os
 
 
@@ -13,7 +14,7 @@ def describe_labels(data_path, verbose=False):
     print(f"Labeled frames: {len(labels)}")
     print(f"Tracks: {len(labels.tracks)}")
 
-    print(f"Video files:")
+    print("Video files:")
 
     total_user_frames = 0
 
@@ -46,12 +47,14 @@ def describe_labels(data_path, verbose=False):
             print("    labeled frames:              bounding box top left (x, y)")
             for lf in lfs:
                 bb_cords = [
-                    f"({inst.bounding_box[0]:.2f}, {inst.bounding_box[1]:.2f}){'^' if hasattr(inst, 'score') else ''}"
+                    f"({inst.bounding_box[0]:.2f}, {inst.bounding_box[1]:.2f})"
+                    f"{'^' if hasattr(inst, 'score') else ''}"
                     for inst in lf.instances
                 ]
                 pt_str = " ".join(bb_cords)
                 print(
-                    f"      frame {lf.frame_idx}: {len(lf.instances)} instances -> {pt_str}"
+                    f"      frame {lf.frame_idx}: {len(lf.instances)} instances -> "
+                    f"{pt_str}"
                 )
             print()
 
@@ -59,7 +62,7 @@ def describe_labels(data_path, verbose=False):
 
     if labels.provenance:
         print()
-        print(f"Provenance:")
+        print("Provenance:")
 
         for key, value in labels.provenance.items():
             print(f"  {key}: {value}")
@@ -73,9 +76,10 @@ def describe_model(model_path, verbose=False):
     print("Model:", model_path)
     print("=====")
 
-    rel_path = lambda x: os.path.join(model_path, x)
+    def rel_path(x):
+        return os.path.join(model_path, x)
 
-    initial_cfg = sleap.load_config(rel_path("initial_config.json"))
+    sleap.load_config(rel_path("initial_config.json"))
     cfg = sleap.load_config(rel_path("training_config.json"))
 
     print("=====")
@@ -98,20 +102,23 @@ def describe_model(model_path, verbose=False):
             metrics = np.load(metrics, allow_pickle=True)["metrics"].tolist()
 
         print(
-            f"Dist (90%/95%/99%): {metrics['dist.p90']} / {metrics['dist.p95']} / {metrics['dist.p99']}"
+            f"Dist (90%/95%/99%): {metrics['dist.p90']} / {metrics['dist.p95']} / "
+            f"{metrics['dist.p99']}"
         )
         print(
             f"OKS VOC (mAP / mAR): {metrics['oks_voc.mAP']} / {metrics['oks_voc.mAR']}"
         )
         print(
-            f"PCK (mean {metrics['pck.thresholds'][0]}-{metrics['pck.thresholds'][-1]} px): {metrics['pck.mPCK']}"
+            f"PCK (mean {metrics['pck.thresholds'][0]}-"
+            f"{metrics['pck.thresholds'][-1]} px): {metrics['pck.mPCK']}"
         )
 
     def describe_dataset(split_name):
         if os.path.exists(rel_path(f"labels_gt.{split_name}.slp")):
             labels = sleap.load_file(rel_path(f"labels_gt.{split_name}.slp"))
             print(
-                f"Frames: {len(labels.user_labeled_frames)} / Instances: {len(labels.user_instances)}"
+                f"Frames: {len(labels.user_labeled_frames)} / "
+                f"Instances: {len(labels.user_instances)}"
             )
 
         if os.path.exists(rel_path(f"metrics.{split_name}.npz")):

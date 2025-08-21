@@ -1,8 +1,8 @@
 import logging
 
 try:
-    import pytestqt
-except:
+    pass
+except Exception:
     logging.warning("Could not import pytestqt, skipping GUI tests.")
     collect_ignore_glob = ["gui/*"]
 

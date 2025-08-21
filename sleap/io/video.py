@@ -12,7 +12,7 @@ import cattr
 import logging
 import multiprocessing
 
-from typing import Iterable, List, Optional, Tuple, Union, Text
+from typing import Iterable, List, Optional, Tuple, Union
 
 from sleap.util import json_loads, json_dumps
 
@@ -228,7 +228,7 @@ class HDF5Video:
         """Close the HDF5 file object (if it's open)."""
         try:
             self.__file_h5.close()
-        except:
+        except Exception:
             pass
         self.__file_h5 = None
 
@@ -239,7 +239,7 @@ class HDF5Video:
     def _try_frame_from_source_video(self, idx) -> np.ndarray:
         try:
             return self.source_video.get_frame(idx)
-        except:
+        except Exception:
             raise IndexError(f"Frame index {idx} not in original index.")
 
     # The properties and methods below complete our contract with the higher level
@@ -393,7 +393,7 @@ class MediaVideo:
             # the first frame of data.
             if self._detect_grayscale is True:
                 self.grayscale = bool(
-                    np.alltrue(self.test_frame[..., 0] == self.test_frame[..., -1])
+                    np.all(self.test_frame[..., 0] == self.test_frame[..., -1])
                 )
 
         # Return cached reader
@@ -523,7 +523,6 @@ class NumpyVideo:
     filename: Union[str, np.ndarray] = attr.ib()
 
     def __attrs_post_init__(self):
-
         self.__frame_idx = 0
         self.__height_idx = 1
         self.__width_idx = 2
@@ -635,7 +634,6 @@ class ImgStoreVideo:
     _img_ = None
 
     def __attrs_post_init__(self):
-
         # If the filename does not contain metadata.yaml, append it to the filename
         # assuming that this is a directory that contains the imgstore.
         if "metadata.yaml" not in self.filename:
@@ -862,7 +860,7 @@ class SingleImageVideo:
 
             if self._detect_grayscale is True:
                 self.grayscale = bool(
-                    np.alltrue(test_frame_[..., 0] == test_frame_[..., -1])
+                    np.all(test_frame_[..., 0] == test_frame_[..., -1])
                 )
 
             if self.height_ is None:
@@ -956,7 +954,7 @@ class SingleImageVideo:
         """Reloads the video."""
         if filename and filenames:
             raise ValueError(
-                f"Cannot specify both filename and filenames for SingleImageVideo."
+                "Cannot specify both filename and filenames for SingleImageVideo."
             )
         elif filename or filenames:
             self.cache_ = dict()
@@ -1064,17 +1062,14 @@ class Video:
         """Return tuple of (frame count, height, width, channels)."""
         try:
             return (self.frames, self.height, self.width, self.channels)
-        except:
+        except Exception:
             return (None, None, None, None)
 
     def __str__(self) -> str:
         """Informal string representation (for print or format)."""
         return (
-            "Video("
-            f"filename={self.filename}, "
-            f"shape={self.shape}, "
-            f"backend={type(self.backend).__name__}"
-            ")"
+            f"Video(filename={self.filename}, shape={self.shape}, "
+            f"backend={type(self.backend).__name__})"
         )
 
     def __len__(self) -> int:
@@ -1438,7 +1433,6 @@ class Video:
         frame_numbers_data = np.array(list(frame_numbers), dtype=int)
 
         with h5.File(path, "a") as f:
-
             if format:
 
                 def encode(img):
@@ -1571,7 +1565,6 @@ class Video:
         # Special case: this is an ImgStore path! We cant use
         # basename because it will strip the directory name off
         elif path.endswith("metadata.yaml"):
-
             # Get the parent dir of the YAML file.
             img_store_dir = os.path.basename(os.path.split(path)[0])
 

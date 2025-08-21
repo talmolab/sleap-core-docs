@@ -2,22 +2,22 @@
 Module for generating lists of frames using frame features, pca, kmeans, etc.
 """
 
-
 import attr
 import cattr
 import itertools
 import logging
 import numpy as np
 import random
-from time import time
-from typing import Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
+
+if TYPE_CHECKING:
+    from sleap.gui.suggestions import SuggestionFrame
 
 import cv2
 
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 
-from skimage import draw
 from skimage.feature import hog
 from skimage.util.shape import view_as_windows
 
@@ -28,7 +28,6 @@ logger = logging.getLogger(__name__)
 
 @attr.s(auto_attribs=True)
 class BriskVec:
-
     brisk_threshold: int
     vocab_size: int
     debug: bool = False
@@ -76,7 +75,6 @@ class BriskVec:
         # return img_bags
 
     def clusters_to_vecs(self, cluster_labels, ownership, img_count):
-
         # Make helper function that builds bag of features vector for a single
         # image by looking up all the descriptors for an image and counting
         # how many there are for each cluster (vocab word).
@@ -91,7 +89,6 @@ class BriskVec:
 
 @attr.s(auto_attribs=True)
 class HogVec:
-
     brisk_threshold: int
     vocab_size: int
     debug: bool = False
@@ -143,7 +140,6 @@ class HogVec:
         return self.clusters_to_vecs(kmeans.labels_, ownership, len(imgs))
 
     def clusters_to_vecs(self, cluster_labels, ownership, img_count):
-
         # Make helper function that builds bag of features vector for a single
         # image by looking up all the descriptors for an image and counting
         # how many there are for each cluster (vocab word).
@@ -319,7 +315,6 @@ class FrameGroupSet(object):
 
         selected_set = set()
         for group, group_item_list in self.groups:
-
             if unique_samples:
                 # Remove items that were already sampled from other groups
                 group_item_list = list(set(group_item_list) - selected_set)
@@ -437,7 +432,7 @@ class ItemStack(object):
         self.meta.append(meta)
 
         row_count = self.data.shape[0]
-        row_size = np.product(meta["shape"])
+        row_size = np.prod(meta["shape"])
         self.data = np.reshape(self.data, (row_count, row_size))
 
     def brisk_bag_of_features(self, brisk_threshold=40, vocab_size=20):
@@ -490,7 +485,6 @@ class ItemStack(object):
         groupset.groupset_data = dict(samples_per_video=samples_per_video)
 
         for i, video in enumerate(videos):
-
             if samples_per_video >= video.num_frames:
                 idxs = list(range(video.num_frames))
             elif sample_method == "stride":
@@ -655,7 +649,8 @@ class ParallelFeaturePipeline(object):
         )
         self.pipeline.reset()
 
-        # logger.info(f"done with {video_idx} in {time() - t0} s for {len(result)} suggestions")
+        # logger.info(f"done with {video_idx} in {time() - t0} s for "
+        #              f"{len(result)} suggestions")
         return result
 
     @classmethod
@@ -670,7 +665,7 @@ class ParallelFeaturePipeline(object):
         from sleap.gui.suggestions import SuggestionFrame
 
         suggestions = []
-        for (video_idx, frame_idx, group) in tuples:
+        for video_idx, frame_idx, group in tuples:
             video = videos[video_idx]
             suggestions.append(SuggestionFrame(video, frame_idx, group))
         return suggestions
@@ -678,13 +673,12 @@ class ParallelFeaturePipeline(object):
     @classmethod
     def run(cls, pipeline, videos, parallel=True):
         """Runs pipeline on all videos in parallel and returns suggestions."""
-        from multiprocessing import Pool, Lock
+        from multiprocessing import Pool
 
         pp = cls.make(pipeline, videos)
         video_idxs = list(range(len(videos)))
 
         if parallel:
-
             pool = Pool()
 
             per_video_tuples = pool.map(pp.get, video_idxs)

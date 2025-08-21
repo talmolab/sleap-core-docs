@@ -101,8 +101,8 @@ class MissingFilesDialog(QtWidgets.QDialog):
             # Do not allow same video to be imported more than once.
             QtWidgets.QMessageBox(
                 text=(
-                    f"The file <b>{path_new_filename.name}</b> cannot be added to the "
-                    "project multiple times."
+                    f"The file <b>{path_new_filename.name}</b> cannot be added to "
+                    "the project multiple times."
                 )
             ).exec_()
         elif new_filename:
@@ -125,7 +125,9 @@ class MissingFilesDialog(QtWidgets.QDialog):
         # We'll ask for confirmation for making these changes.
         confirm_callback = None
         if confirm:
-            confirm_callback = lambda: self.confirmAutoReplace(old_prefix, new_prefix)
+
+            def confirm_callback():
+                return self.confirmAutoReplace(old_prefix, new_prefix)
 
         pathutils.filenames_prefix_change(
             self.filenames, old_prefix, new_prefix, self.missing, confirm_callback

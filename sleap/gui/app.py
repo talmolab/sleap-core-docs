@@ -48,7 +48,6 @@ import os
 import platform
 import random
 import re
-import traceback
 from logging import getLogger
 from pathlib import Path
 from typing import Callable, List, Optional, Tuple
@@ -62,8 +61,6 @@ from qtpy.QtWidgets import QApplication, QMainWindow, QMessageBox
 import sleap
 from sleap.gui.color import ColorManager
 from sleap.gui.commands import CommandContext, UpdateTopic
-from sleap.gui.dialogs.filedialog import FileDialog
-from sleap.gui.dialogs.formbuilder import FormBuilderModalDialog
 from sleap.gui.dialogs.metrics import MetricsTableDialog
 from sleap.gui.dialogs.shortcuts import ShortcutDialog
 from sleap.gui.overlays.instance import InstanceOverlay
@@ -261,7 +258,7 @@ class MainWindow(QMainWindow):
         mime_format = 'application/x-qt-windows-mime;value="FileName"'
         if mime_format in event.mimeData().formats():
             # This only returns the first filename if multiple files are dropped:
-            filename = event.mimeData().data(mime_format).data().decode()
+            event.mimeData().data(mime_format).data().decode()
             event.acceptProposedAction()
 
     def dropEvent(self, event):
@@ -835,8 +832,8 @@ class MainWindow(QMainWindow):
         add_menu_check_item(
             tracksMenu, "propagate track labels", "Propagate Track Labels"
         ).setToolTip(
-            "If enabled, setting a track will also apply to subsequent instances of "
-            "the same track."
+            "If enabled, setting a track will also apply to subsequent "
+            "instances of the same track."
         )
         add_menu_item(
             tracksMenu,
@@ -858,7 +855,8 @@ class MainWindow(QMainWindow):
 
         self.delete_multiple_tracks_menu = tracksMenu.addMenu("Delete Multiple Tracks")
         self.delete_multiple_tracks_menu.setToolTip(
-            "Delete either only 'Unused' tracks or 'All' tracks, and update instances. Instances are not removed."
+            "Delete either only 'Unused' tracks or 'All' tracks, and update "
+            "instances. Instances are not removed."
         )
 
         add_menu_item(
@@ -1306,17 +1304,19 @@ class MainWindow(QMainWindow):
         if message is None:
             message = ""
             if len(self.labels.videos) > 0 and current_video is not None:
-                message += f"Video {self.labels.videos.index(current_video)+1}/"
+                message += f"Video {self.labels.videos.index(current_video) + 1}/"
                 message += f"{len(self.labels.videos)}"
                 message += spacer
 
             if current_video is not None:
-                message += f"Frame: {frame_idx+1:,}/{len(current_video):,}"
+                message += f"Frame: {frame_idx + 1:,}/{len(current_video):,}"
 
             if self.player.seekbar.hasSelection():
                 start, end = self.state["frame_range"]
                 message += spacer
-                message += f"Selection: {start+1:,}-{end:,} ({end-start+1:,} frames)"
+                message += (
+                    f"Selection: {start + 1:,}-{end:,} ({end - start + 1:,} frames)"
+                )
 
             message += f"{spacer}Labeled Frames: "
             if current_video is not None:
@@ -1339,7 +1339,7 @@ class MainWindow(QMainWindow):
                 if pred_frame_count:
                     message += f"{spacer}Predicted Frames: {pred_frame_count:,}"
                     message += (
-                        f" ({pred_frame_count/current_video.num_frames*100:.2f}%)"
+                        f" ({pred_frame_count / current_video.num_frames * 100:.2f}%)"
                     )
                     message += " in video"
 
@@ -1425,8 +1425,12 @@ class MainWindow(QMainWindow):
         header_functions = {
             "Point Displacement (sum)": data_obj.get_point_displacement_series,
             "Point Displacement (max)": data_obj.get_point_displacement_series,
-            "Primary Point Displacement (sum)": data_obj.get_primary_point_displacement_series,
-            "Primary Point Displacement (max)": data_obj.get_primary_point_displacement_series,
+            "Primary Point Displacement (sum)": (
+                data_obj.get_primary_point_displacement_series
+            ),
+            "Primary Point Displacement (max)": (
+                data_obj.get_primary_point_displacement_series
+            ),
             "Tracking Score (mean)": data_obj.get_tracking_score_series,
             "Tracking Score (min)": data_obj.get_tracking_score_series,
             "Instance Score (sum)": data_obj.get_instance_score_series,
@@ -1542,8 +1546,8 @@ class MainWindow(QMainWindow):
         if not self.state["filename"] or self.state["has_changes"]:
             QMessageBox(
                 text=(
-                    "You have unsaved changes. Please save before running training or "
-                    "inference."
+                    "You have unsaved changes. Please save before running "
+                    "training or inference."
                 )
             ).exec_()
             return
@@ -1652,8 +1656,8 @@ def create_sleap_label_parser():
     parser.add_argument(
         "--reset",
         help=(
-            "Reset GUI state and preferences. Use this flag if the GUI appears "
-            "incorrectly or fails to open."
+            "Reset GUI state and preferences. Use this flag if the GUI "
+            "appears incorrectly or fails to open."
         ),
         action="store_const",
         const=True,
@@ -1711,9 +1715,10 @@ def main(args: Optional[list] = None, labels: Optional[Labels] = None):
     #     sleap.use_cpu_only()
     # except RuntimeError:  # Visible devices cannot be modified after being initialized
     #     logger.warning(
-    #         "Running processes on the GPU. Restarting your GUI should allow switching "
-    #         "back to CPU-only mode.\n"
-    #         "Received the following error when trying to switch back to CPU-only mode:"
+    #         "Running processes on the GPU. Restarting your GUI should allow "
+    #         "switching back to CPU-only mode.\n"
+    #         "Received the following error when trying to switch back to "
+    #         "CPU-only mode:"
     #     )
     #     traceback.print_exc()
 

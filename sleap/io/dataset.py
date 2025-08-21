@@ -41,9 +41,10 @@ default extension to use if none is provided in the filename.
 import itertools
 import os
 from collections.abc import MutableSequence
+from glob import glob
 from pathlib import Path
 from typing import (
-    Callable,
+    TYPE_CHECKING,
     List,
     Union,
     Dict,
@@ -57,17 +58,19 @@ from typing import (
     cast,
 )
 
+if TYPE_CHECKING:
+    from sleap.gui.suggestions import SuggestionFrame
+
 import attr
 import cattr
-import h5py as h5
 import numpy as np
 import datetime
 from sklearn.model_selection import train_test_split
 
 try:
-    from typing import ForwardRef
-except:
-    from typing import _ForwardRef as ForwardRef
+    pass
+except Exception:
+    pass
 
 from sleap.skeleton import Skeleton, Node
 from sleap.instance import (
@@ -80,7 +83,6 @@ from sleap.instance import (
 
 from sleap.io import pathutils
 from sleap.io.video import Video, ImgStoreVideo, HDF5Video
-from sleap.gui.suggestions import SuggestionFrame
 from sleap.gui.dialogs.missingfiles import MissingFilesDialog
 from sleap.rangelist import RangeList
 from sleap.util import uniquify, json_dumps
@@ -302,17 +304,19 @@ class LabelsDataCache:
             video = None
 
         if filter == "":
-            filter_func = lambda lf: video is None or lf.video == video
+
+            def filter_func(lf):
+                return video is None or lf.video == video
         elif filter == "user":
-            filter_func = (
-                lambda lf: (video is None or lf.video == video)
-                and lf.has_user_instances
-            )
+
+            def filter_func(lf):
+                return (video is None or lf.video == video) and lf.has_user_instances
         elif filter == "predicted":
-            filter_func = (
-                lambda lf: (video is None or lf.video == video)
-                and lf.has_predicted_instances
-            )
+
+            def filter_func(lf):
+                return (
+                    video is None or lf.video == video
+                ) and lf.has_predicted_instances
         else:
             raise ValueError(f"Invalid filter: {filter}")
 
@@ -419,7 +423,7 @@ class Labels(MutableSequence):
     skeletons: List[Skeleton] = attr.ib(default=attr.Factory(list))
     nodes: List[Node] = attr.ib(default=attr.Factory(list))
     tracks: List[Track] = attr.ib(default=attr.Factory(list))
-    suggestions: List[SuggestionFrame] = attr.ib(default=attr.Factory(list))
+    suggestions: List["SuggestionFrame"] = attr.ib(default=attr.Factory(list))
     negative_anchors: Dict[Video, list] = attr.ib(default=attr.Factory(dict))
     provenance: Dict[Text, Union[str, int, float, bool]] = attr.ib(
         default=attr.Factory(dict)
@@ -1403,6 +1407,8 @@ class Labels(MutableSequence):
             video: `sleap.Video` instance of the suggestion.
             frame_idx: Index of the frame of the suggestion.
         """
+        from sleap.gui.suggestions import SuggestionFrame
+
         for suggestion in self.suggestions:
             if suggestion.video == video and suggestion.frame_idx == frame_idx:
                 return
@@ -1445,7 +1451,7 @@ class Labels(MutableSequence):
                 frame_indices.append(fidx)
         return frame_indices
 
-    def get_suggestions(self) -> List[SuggestionFrame]:
+    def get_suggestions(self) -> List["SuggestionFrame"]:
         """Return all suggestions as a list of SuggestionFrame items."""
         return self.suggestions
 
@@ -1510,11 +1516,11 @@ class Labels(MutableSequence):
             )
         return self.find_suggestion(video, frame_suggestion)
 
-    def append_suggestions(self, suggestions: List[SuggestionFrame]):
+    def append_suggestions(self, suggestions: List["SuggestionFrame"]):
         """Append the suggested frames."""
         self.suggestions.extend(suggestions)
 
-    def set_suggestions(self, suggestions: List[SuggestionFrame]):
+    def set_suggestions(self, suggestions: List["SuggestionFrame"]):
         """Set the suggested frames."""
         self.suggestions = suggestions
 
@@ -1527,7 +1533,7 @@ class Labels(MutableSequence):
         self.suggestions = []
 
     @property
-    def unlabeled_suggestions(self) -> List[SuggestionFrame]:
+    def unlabeled_suggestions(self) -> List["SuggestionFrame"]:
         """Return suggestions without user labels."""
         unlabeled_suggestions = []
         for suggestion in self.suggestions:
@@ -2317,7 +2323,7 @@ class Labels(MutableSequence):
             if progress_callback is not None:
                 # Notify update callback.
                 ret = progress_callback(v_idx, total_vids)
-                if ret == False:
+                if not ret:
                     vid.close()
                     return []
 
@@ -2405,7 +2411,7 @@ class Labels(MutableSequence):
             if progress_callback is not None:
                 # Notify update callback.
                 ret = progress_callback(n, n_total)
-                if ret == False:
+                if not ret:
                     vid.close()
                     return []
 
@@ -2472,9 +2478,9 @@ class Labels(MutableSequence):
             if type(video) == int:
                 video = self.videos[video]
             video = cast(Video, video)  # video should now be of type Video
-        except IndexError as e:
+        except IndexError:
             raise IndexError(
-                f"There are no videos in this project. No points matrix to return."
+                "There are no videos in this project. No points matrix to return."
             )
 
         lfs: List[LabeledFrame] = self.find(video=video)
@@ -2706,7 +2712,6 @@ def find_path_using_paths(missing_path: Text, search_paths: List[Text]) -> Text:
 
     # Look for file with that name in each of the search path directories
     for search_path in search_paths:
-
         if os.path.isfile(search_path):
             path_dir = os.path.dirname(search_path)
         else:

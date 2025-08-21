@@ -22,10 +22,13 @@ The relationships between objects in this module:
 # an instance of typing._GenericAlias and made our converters fail. The line:
 # https://github.com/python-attrs/cattrs/blob/3a02a04e82ffd93bb06ef7bc476bde797ceefcdf/src/cattr/converters.py#L258-L268)
 
-
 import math
 from copy import copy
-from typing import Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
+
+if TYPE_CHECKING:
+    from sleap.io.dataset import Labels
+    from sleap.io.video import Video
 
 import attr
 import cattr
@@ -60,7 +63,6 @@ class Point(np.record):
         visible: bool = True,
         complete: bool = False,
     ) -> "Point":
-
         # HACK: This is a crazy way to instantiate at new Point but I can't figure
         # out how recarray does it. So I just use it to make matrix of size 1 and
         # index in to get the np.record/Point
@@ -88,7 +90,7 @@ class Point(np.record):
         """
         return math.isnan(self.x) or math.isnan(self.y)
 
-    def numpy() -> np.ndarray:
+    def numpy(self) -> np.ndarray:
         """Return the point as a numpy array."""
         return np.array([self.x, self.y])
 
@@ -127,7 +129,6 @@ class PredictedPoint(Point):
         complete: bool = False,
         score: float = 0.0,
     ) -> "PredictedPoint":
-
         # HACK: This is a crazy way to instantiate at new Point but I can't figure
         # out how recarray does it. So I just use it to make matrix of size 1 and
         # index in to get the np.record/Point
@@ -187,7 +188,6 @@ class PointArray(np.recarray):
         aligned=False,
         order="C",
     ) -> "PointArray":
-
         dtype = subtype._record_type.dtype
 
         if dtype is not None:
@@ -394,8 +394,8 @@ class Instance:
         """
         if from_predicted is not None and type(from_predicted) != PredictedInstance:
             raise TypeError(
-                f"Instance.from_predicted type must be PredictedInstance (not "
-                f"{type(from_predicted)})"
+                f"Instance.from_predicted type must be PredictedInstance "
+                f"(not {type(from_predicted)})"
             )
 
     @_points.validator
@@ -428,8 +428,8 @@ class Instance:
         elif isinstance(points, PointArray):
             if len(points) != len(self.skeleton.nodes):
                 raise ValueError(
-                    "PointArray does not have the same number of rows as skeleton "
-                    "nodes."
+                    "PointArray does not have the same number of rows as "
+                    "skeleton nodes."
                 )
 
     def __attrs_post_init__(self):
@@ -451,12 +451,10 @@ class Instance:
         # If the user did not pass a points list initialize a point array for future
         # points.
         if self._points is None or len(self._points) == 0:
-
             # Initialize an empty point array that is the size of the skeleton.
             self._points = self._point_array_type.make_default(len(self.skeleton.nodes))
 
         else:
-
             if type(self._points) is dict:
                 parray = self._point_array_type.make_default(len(self.skeleton.nodes))
                 Instance._points_dict_to_array(self._points, parray, self.skeleton)
@@ -512,7 +510,7 @@ class Instance:
             try:
                 parray[skeleton.node_to_index(node)] = point
                 # parray[skeleton.node_to_index(node.name)] = point
-            except:
+            except Exception:
                 pass
 
     def _node_to_index(self, node: Union[str, Node]) -> int:
@@ -1225,7 +1223,6 @@ def make_instance_cattr() -> cattr.Converter:
     converter.register_unstructure_hook(PredictedPointArray, lambda x: None)
 
     def unstructure_instance(x: Instance):
-
         # Unstructure everything but the points array, nodes, and frame attribute
         d = {
             field.name: converter.unstructure(x.__getattribute__(field.name))
@@ -1359,8 +1356,8 @@ class InstancesList(list):
 
         if not isinstance(instance, (Instance, PredictedInstance)):
             raise ValueError(
-                f"InstancesList can only contain Instance or PredictedInstance objects,"
-                f" but got {type(instance)}."
+                f"InstancesList can only contain Instance or PredictedInstance "
+                f"objects, but got {type(instance)}."
             )
         instance.frame = self.labeled_frame
         super().append(instance)

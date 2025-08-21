@@ -85,7 +85,7 @@ class ReleaseChecker:
 
         try:
             self.releases = [Release.from_json(r) for r in response.json()]
-        except:
+        except Exception:
             return False
 
         return True
@@ -176,7 +176,7 @@ def ping_analytics():
 
     def _ping_analytics():
         try:
-            response = requests.post(
+            requests.post(
                 ANALYTICS_ENDPOINT,
                 json=analytics_data,
             )
