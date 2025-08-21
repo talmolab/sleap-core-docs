@@ -505,13 +505,13 @@ class TrainingConfigsGetter:
                 try:
                     cfg = mapper(cfg)
                     logging.debug(f"Mapped YAML config to TrainingJobConfig.")
+                    return ConfigFileInfo(
+                        path=path, filename=filename, config=mapper(cfg), head_name=key
+                    )
                 except Exception as e:
                     # Couldn't map so just ignore
                     logging.error(f"Error mapping YAML config: {e}")
                     return None
-                return ConfigFileInfo(
-                    path=path, filename=filename, config=mapper(cfg), head_name=key
-                )
         else:
             # Get the head from the model (i.e., what the model will predict)
             try:
