@@ -322,14 +322,10 @@ class InferenceTask:
                     ]
                 )
 
-            if self.inference_params["tracking.similarity"] in [
-                "instance",
-                "normalized_instance",
-                "object_keypoint",
-            ]:
+            if self.inference_params["tracking.similarity"]=="oks":
                 cli_args.extend(["--features", "keypoints"])
                 cli_args.extend(["--scoring_method", "oks"])
-            elif self.inference_params["tracking.similarity"] == "centroid":
+            elif self.inference_params["tracking.similarity"] == "centroids":
                 cli_args.extend(["--features", "centroids"])
                 cli_args.extend(["--scoring_method", "euclidean_dist"])
             elif self.inference_params["tracking.similarity"] == "iou":
