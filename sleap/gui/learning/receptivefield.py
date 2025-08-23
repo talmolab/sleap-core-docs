@@ -1,12 +1,12 @@
 """
 Widget for previewing receptive field on sample image using model hyperparams.
 """
+
 from typing import Optional, Text
 
 import numpy as np
-from qtpy import QtWidgets, QtGui, QtCore
+from qtpy import QtWidgets, QtGui
 
-from sleap import Video, Track, Skeleton
 from sleap.gui.legacy.config import ModelConfig
 from sleap.gui.widgets.video import GraphicsView
 
@@ -51,7 +51,7 @@ def receptive_field_info_from_model_cfg(model_cfg: ModelConfig) -> dict:
     # Currently, this works only for UNet backbones.
     # TODO: Add support for other backbones.
     try:
-        up_blocks = np.log2(
+        _ = np.log2(
             model_cfg.backbone.which_oneof().max_stride
             / model_cfg.backbone.which_oneof().output_stride
         )
@@ -129,7 +129,7 @@ class ReceptiveFieldWidget(QtWidgets.QWidget):
         if size:
             result += f"<p><i>{size} pixels</i></p>"
         else:
-            result += f"<p><i>Unable to determine size</i></p>"
+            result += "<p><i>Unable to determine size</i></p>"
 
         result += f"""
         <p>Receptive field size is a function<br />

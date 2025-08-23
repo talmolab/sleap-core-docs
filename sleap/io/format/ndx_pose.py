@@ -109,12 +109,12 @@ class NDXPoseAdaptor(Adaptor):
                     for node_idx, node_name in enumerate(node_names):
                         pose_estimation_series = pose_estimation[node_name]
 
-                        tracks_numpy[
-                            :, track_idx, node_idx, :
-                        ] = pose_estimation_series.data[:]
-                        confidence[
-                            :, track_idx, node_idx
-                        ] = pose_estimation_series.confidence[:]
+                        tracks_numpy[:, track_idx, node_idx, :] = (
+                            pose_estimation_series.data[:]
+                        )
+                        confidence[:, track_idx, node_idx] = (
+                            pose_estimation_series.confidence[:]
+                        )
 
                 video_tracks[str(PurePath(test_pose_estimation.original_videos[0]))] = (
                     tracks_numpy,

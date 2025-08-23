@@ -57,8 +57,9 @@ class ConfigFileInfo:
         #  what we'll do here, but both should check for other models
         #  depending on the training config settings.
 
-        # allow to run inference on both torch weights (`.ckpt`) and keras weights (`.h5`).
-        # sleap-nn supports running inference on the keras weights (Note: currently only for unet models).
+        # allow to run inference on both torch weights (`.ckpt`) and keras weights
+        # (`.h5`). sleap-nn supports running inference on the keras weights
+        # (Note: currently only for unet models).
         # TODO: add support for running inference on the keras weights for other models.
         return (
             self._get_file_path("best.ckpt") is not None
@@ -69,9 +70,11 @@ class ConfigFileInfo:
     def path_dir(self):
         return (
             os.path.dirname(self.path)
-            if self.path.endswith("yaml")
-            or self.path.endswith("json")
-            or self.path.endswith("yml")
+            if (
+                self.path.endswith("yaml")
+                or self.path.endswith("json")
+                or self.path.endswith("yml")
+            )
             else self.path
         )
 
@@ -102,14 +105,13 @@ class ConfigFileInfo:
     def skeleton(self):
         # cache skeleton so we only search once
         if self._skeleton is None and not self._tried_finding_skeleton:
-
             # if skeleton was saved in config, great!
             if self.config.data.labels.skeletons:
                 self._skeleton = self.config.data.labels.skeletons[0]
 
             # otherwise try loading it from validation labels (much slower!)
             else:
-                filename = self._get_file_path(f"labels_gt.val.slp")
+                filename = self._get_file_path("labels_gt.val.slp")
                 if filename is not None:
                     val_labels = Labels.load_file(filename)
                     if val_labels.skeletons:
@@ -328,7 +330,7 @@ class TrainingConfigFilesWidget(FieldComboWidget):
         )
         logging.debug(f"Selected training config file: {filename}")
         if not filename:
-            logging.debug(f"No file selected for training config.")
+            logging.debug("No file selected for training config.")
             return None
         return self._cfg_getter.try_loading_path(filename)
 
@@ -391,7 +393,8 @@ class TrainingConfigsGetter:
         """Load configs from all saved paths."""
         configs = []
 
-        # Collect all configs from specified directories, sorted from most recently modified to least
+        # Collect all configs from specified directories, sorted from most recently
+        # modified to least
         for config_dir in filter(lambda d: os.path.exists(d), self.dir_paths):
             # Find all json files in dir and subdirs to specified depth
             json_files = sleap_utils.find_files_by_suffix(

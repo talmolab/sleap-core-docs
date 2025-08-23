@@ -21,8 +21,6 @@ from qtpy import QtWidgets
 
 from sleap import Labels, Video, LabeledFrame
 from sleap.gui.learning.configs import ConfigFileInfo
-from sleap.io.video import SingleImageVideo
-from sleap.gui.legacy.config import TrainingJobConfig
 
 logger = logging.getLogger(__name__)
 
@@ -244,11 +242,11 @@ class InferenceTask:
         ]
         cli_args.extend(
             item_for_inference.cli_args
-        )  # sample inference CLI args:['--data_path', '/Users/divyasesh/Desktop/its_me/slp_datasets_models/wt_13/clips/190719_090330_wt_18159206_rig1.2@15000-17560.slp', '--video_index', '0', '--video_input_format', 'channels_last', '--frames', '0,-2559']
+        )  # sample inference CLI args: ['--data_path', '...', '--video_index', '0',
+        # '--video_input_format', 'channels_last', '--frames', '0,-2559']
 
         # Make path where we'll save predictions (if not specified)
         if output_path is None:
-
             if self.labels_filename:
                 # Make a predictions directory next to the labels dataset file
                 predictions_dir = os.path.join(
@@ -276,7 +274,8 @@ class InferenceTask:
             ):
                 job_path = str(
                     Path(job_path).parent
-                )  # get the model ckpt folder path from the path of `training_config.yaml`
+                )  # get the model ckpt folder path from the path of
+                # `training_config.yaml`
             cli_args.extend(("--model_paths", job_path))
 
         cli_args.extend(["-o", output_path])
@@ -284,7 +283,10 @@ class InferenceTask:
         if "batch_size" in self.inference_params:
             cli_args.extend(["--batch_size", str(self.inference_params["batch_size"])])
 
-        if "max_instances" in self.inference_params and self.inference_params["max_instances"] is not None:
+        if (
+            "max_instances" in self.inference_params
+            and self.inference_params["max_instances"] is not None
+        ):
             cli_args.extend(["--max_instances", self.inference_params["max_instances"]])
 
         # add tracking args
@@ -322,7 +324,7 @@ class InferenceTask:
                     ]
                 )
 
-            if self.inference_params["tracking.similarity"]=="oks":
+            if self.inference_params["tracking.similarity"] == "oks":
                 cli_args.extend(["--features", "keypoints"])
                 cli_args.extend(["--scoring_method", "oks"])
             elif self.inference_params["tracking.similarity"] == "centroids":
@@ -350,10 +352,8 @@ class InferenceTask:
 
         # Run inference CLI capturing output.
         with subprocess.Popen(cli_args, stdout=subprocess.PIPE) as proc:
-
             # Poll until finished.
             while proc.poll() is None:
-
                 # Read line.
                 line = proc.stdout.readline()
                 line = line.decode().rstrip()
@@ -364,7 +364,7 @@ class InferenceTask:
                         # Parse line.
                         line_data = json.loads(line)
                         is_json = True
-                    except:
+                    except (json.JSONDecodeError, ValueError):
                         is_json = False
 
                 if not is_json:
@@ -505,7 +505,14 @@ def write_pipeline_files(
             new_cfg_filenames.append(cfg_info.config.outputs.run_path)
 
             # Add a line to the script for training this model
-            train_script += f"sleap-nn-train --config-name {new_cfg_filename} --config-dir {''} trainer_config.save_ckpt_path={ckpt_path} trainer_config.zmq.controller_address=tcp://127.0.0.1:{str(inference_params['controller_port'])} trainer_config.zmq.publish_address=tcp://127.0.0.1:{str(inference_params['publish_port'])}"
+            train_script += (
+                f"sleap-nn-train --config-name {new_cfg_filename} --config-dir {''} "
+                f"trainer_config.save_ckpt_path={ckpt_path} "
+                f"trainer_config.zmq.controller_address=tcp://127.0.0.1:"
+                f"{str(inference_params['controller_port'])} "
+                f"trainer_config.zmq.publish_address=tcp://127.0.0.1:"
+                f"{str(inference_params['publish_port'])}"
+            )
 
             # Setup job params
             training_jobs.append(
@@ -690,7 +697,6 @@ def run_gui_training(
 
     for config_info in config_info_list:
         if config_info.dont_retrain:
-
             if not config_info.has_trained_model:
                 raise ValueError(
                     "Config is set to not retrain but no trained model found: "
@@ -735,7 +741,7 @@ def run_gui_training(
                     plateau_min_delta=plateau_min_delta,
                 )
                 win.setWindowTitle(f"Training Model - {str(model_type)}")
-                win.set_message(f"Preparing to run training...")
+                win.set_message("Preparing to run training...")
                 if save_viz:
                     viz_window = QtImageDirectoryWidget.make_training_vizualizer(
                         job.outputs.run_path
@@ -907,10 +913,7 @@ def train_subprocess(
     """Runs training inside subprocess."""
     run_path = job_config.outputs.run_path
 
-    success = False
-
     with tempfile.TemporaryDirectory() as temp_dir:
-
         # Write a temporary file of the TrainingJob so that we can respect
         # any changed made to the job attributes after it was loaded.
         temp_filename = datetime.now().strftime("%y%m%d_%H%M%S") + "_training_job.json"
@@ -930,8 +933,12 @@ def train_subprocess(
         cfg.trainer_config.save_ckpt_path = run_path
         cfg.trainer_config.visualize_preds_during_training = save_viz
         cfg.trainer_config.keep_viz = keep_viz
-        cfg.trainer_config.zmq.controller_address = f"tcp://127.0.0.1:{str(inference_params['controller_port'])}"
-        cfg.trainer_config.zmq.publish_address = f"tcp://127.0.0.1:{str(inference_params['publish_port'])}"
+        cfg.trainer_config.zmq.controller_address = (
+            f"tcp://127.0.0.1:{str(inference_params['controller_port'])}"
+        )
+        cfg.trainer_config.zmq.publish_address = (
+            f"tcp://127.0.0.1:{str(inference_params['publish_port'])}"
+        )
 
         OmegaConf.save(cfg, (Path(temp_dir) / f"{cfg_file_name}.yaml").as_posix())
 

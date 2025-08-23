@@ -228,12 +228,10 @@ class LossPlot(MplCanvas):
         best_val_y: float = None,
         epoch_size: int = None,
     ):
-
         # Add training epoch and runtime info
         title = self._get_training_epoch_and_runtime_text(epoch, dt_min, dt_sec)
 
         if last_epoch_val_loss is not None:
-
             if penultimate_epoch_val_loss is not None:
                 # Add mean epoch time and ETA for next 10 epochs
                 eta_text = self._get_eta_text(
@@ -415,7 +413,7 @@ class LossPlot(MplCanvas):
         """Set up the title space.
 
         Returns:
-            The height of the title space as a decimal fraction of the total figure height.
+            Height of the title space as a decimal fraction of the total figure height.
         """
 
         # Set a dummy title of the plot
@@ -453,7 +451,7 @@ class LossPlot(MplCanvas):
         self.axes.set_xlim(0, 1)
         self.axes.set_xlabel("Batches", fontweight="bold", fontsize="small")
 
-        # Set the x-label in the center of the axes and some amount above the bottom of the figure
+        # Set x-label in the center of the axes and some amount above bottom of fig
         blended_transform = mtransforms.blended_transform_factory(
             self.axes.transAxes, self.fig.transFigure
         )
@@ -487,7 +485,7 @@ class LossPlot(MplCanvas):
         """Set up the legend.
 
         Returns:
-            Tuple of the width and height of the legend as a decimal fraction of the total figure width and height.
+            Tuple of the h,w of legend as a decimal fraction of the total figure h, w.
         """
 
         # Move the legend outside the plot on the upper left
@@ -507,11 +505,10 @@ class LossPlot(MplCanvas):
         # Transform the bounding box to figure coordinates
         bbox = bbox.transformed(self.fig.transFigure.inverted())
 
-        # Calculate the width and height of the legend as a percentage of the total figure width and height
+        # Calculate the h,w of legend as a percentage of the total figure h, w.
         return bbox.width, bbox.height
 
     def _setup_major_gridlines(self):
-
         # Set the outline color of the plot to gray
         for spine in self.axes.spines.values():
             spine.set_edgecolor("#d3d3d3")  # Light gray color
@@ -554,7 +551,6 @@ class LossPlot(MplCanvas):
         border_color: Optional[Tuple[int, int, int]] = None,
         zorder: Optional[int] = None,
     ):
-
         # Set the color
         color = [c / 255.0 for c in color]  # Normalize color values to [0, 1]
 
@@ -901,7 +897,6 @@ class LossViewer(QtWidgets.QMainWindow):
 
             # Make sure message matches current training job.
             if msg.get("what", "") == self.current_job_output_type:
-
                 if not self.is_timer_running:
                     # We must have missed the train_begin message, so start timer now.
                     self._set_start_time(perf_counter())
@@ -940,7 +935,7 @@ class LossViewer(QtWidgets.QMainWindow):
                                 self.best_epoch_loss = self.last_epoch_val_loss
 
                             if self.plateau_min_delta is not None:
-                                # check plateau condition according to `rel` threshold model in pytorch.
+                                # plateau check according to `rel` thrsh mode in torch.
                                 is_better = (
                                     self.last_epoch_val_loss
                                     < self.best_epoch_loss
@@ -1015,7 +1010,6 @@ class LossViewer(QtWidgets.QMainWindow):
                 self._resize_axes(xs, ys)
 
         else:
-
             if which == "val_loss":
                 if self.best_val_y is None or y < self.best_val_y:
                     self.best_val_x = x
