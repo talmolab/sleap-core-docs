@@ -240,7 +240,7 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
 
                 # Fill with your point data
                 for idx, pred_pts in enumerate(pred_points[i["point_id_start"] : i["point_id_end"]]):
-                    points_array[idx]['xy'] = np.array([pred_pts[0], pred_pts[1]]) if len(pred_pts[0]) == 2 else np.array([pred_pts['x'], pred_pts['y']])
+                    points_array[idx]['xy'] = np.array([pred_pts[0], pred_pts[1]]) if pts[0].shape == 2 else np.array([pred_pts['x'], pred_pts['y']])
                     points_array[idx]['visible'] = pred_pts['visible']
                     points_array[idx]['complete'] = pred_pts['complete']
                     points_array[idx]['score'] = pred_pts['score']

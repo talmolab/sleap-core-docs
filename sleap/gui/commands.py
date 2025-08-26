@@ -80,7 +80,7 @@ from sleap.io.videowriter import write_video
 from sleap.io.visuals import save_labeled_video
 from sleap.util import get_package_file
 from sleap_io.model.skeleton import Node, Skeleton
-from sleap.sleap_io_adaptors.skeleton_utils import get_symmetry_node, delete_symmetry
+from sleap.sleap_io_adaptors.skeleton_utils import get_symmetry_node, delete_symmetry, delete_edge
 from sleap_io import save_skeleton
 import json
 from sleap_io.io.skeleton import SkeletonDecoder
@@ -2695,7 +2695,7 @@ class DeleteEdge(EditCommand):
     def do_action(context: CommandContext, params: dict):
         edge = params["edge"]
         # Delete edge
-        context.state["skeleton"].delete_edge(**edge)
+        context.state["skeleton"] = delete_edge(context.state["skeleton"], edge['source'], edge['destination'])
 
 
 class InstanceDeleteCommand(EditCommand):
