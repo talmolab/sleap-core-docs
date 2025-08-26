@@ -146,7 +146,7 @@ class StatisticSeries:
             print(f"Unable to locate node {primary_node} so using node 0")
             primary_node_idx = 0
 
-        last_frame_idx = video.num_frames - 1
+        last_frame_idx = video.backend.num_frames - 1
         location_matrix = np.full(
             (last_frame_idx + 1, track_count, 2), np.nan, dtype=float
         )

@@ -423,18 +423,23 @@ def save_labeled_video(
 
     # Pass marker thread in as intrmediate thread to write_video (and write video).
     intermediate_threads = [thread_mark]
-    write_video(
-        filename=filename,
-        video=video,
-        frames=frames,
-        fps=fps,
-        scale=scale,
-        background=background,
-        gui_progress=gui_progress,
-        in_queue=q1,
-        out_queue=q2,
-        intermediate_threads=intermediate_threads,
-    )
+    save_video(
+            frames=[video.backend.get_frame(i) for i in frames],
+            filename=filename,
+            fps=fps,
+        )
+    # write_video(
+    #     filename=filename,
+    #     video=video,
+    #     frames=frames,
+    #     fps=fps,
+    #     scale=scale,
+    #     background=background,
+    #     gui_progress=gui_progress,
+    #     in_queue=q1,
+    #     out_queue=q2,
+    #     intermediate_threads=intermediate_threads,
+    # )
 
 
 def has_nans(*vals):

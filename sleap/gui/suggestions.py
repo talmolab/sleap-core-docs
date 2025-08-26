@@ -365,9 +365,9 @@ class VideoFrameSuggestions(object):
         for video in videos:
             # Make sure when targeting all videos the from and to do not exceed
             # frame number
-            if frame_from > video.num_frames:
+            if frame_from > video.backend.num_frames:
                 continue
-            this_video_frame_to = min(frame_to, video.num_frames)
+            this_video_frame_to = min(frame_to, video.backend.num_frames)
             # Generate list of frame numbers
             idx = list(range(frame_from - 1, this_video_frame_to))
             proposed_suggestions.extend(cls.idx_list_to_frame_list(idx, video))

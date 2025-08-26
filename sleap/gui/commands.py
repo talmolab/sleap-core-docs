@@ -1388,14 +1388,19 @@ class ExportVideoClip(AppCommand):
             context: The command context.
             params: The parameters for the export.
         """
-        write_video(
+        # write_video(
+        #     filename=params["video_filename"],
+        #     video=context.state["video"],
+        #     frames=list(params["frames"]),
+        #     fps=params["fps"],
+        #     scale=params["scale"],
+        #     background=params["background"],
+        #     gui_progress=params["gui_progress"],
+        # )
+        save_video(
+            frames=[context.state["video"].backend.get_frame(i) for i in params["frames"]],
             filename=params["video_filename"],
-            video=context.state["video"],
-            frames=list(params["frames"]),
             fps=params["fps"],
-            scale=params["scale"],
-            background=params["background"],
-            gui_progress=params["gui_progress"],
         )
 
     @classmethod
@@ -1425,9 +1430,6 @@ class ExportVideoClip(AppCommand):
         # Check if user hit cancel
         if export_options is None:
             return False
-
-        # Use VideoWriter to determine default video type to use
-        from sleap.io.videowriter import VideoWriter
 
         default_out_basename = params.get("filename", context.state["filename"])
 
@@ -1523,8 +1525,9 @@ class ExportVideoClip(AppCommand):
         # Determine crop size relative to original size and scale
         # (crop size should be *final* output size, thus already scaled).
         video = context.state["video"]
-        w = int(video.width * params["scale"])
-        h = int(video.height * params["scale"])
+        img_h, img_w = video.backend.img_shape[:2]
+        w = int(img_w * params["scale"])
+        h = int(img_h * params["scale"])
         if export_options_crop == "Half":
             params["crop"] = (w // 2, h // 2)
         elif export_options_crop == "Quarter":
@@ -2213,7 +2216,8 @@ class ReplaceVideo(EditCommand):
             video.backend.reset(**import_params)
 
             # Remove frames in video past last frame index
-            last_vid_frame = video.last_frame_idx
+            # last_vid_frame = video.last_frame_idx
+            last_vid_frame = video.backend.num_frames - 1
             lfs: List[LabeledFrame] = list(context.labels.get(video))
             if lfs is not None:
                 lfs = [lf for lf in lfs if lf.frame_idx > last_vid_frame]

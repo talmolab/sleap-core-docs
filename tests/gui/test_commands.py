@@ -377,7 +377,8 @@ def test_ReplaceVideo(
     # Ensure labels were truncated (Original video was fully labeled)
     new_last_lf_frame = get_last_lf_in_video(labels, video)
     # Original video was fully labeled
-    assert new_last_lf_frame == labels.video.last_frame_idx
+    # assert new_last_lf_frame == labels.video.last_frame_idx
+    assert new_last_lf_frame == labels.video.backend.num_frames - 1
 
     # Attempt to replace an mp4 with an hdf5 video
     with pytest.raises(TypeError):
@@ -909,7 +910,7 @@ def test_exportLabelsPackage(export_extension, centered_pair_labels: Labels, tmp
             num_images += len(lfs_sugg)
         if not pred:
             num_images -= len(lfs_pred)
-        assert labels_reload.video.num_frames == num_images
+        assert labels_reload.video.backend.num_frames == num_images
 
     # Set-up CommandContext
     path_to_pkg = Path(tmpdir, "test_exportLabelsPackage.ext")

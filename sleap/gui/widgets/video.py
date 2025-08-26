@@ -328,7 +328,7 @@ class QtVideoPlayer(QWidget):
     def _load_and_show_requested_image(self, frame_idx):
         # Get image data
         try:
-            frame = self.video.get_frame(frame_idx)
+            frame = self.video.backend.get_frame(frame_idx)
         except Exception:
             frame = None
 
@@ -449,10 +449,12 @@ class QtVideoPlayer(QWidget):
             self.reset()
         else:
             # Is this necessary?
-            self.view.scene.setSceneRect(0, 0, video.width, video.height)
+            h, w, c = video.backend.img_shape[:3]
+            self.view.scene.setSceneRect(0, 0, w, h)
 
             self.seekbar.setMinimum(0)
-            self.seekbar.setMaximum(self.video.last_frame_idx)
+            # self.seekbar.setMaximum(self.video.last_frame_idx)
+            self.seekbar.setMaximum(self.video.backend.num_frames - 1)
             self.seekbar.setEnabled(True)
             self.seekbar.resizeEvent()
 
@@ -1525,8 +1527,8 @@ class QtNode(QGraphicsEllipseItem):
         y = self.scenePos().y()
 
         # Ensure node is placed within video boundaries
-        w = self.player.video.width
-        h = self.player.video.height
+        w = self.player.video.backend.img_shape[1]
+        h = self.player.video.backend.img_shape[0]
         if (x > w) or (x < 0) or (y > h) or (y < 0):
             if x > w:
                 x = w
@@ -1872,7 +1874,7 @@ class QtInstance(QGraphicsObject):
         if not self.predicted:
             # Initialize missing nodes with random points marked as non-visible.
             fill_missing(self.instance,
-                max_x=self.player.video.width, max_y=self.player.video.height
+                max_x=self.player.video.backend.img_shape[1], max_y=self.player.video.backend.img_shape[0]
             )
 
         # Add box to go around instance for selection
@@ -2333,9 +2335,7 @@ class VisibleBoundingBox(QtWidgets.QGraphicsRectItem):
             x1, y1, x2, y2 = self.rect().getCoords()
             new_x = event.pos().x()
             new_y = event.pos().y()
-
-            w = self.parent.player.video.width
-            h = self.parent.player.video.height
+            h, w, c = self.parent.player.video.backend.img_shape[:3]
 
             if self.resizing == "top_left":
                 # Check to see if outside the range of the original bounding box
