@@ -59,7 +59,7 @@ from sleap.gui.state import GuiState
 from sleap.gui.widgets.slider import VideoSlider
 from sleap_io.model.instance import Instance, PredictedInstance
 from sleap.sleap_io_adaptors.instance_utils import fill_missing, node_points
-from sleap.io.video import Video
+from sleap_io import Video
 from sleap.prefs import prefs
 from sleap_io import Node
 

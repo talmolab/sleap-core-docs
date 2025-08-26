@@ -21,7 +21,7 @@ from sklearn.cluster import KMeans
 from skimage.feature import hog
 from skimage.util.shape import view_as_windows
 
-from sleap.io.video import Video
+from sleap_io import Video
 
 logger = logging.getLogger(__name__)
 

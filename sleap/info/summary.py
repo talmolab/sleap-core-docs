@@ -10,7 +10,7 @@ from typing import Callable, Dict
 
 from sleap.instance import LabeledFrame
 from sleap.io.dataset import Labels
-from sleap.io.video import Video
+from sleap_io import Video
 from sleap.sleap_io_adaptors.skeleton_utils import node_to_index
 
 

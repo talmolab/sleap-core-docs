@@ -8,7 +8,7 @@ import random
 
 from typing import Dict, List, Optional, Union
 
-from sleap.io.video import Video
+from sleap_io import Video
 from sleap.io.dataset import Labels
 from sleap.info.feature_suggestions import (
     FeatureSuggestionPipeline,

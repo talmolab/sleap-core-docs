@@ -18,8 +18,9 @@ import numpy as np
 from sleap.gui.color import ColorManager
 from sleap_io.model.instance import Instance
 from sleap.io.dataset import Labels
-from sleap.io.video import Video
-from sleap.io.videowriter import _sentinel, write_video
+from sleap_io import Video
+from sleap.sleap_io_adaptors.video_utils import _sentinel
+from sleap_io import save_video
 from sleap.util import usable_cpu_count
 
 logger = logging.getLogger(__name__)

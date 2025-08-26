@@ -75,8 +75,8 @@ from sleap.io.dataset import Labels
 from sleap.io.format.adaptor import Adaptor
 from sleap.io.format.csv import CSVAdaptor
 from sleap.io.format.ndx_pose import NDXPoseAdaptor
-from sleap.io.video import Video
-from sleap.io.videowriter import write_video
+from sleap_io import Video
+from sleap_io import save_video
 from sleap.io.visuals import save_labeled_video
 from sleap.util import get_package_file
 from sleap_io.model.skeleton import Node, Skeleton
@@ -84,6 +84,7 @@ from sleap.sleap_io_adaptors.skeleton_utils import get_symmetry_node, delete_sym
 from sleap_io import save_skeleton
 import json
 from sleap_io.io.skeleton import SkeletonDecoder
+from sleap.sleap_io_adaptors.video_utils import can_use_ffmpeg
 
 # Indicates whether we support multiple project windows (i.e., "open" opens new window)
 OPEN_IN_NEW = True
@@ -1434,7 +1435,7 @@ class ExportVideoClip(AppCommand):
         # makes mp4's that most programs can't open (VLC can).
         default_out_filename = default_out_basename + ".avi"
 
-        if VideoWriter.can_use_ffmpeg():
+        if can_use_ffmpeg():
             default_out_filename = default_out_basename + ".mp4"
 
         # Ask where user wants to save video file
