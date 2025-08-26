@@ -3684,9 +3684,10 @@ class SetInstancePointLocations(EditCommand):
 
         for node, (x, y) in nodes_locations.items():
             if node in instance:
-                point_data = list(instance[node])
+                node_idx = instance.skeleton.node_names.index(node)
+                point_data = list(instance.points[node_idx])
                 point_data['xy'] = np.array([x, y])
-                instance[node] = point_data
+                instance.points[node_idx] = point_data
 
 
 class SetInstancePointVisibility(EditCommand):
@@ -3711,10 +3712,9 @@ class SetInstancePointVisibility(EditCommand):
         visible = params["visible"]
 
         # instance[node] returns [(x, y), visible, complete, name] or [(x, y), score, visible, complete, name]
-        point_data = list(instance[node])
-        point_data['visible'] = visible
         node_idx = instance.skeleton.node_names.index(node)
-        # Create the input array first, then use PointsArray.from_array()
+        point_data = list(instance.points[node_idx])
+        point_data['visible'] = visible        # Create the input array first, then use PointsArray.from_array()
         input_array = np.array([(point_data[0], point_data[1], point_data[2], node if isinstance(node, str) else node.name)], 
                               dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool'), ('name', 'O')])
         instance.points[node_idx] = PointsArray.from_array(input_array)[0]
@@ -3848,18 +3848,17 @@ class AddUserInstancesFromPredictions(EditCommand):
         # go through each node in skeleton
         for node in new_instance.skeleton.node_names:
             # if we're copying from a skeleton that has this node
-            if node in copy_instance and not copy_instance[node].isnan():
+            node_idx = new_instance.skeleton.node_names.index(node)
+            if node in copy_instance and not copy_instance.points[node_idx]['xy'].isnan():
                 # just copy x, y, and visible
                 # we don't want to copy a PredictedPoint or score attribute
-                # copy_instance[node] returns [(x, y), visible, complete, name] or [(x, y), score, visible, complete, name]
-                node_idx = new_instance.skeleton.node_names.index(node)
-                point_data = copy_instance[node_idx]
+                point_data = copy_instance.points[node_idx]
                 if 'score' in point_data.dtype.names:
                     # Create the input array first, then use PointsArray.from_array()
                     from sleap_io.model.instance import PointsArray
                     input_array = np.array([([point_data[0][0], point_data[0][1]], point_data['visible'], False, node)], 
                               dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool'), ('name', 'O')])
-                    new_instance[node] = PointsArray.from_array(input_array)[0]
+                    new_instance.points[node_idx] = PointsArray.from_array(input_array)[0]
 
         # copy the track
         new_instance.track = copy_instance.track

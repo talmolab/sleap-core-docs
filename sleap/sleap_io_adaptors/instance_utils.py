@@ -102,20 +102,12 @@ def node_points(instance) -> List[Tuple[Node, np.ndarray]]:
     # Create mapping of node names to points
     node_points = []
 
-    # Get all node names from points
-    point_node_names = points_data["name"]
 
-    # Get valid points (not NaN)
-    valid_mask = ~(np.isnan(points_data["xy"][:, 0]) | np.isnan(points_data["xy"][:, 1]))
-    valid_points = points_data[valid_mask]
-    valid_node_names = point_node_names[valid_mask]
 
     # Create mapping
-    for node in skeleton_nodes:
-        if node.name in valid_node_names:
+    for node_idx, node in enumerate(skeleton_nodes):
             # Find the point data for this node
-            node_idx = list(valid_node_names).index(node.name)
-            point_data = valid_points[node_idx]
+            point_data = points_data[node_idx]
 
             # Convert to [x, y, visible, complete] format
 
@@ -212,8 +204,6 @@ def fill_missing(instance: Instance, max_x: Optional[float] = None, max_y: Optio
             from_predicted=instance.from_predicted
         )
     else:  # Instance
-        print(f"combined_points: {combined_points}")
-        print(f"instance.skeleton: {instance.skeleton}")
         new_instance = Instance(
             points=combined_points,
             skeleton=instance.skeleton,
