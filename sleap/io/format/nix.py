@@ -3,7 +3,7 @@ import nixio as nix
 
 from pathlib import Path
 from typing import Dict, List, Optional, cast
-from sleap.instance import Track
+from sleap_io.model.instance import Track
 
 from sleap.io.format.adaptor import Adaptor, SleapObjectType
 from sleap.io.format.filehandle import FileHandle
@@ -258,12 +258,14 @@ class NixAdaptor(Adaptor):
                 data_written += end - start
 
         def write_data(block, source: Labels, video: Video):
-            instances = [
-                instance
-                for instance in source.instances(video=video)
-                if instance.frame_idx is not None
-            ]
-            instances = sorted(instances, key=lambda i: i.frame_idx)
+            # Get instances with their frame information since sleap_io instances don't have frame_idx
+            instance_frame_pairs = []
+            for frame in source.frames(video=video):
+                for instance in frame.instances:
+                    instance_frame_pairs.append((instance, frame))
+            
+            instances = [pair[0] for pair in instance_frame_pairs]
+            frames = [pair[1] for pair in instance_frame_pairs]
             nodes = node_map(source)
             tracks = track_map(source)
             skeletons = skeleton_map(source)
@@ -276,6 +278,9 @@ class NixAdaptor(Adaptor):
                 shape=(len(instances),),
                 dtype=nix.DataType.Int64,
             )
+            # Fill frame indices from the frames list
+            frame_indices = [frame.frame_idx for frame in frames]
+            frameid_array[:] = frame_indices
             frameid_array.append_range_dimension_using_self()
 
             positions_array = create_positions_array(

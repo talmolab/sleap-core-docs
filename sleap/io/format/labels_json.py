@@ -24,9 +24,11 @@ from sleap import Labels, Video
 from sleap.gui.suggestions import SuggestionFrame
 from sleap.instance import (
     LabeledFrame,
-    Track,
-    make_instance_cattr,
 )
+from sleap_io.model.instance import (
+    Track,
+)
+from sleap.sleap_io_adaptors.instance_utils import make_instance_cattr
 from sleap.io.legacy import load_labels_json_old
 from sleap_io import Node
 from sleap.util import json_loads, json_dumps, weak_filename_match

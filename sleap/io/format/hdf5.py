@@ -9,13 +9,13 @@ from sleap.io import format
 from . import labels_json
 
 from sleap.instance import (
-    PointArray,
-    PredictedPointArray,
+    LabeledFrame,
+)
+from sleap_io.model.instance import (
     Instance,
     PredictedInstance,
-    LabeledFrame,
-    PredictedPoint,
-    Point,
+    PointsArray,
+    PredictedPointsArray,
 )
 from sleap.util import json_loads, json_dumps
 from sleap import Labels, Video
@@ -196,15 +196,14 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
         # Rather than instantiate a bunch of Point\PredictedPoint objects, we will use
         # inplace numpy recarrays. This will save a lot of time and memory when reading
         # things in.
-        points = PointArray(buf=points_dset, shape=len(points_dset))
+        points = points_dset
 
-        pred_points = PredictedPointArray(
-            buf=pred_points_dset, shape=len(pred_points_dset)
-        )
+        pred_points = pred_points_dset
 
         # Extend the tracks list with a None track. We will signify this with a -1 in
         # the data which will map to last element of tracks
         tracks = labels.tracks.copy()
+        
         tracks.extend([None])
 
         # A dict to keep track of instances that have a from_predicted link. The key is
@@ -218,19 +217,38 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
             skeleton = labels.skeletons[i["skeleton"]]
 
             if i["instance_type"] == 0:  # Instance
+                points_array = PointsArray.empty(len(skeleton))
+                points_array['name'] = skeleton.node_names
+
+                # Fill with your point data
+                for idx, (x, y, visible, complete) in enumerate(points[i["point_id_start"] : i["point_id_end"]]):
+                    points_array[idx]['xy'] = [x, y]
+                    points_array[idx]['visible'] = visible
+                    points_array[idx]['complete'] = complete
+
                 instance = Instance(
                     skeleton=skeleton,
                     track=track,
-                    points=points[i["point_id_start"] : i["point_id_end"]],
+                    points=points_array,
                     tracking_score=i["tracking_score"]
                     if (format_id is not None and format_id >= 1.3)
                     else 0.0,
                 )
             else:  # PredictedInstance
+                points_array = PredictedPointsArray.empty(len(skeleton))
+                points_array['name'] = skeleton.node_names
+
+                # Fill with your point data
+                for idx, (x, y, visible, complete, score) in enumerate(pred_points[i["point_id_start"] : i["point_id_end"]]):
+                    points_array[idx]['xy'] = [x, y]
+                    points_array[idx]['visible'] = visible
+                    points_array[idx]['complete'] = complete
+                    points_array[idx]['score'] = score
+
                 instance = PredictedInstance(
                     skeleton=skeleton,
                     track=track,
-                    points=pred_points[i["point_id_start"] : i["point_id_end"]],
+                    points=points_array,
                     score=i["score"],
                     tracking_score=i["tracking_score"]
                     if (format_id is not None and format_id >= 1.2)

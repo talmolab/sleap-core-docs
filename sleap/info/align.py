@@ -164,13 +164,13 @@ def make_mean_instance(
         mean[stdev > std_thresh] = np.nan
 
     from sleap import Instance
-    from sleap.instance import Point
+    from sleap.sleap_io_adaptors.instance_utils import convert_point_to_array
 
     OFFSET = 0  # FIXME
 
     new_instance = Instance(
         skeleton=labels.skeletons[0],
-        points=[Point(p[0] + OFFSET, p[1] + OFFSET) for p in mean],
+                    points=[[p[0] + OFFSET, p[1] + OFFSET, True, False] for p in mean],  # [x, y, visible, complete]
     )
     return new_instance
 

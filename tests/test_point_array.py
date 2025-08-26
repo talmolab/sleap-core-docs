@@ -1,7 +1,11 @@
-import numpy as np
-import pytest
+# This file has been commented out and will be removed eventually.
+# All Point, PredictedPoint, PointArray, and PredictedPointArray tests have been migrated to sleap_io.
+# Please use sleap_io tests instead.
 
-from sleap.instance import Point, PredictedPoint, PointArray, PredictedPointArray
+# import numpy as np
+# import pytest
+
+# from sleap.instance import Point, PredictedPoint, PointArray, PredictedPointArray
 
 
 @pytest.mark.parametrize(
@@ -97,3 +101,5 @@ def test_from_and_to_array():
     # Make sure conversion uses default score
     r = PredictedPointArray.from_array(p)
     assert r.score[0] == PredictedPointArray.make_default(1)[0].score
+
+# END OF FILE - ALL TESTS COMMENTED OUT

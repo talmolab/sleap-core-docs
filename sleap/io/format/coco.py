@@ -11,7 +11,8 @@ import numpy as np
 from sleap import Labels, Video
 from sleap_io import Skeleton
 from sleap.gui.dialogs.missingfiles import MissingFilesDialog
-from sleap.instance import Instance, LabeledFrame, Point, Track
+from sleap.instance import LabeledFrame
+from sleap_io.model.instance import Instance, Track
 
 from .adaptor import Adaptor, SleapObjectType
 from .filehandle import FileHandle
@@ -175,7 +176,7 @@ class LabelsCocoAdaptor(Adaptor):
             if "track_id" in annotation:
                 track_id = annotation["track_id"]
                 if track_id not in track_map:
-                    track_map[track_id] = Track(frame_idx, str(track_id))
+                    track_map[track_id] = Track(name=str(track_id))
                 track = track_map[track_id]
 
             points = dict()
@@ -188,19 +189,20 @@ class LabelsCocoAdaptor(Adaptor):
                     # node not labeled for this instance
                     if (x, y) != (0, 0):
                         # If labeled but invisible, place the node at the coord
-                        points[node] = Point(x, y, False)
+                        points[node] = [x, y, False, False]  # [x, y, visible, complete]
                     continue
 
                 is_visible = flag == 2
                 any_visible = any_visible or is_visible
-                points[node] = Point(x, y, is_visible)
+                points[node] = [x, y, is_visible, False]  # [x, y, visible, complete]
 
             if points:
                 # If none of the points had 2 has the "visible" flag, we'll
                 # assume this incorrect and just mark all as visible.
                 if not any_visible:
                     for point in points.values():
-                        point.visible = True
+                        # point is now [x, y, visible, complete] array
+                        point[2] = True  # visible = True
 
                 inst = Instance(skeleton=skeleton, points=points, track=track)
 

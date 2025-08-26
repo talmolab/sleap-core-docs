@@ -14,10 +14,10 @@ from sleap.io.video import Video
 
 from sleap.instance import (
     LabeledFrame,
-    PredictedPoint,
+)
+from sleap_io.model.instance import (
     PredictedInstance,
     Track,
-    Point,
     Instance,
 )
 from sleap_io import Skeleton
@@ -102,7 +102,7 @@ def load_predicted_labels_json_old(
         for track_id in unique_track_ids
     }
     tracks = {
-        i: Track(name=str(i), spawned_on=spawned_on[i])
+        i: Track(name=str(i))
         for i in np.unique(predicted_instances["trackId"].values).tolist()
     }
 
@@ -129,9 +129,7 @@ def load_predicted_labels_json_old(
                 "tracking_score"
             ].values[0]
             instance_points = {
-                data["skeleton"]["nodeNames"][n]: PredictedPoint(
-                    x, y, visible=v, score=confidence
-                )
+                data["skeleton"]["nodeNames"][n]: [x, y, confidence, v, False]  # [x, y, score, visible, complete]
                 for x, y, n, v, confidence in zip(
                     *[
                         points[k][is_instance]
@@ -263,7 +261,7 @@ def load_labels_json_old(
         for i, instance_id in enumerate(frame_instance_ids):
             is_instance = is_in_frame & (points["instanceId"] == instance_id)
             instance_points = {
-                data["skeleton"]["nodeNames"][n]: Point(x, y, visible=v)
+                data["skeleton"]["nodeNames"][n]: [x, y, v, False]  # [x, y, visible, complete]
                 for x, y, n, v in zip(
                     *[points[k][is_instance] for k in ["x", "y", "node", "visible"]]
                 )

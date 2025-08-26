@@ -18,7 +18,7 @@ import copy
 
 from typing import List, Optional
 
-from sleap.instance import Point, Instance
+from sleap_io.model.instance import Instance
 from sleap.io.dataset import Labels, LabeledFrame
 from sleap_io import Skeleton
 from sleap.io.video import Video
@@ -201,7 +201,7 @@ class AlphaTrackerAdaptor(Adaptor):
                     __node_num += 1
                     __instance_points[__instance_num]["instance_points"][
                         str(__node_num)
-                    ] = Point(__ann["x"], __ann["y"])
+                    ] = [__ann["x"], __ann["y"], True, False]  # [x, y, visible, complete]
 
                     if not skeleton.has_node(str(__node_num)):
                         # Add nodes to skeleton

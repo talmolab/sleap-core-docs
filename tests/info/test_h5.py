@@ -125,7 +125,11 @@ def test_output_matrices(centered_pair_predictions: Labels, min_labels_robot: La
     track = centered_pair_predictions.tracks[13]
     instances = centered_pair_predictions.find_track_occupancy(vid, track)
     for instance in instances:
-        centered_pair_predictions.remove_instance(instance.frame, instance)
+        # Find the frame that contains this instance since instances don't have frame attribute
+        for frame in centered_pair_predictions.frames(video=vid):
+            if instance in frame.instances:
+                centered_pair_predictions.remove_instance(frame, instance)
+                break
 
     # Make sure that this now remove empty track
     (
@@ -158,12 +162,7 @@ def test_output_matrices(centered_pair_predictions: Labels, min_labels_robot: La
     )
     # Make a minor modification to the user-instance to differentiate
     node_idx = 0
-    user_instance[node_idx] = Point(
-        x=1,
-        y=1,
-        visible=True,
-        complete=True,
-    )
+                user_instance[node_idx] = [1, 1, True, True]  # [x, y, visible, complete]
     centered_pair_predictions.add_instance(lf, user_instance)
 
     # Add another predicted instance (same track) incase ordering matters
