@@ -221,7 +221,7 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
                 points_array['name'] = skeleton.node_names
 
                 # Fill with your point data
-                for idx, (x, y, visible, complete) in enumerate(points[i["point_id_start"] : i["point_id_end"]]):
+                for idx, ((x, y), visible, complete, name) in enumerate(points[i["point_id_start"] : i["point_id_end"]]):
                     points_array[idx]['xy'] = [x, y]
                     points_array[idx]['visible'] = visible
                     points_array[idx]['complete'] = complete
@@ -239,7 +239,7 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
                 points_array['name'] = skeleton.node_names
 
                 # Fill with your point data
-                for idx, (x, y, visible, complete, score) in enumerate(pred_points[i["point_id_start"] : i["point_id_end"]]):
+                for idx, ((x, y), score, visible, complete, name) in enumerate(pred_points[i["point_id_start"] : i["point_id_end"]]):
                     points_array[idx]['xy'] = [x, y]
                     points_array[idx]['visible'] = visible
                     points_array[idx]['complete'] = complete
@@ -433,9 +433,9 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
             max_skeleton_size = max([len(s.nodes) for s in labels.skeletons], default=0)
 
             # Initialize data arrays for serialization
-            points = np.zeros(num_instances * max_skeleton_size, dtype=Point.dtype)
+            points = np.zeros(num_instances * max_skeleton_size)
             pred_points = np.zeros(
-                num_instances * max_skeleton_size, dtype=PredictedPoint.dtype
+                num_instances * max_skeleton_size
             )
             instances = np.zeros(num_instances, dtype=instance_dtype)
             frames = np.zeros(len(labels), dtype=frame_dtype)

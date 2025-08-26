@@ -1,6 +1,6 @@
 import pytest
 
-from sleap.instance import Instance, LabeledFrame, Point, PredictedInstance
+from sleap_io.model.instance import Instance, PredictedInstance
 
 
 @pytest.fixture
@@ -8,19 +8,17 @@ def instances(skeleton, centered_pair_vid):
     # Generate some instances
     NUM_INSTANCES = 500
 
-    video = centered_pair_vid
     instances = []
     for i in range(NUM_INSTANCES):
         instance = Instance(skeleton=skeleton)
-        instance["head"] = [i * 1, i * 2, True, False]  # [x, y, visible, complete]
-        instance["left-wing"] = [10 + i * 1, 10 + i * 2, True, False]  # [x, y, visible, complete]
-        instance["right-wing"] = [20 + i * 1, 20 + i * 2, True, False]  # [x, y, visible, complete]
+        instance["head"] = ([i * 1, i * 2], True, False)  # (xy, visible, complete)
+        instance["left-wing"] = ([10 + i * 1, 10 + i * 2], True, False)  # (xy, visible, complete)
+        instance["right-wing"] = ([20 + i * 1, 20 + i * 2], True, False)  # (xy, visible, complete)
 
         # Lets make an NaN entry to test skip_nan as well
         instance["thorax"]
 
         # Add a LabeledFrame
-        labeled_frame = LabeledFrame(video=video, frame_idx=i, instances=[instance])
 
         instances.append(instance)
 
@@ -44,9 +42,9 @@ def multi_skel_instances(skeleton, stickman):
     instances = []
     for i in range(NUM_INSTANCES):
         instance = Instance(skeleton=skeleton, video=None, frame_idx=i)
-        instance["head"] = [i * 1, i * 2, True, False]  # [x, y, visible, complete]
-        instance["left-wing"] = [10 + i * 1, 10 + i * 2, True, False]  # [x, y, visible, complete]
-        instance["right-wing"] = [20 + i * 1, 20 + i * 2, True, False]  # [x, y, visible, complete]
+        instance["head"] = ([i * 1, i * 2], True, False)  # (xy, visible, complete)
+        instance["left-wing"] = ([10 + i * 1, 10 + i * 2], True, False)  # (xy, visible, complete)
+        instance["right-wing"] = ([20 + i * 1, 20 + i * 2], True, False)  # (xy, visible, complete)
 
         # Lets make an NaN entry to test skip_nan as well
         instance["thorax"]
@@ -56,9 +54,9 @@ def multi_skel_instances(skeleton, stickman):
     # Setup some instances of the stick man on the same frames
     for i in range(NUM_INSTANCES):
         instance = Instance(skeleton=stickman, video=None, frame_idx=i)
-        instance["head"] = [i * 10, i * 20, True, False]  # [x, y, visible, complete]
-        instance["body"] = [100 + i * 1, 100 + i * 2, True, False]  # [x, y, visible, complete]
-        instance["left-arm"] = [200 + i * 1, 200 + i * 2, True, False]  # [x, y, visible, complete]
+        instance["head"] = ([i * 10, i * 20], True, False)  # (xy, visible, complete)
+        instance["body"] = ([100 + i * 1, 100 + i * 2], True, False)  # (xy, visible, complete)
+        instance["left-arm"] = ([200 + i * 1, 200 + i * 2], True, False)  # (xy, visible, complete)
 
         instances.append(instance)
 

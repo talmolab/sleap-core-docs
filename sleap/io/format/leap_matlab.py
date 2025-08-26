@@ -8,6 +8,7 @@ This attempts to find videos. If they cannot automatically be found and the
 import os
 
 import scipy.io as sio
+import numpy as np
 
 from sleap import Labels, Video
 from sleap_io import Skeleton
@@ -120,7 +121,8 @@ class LabelsLeapMatlabAdaptor(Adaptor):
             for node_idx, node in enumerate(nodes):
                 x = points_[node_idx][0][i]
                 y = points_[node_idx][1][i]
-                new_inst[node] = [x, y, True, False]  # [x, y, visible, complete]
+                new_inst[node] = np.array([([x, y], True, False)], 
+                              dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool')])  # [(x, y), visible, complete]
             if len(new_inst.points):
                 new_frame = LabeledFrame(video=vid, frame_idx=i)
                 new_frame.instances = (new_inst,)

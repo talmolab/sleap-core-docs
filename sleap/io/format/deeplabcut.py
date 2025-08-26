@@ -244,7 +244,8 @@ class LabelsDeepLabCutCsvAdaptor(Adaptor):
                             )
                         else:
                             x, y = np.nan, np.nan
-                        instance_points[node] = [x, y, True, False]  # [x, y, visible, complete]
+                        instance_points[node] = np.array([([x, y], True, False)], 
+                              dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool')])  # [(x, y), visible, complete]
                         if ~(np.isnan(x) and np.isnan(y)):
                             any_not_missing = True
 
@@ -267,7 +268,8 @@ class LabelsDeepLabCutCsvAdaptor(Adaptor):
                 for node in node_names:
                     # node is a string (node name), not a Node object
                     x, y = data[(node, "x")][i], data[(node, "y")][i]
-                    instance_points[node] = [x, y, True, False]  # [x, y, visible, complete]
+                    instance_points[node] = np.array([([x, y], True, False)], 
+                              dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool')])  # [(x, y), visible, complete]
                     if ~(np.isnan(x) and np.isnan(y)):
                         any_not_missing = True
 

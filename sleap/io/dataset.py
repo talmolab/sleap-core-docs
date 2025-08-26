@@ -89,6 +89,7 @@ from sleap.io.video import Video, ImgStoreVideo, HDF5Video
 from sleap.gui.dialogs.missingfiles import MissingFilesDialog
 from sleap.rangelist import RangeList
 from sleap.util import uniquify, json_dumps
+from sleap.sleap_io_adaptors.skeleton_utils import to_graph
 
 """
 The version number to put in the Labels JSON format.
@@ -1228,7 +1229,7 @@ class Labels(MutableSequence):
                 # No labeled frames so use force-directed graph layout
                 import networkx as nx
 
-                node_positions = nx.spring_layout(G=skeleton.graph, scale=50)
+                node_positions = nx.spring_layout(G=to_graph(skeleton), scale=50)
 
                 template_points = np.stack(
                     [

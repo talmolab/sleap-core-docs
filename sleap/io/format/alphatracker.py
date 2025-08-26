@@ -22,6 +22,7 @@ from sleap_io.model.instance import Instance
 from sleap.io.dataset import Labels, LabeledFrame
 from sleap_io import Skeleton
 from sleap.io.video import Video
+import numpy as np
 from sleap.io.format.adaptor import Adaptor, SleapObjectType
 from sleap.io.format.filehandle import FileHandle
 
@@ -201,7 +202,8 @@ class AlphaTrackerAdaptor(Adaptor):
                     __node_num += 1
                     __instance_points[__instance_num]["instance_points"][
                         str(__node_num)
-                    ] = [__ann["x"], __ann["y"], True, False]  # [x, y, visible, complete]
+                    ] = np.array([([__ann["x"], __ann["y"]], True, False)], 
+                              dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool')])  # [(x, y), visible, complete]
 
                     if not skeleton.has_node(str(__node_num)):
                         # Add nodes to skeleton

@@ -4,7 +4,6 @@ from sleap.io.dataset import Labels
 from sleap.io.video import Video
 from sleap.instance import LabeledFrame
 from sleap_io.model.instance import PredictedInstance, Track
-from sleap.sleap_io_adaptors.instance_utils import convert_point_to_array
 from sleap_io import Skeleton
 import numpy as np
 
@@ -275,8 +274,8 @@ def test_append_suggestions(small_robot_3_frame_vid: Video, stickman: Skeleton):
                     skeleton=stickman,
                     score=0.1,
                     points=dict(
-                        head=[1, 2, 0.5, True, False],  # [x, y, score, visible, complete]
-                        neck=[2, 3, 0.5, True, False],  # [x, y, score, visible, complete]
+                        head=([1, 2], 0.5, True, False),  # (xy, score, visible, complete)
+                        neck=([2, 3], 0.5, True, False),  # (xy, score, visible, complete)
                     ),
                     track=track_a,
                 ),
@@ -284,8 +283,8 @@ def test_append_suggestions(small_robot_3_frame_vid: Video, stickman: Skeleton):
                     skeleton=stickman,
                     score=0.5,
                     points=dict(
-                        head=[11, 12, 0.5, True, False],  # [x, y, score, visible, complete]
-                        neck=[12, 13, 0.5, True, False],  # [x, y, score, visible, complete]
+                        head=([11, 12], 0.5, True, False),  # (xy, score, visible, complete)
+                        neck=([12, 13], 0.5, True, False),  # (xy, score, visible, complete)
                     ),
                     track=track_b,
                 ),
@@ -299,8 +298,8 @@ def test_append_suggestions(small_robot_3_frame_vid: Video, stickman: Skeleton):
                     skeleton=stickman,
                     score=0.1,
                     points=dict(
-                        head=[2, 1, 0.5, True, False],  # [x, y, score, visible, complete]
-                        neck=[3, 2, 0.5, True, False],  # [x, y, score, visible, complete]
+                        head=([2, 1], 0.5, True, False),  # (xy, score, visible, complete)
+                        neck=([3, 2], 0.5, True, False),  # (xy, score, visible, complete)
                     ),
                     track=track_a,
                 ),
@@ -308,8 +307,8 @@ def test_append_suggestions(small_robot_3_frame_vid: Video, stickman: Skeleton):
                     skeleton=stickman,
                     score=0.5,
                     points=dict(
-                        head=[2, 1, 0.5, True, False],  # [x, y, score, visible, complete]
-                        neck=[3, 2, 0.5, True, False],  # [x, y, score, visible, complete]
+                        head=([2, 1], 0.5, True, False),  # (xy, score, visible, complete)
+                        neck=([3, 2], 0.5, True, False),  # (xy, score, visible, complete)
                     ),
                     track=track_b,
                 ),
@@ -323,8 +322,8 @@ def test_append_suggestions(small_robot_3_frame_vid: Video, stickman: Skeleton):
                     skeleton=stickman,
                     score=0.5,
                     points=dict(
-                        head=[11, 12, 0.5, True, False],  # [x, y, score, visible, complete]
-                        neck=[12, 13, 0.5, True, False],  # [x, y, score, visible, complete]
+                        head=([11, 12], 0.5, True, False),  # (xy, score, visible, complete)
+                        neck=([12, 13], 0.5, True, False),  # (xy, score, visible, complete)
                     ),
                     track=track_a,
                 ),
@@ -332,8 +331,8 @@ def test_append_suggestions(small_robot_3_frame_vid: Video, stickman: Skeleton):
                     skeleton=stickman,
                     score=0.5,
                     points=dict(
-                        head=[1, 2, 0.5, True, False],  # [x, y, score, visible, complete]
-                        neck=[2, 3, 0.5, True, False],  # [x, y, score, visible, complete]
+                        head=([1, 2], 0.5, True, False),  # (xy, score, visible, complete)
+                        neck=([2, 3], 0.5, True, False),  # (xy, score, visible, complete)
                     ),
                     track=track_b,
                 ),

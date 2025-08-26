@@ -194,7 +194,8 @@ class LabelsCocoAdaptor(Adaptor):
 
                 is_visible = flag == 2
                 any_visible = any_visible or is_visible
-                points[node] = [x, y, is_visible, False]  # [x, y, visible, complete]
+                points[node] = np.array([([x, y], is_visible, False)], 
+                              dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool')])  # [(x, y), visible, complete]
 
             if points:
                 # If none of the points had 2 has the "visible" flag, we'll
@@ -202,7 +203,7 @@ class LabelsCocoAdaptor(Adaptor):
                 if not any_visible:
                     for point in points.values():
                         # point is now [x, y, visible, complete] array
-                        point[2] = True  # visible = True
+                        point[-3] = True  # visible = True
 
                 inst = Instance(skeleton=skeleton, points=points, track=track)
 

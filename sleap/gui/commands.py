@@ -3510,22 +3510,21 @@ class AddInstance(EditCommand):
             reference_node = next(
                 (node for node in copy_instance if not node.isnan()), None
             )
-            # reference_node is now an array [x, y, visible, complete] or [x, y, score, visible, complete]
-            reference_x = reference_node[0]  # x
-            reference_y = reference_node[1]  # y
+            # reference_node is now an array [(x, y), visible, complete] or [(x, y), score, visible, complete]
+            reference_x, reference_y = reference_node[0]  # [x, y]
             offset_x = location.x() - (reference_x * scale_width)
             offset_y = location.y() - (reference_y * scale_height)
 
         # Go through each node in skeleton.
         for node in context.state["skeleton"].node_names:
             # If we're copying from a skeleton that has this node.
-            if node in copy_instance and not copy_instance[node].isnan():
+            node_idx = context.state["skeleton"].node_names.index(node)
+            if node in copy_instance.skeleton.node_names and not np.any(np.isnan(copy_instance.points[node_idx][0])):
                 # Ensure x, y inside current frame, then copy x, y, and visible.
                 # We don't want to copy a PredictedPoint or score attribute.
-                # copy_instance[node] returns [x, y, visible, complete] or [x, y, score, visible, complete]
+                # copy_instance[node] returns [(x, y), visible, complete] or [(x, y), score, visible, complete]
                 point_data = copy_instance[node]
-                x_old = point_data[0]  # x
-                y_old = point_data[1]  # y
+                x_old, y_old = point_data[0]  # [x, y]
 
                 # Copy the instance without scale or offset if predicted
                 if isinstance(copy_instance, PredictedInstance):
@@ -3540,8 +3539,8 @@ class AddInstance(EditCommand):
                 y_new_offset = y_new + offset_y
 
                 # Default visibility is same as copied instance.
-                # point_data[3] = visible for [x, y, visible, complete], point_data[4] = visible for [x, y, score, visible, complete]
-                visible = point_data[3] if len(point_data) > 4 else point_data[2]
+                # point_data[-3] = visible for [(x, y), visible, complete, name], point_data[-3] = visible for [(x, y), score, visible, complete, name]
+                visible = point_data[-3]
 
                 # If the node is offset to outside the frame, mark as not visible.
                 if x_new_offset < 0:
@@ -3562,7 +3561,8 @@ class AddInstance(EditCommand):
                     y_new = y_new_offset
 
                 # Update the new instance with the new x, y, and visibility.
-                new_instance[node] = [x_new, y_new, visible, mark_complete]  # [x, y, visible, complete]
+                new_instance[node] = np.array([([x_new, y_new], visible, mark_complete)], 
+                              dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool')])  # [(x, y), visible, complete]
             else:
                 has_missing_nodes = True
 
@@ -3686,8 +3686,7 @@ class SetInstancePointLocations(EditCommand):
             if node in instance:
                 # instance[node] returns [x, y, visible, complete] or [x, y, score, visible, complete]
                 point_data = list(instance[node])
-                point_data[0] = x  # x
-                point_data[1] = y  # y
+                point_data[0] = np.array([x, y])
                 instance[node] = point_data
 
 
@@ -3712,12 +3711,13 @@ class SetInstancePointVisibility(EditCommand):
         node = params["node"]
         visible = params["visible"]
 
-        # instance[node] returns [x, y, visible, complete] or [x, y, score, visible, complete]
+        # instance[node] returns [(x, y), visible, complete, name] or [(x, y), score, visible, complete, name]
         point_data = list(instance[node])
-        # visible is at index 2 for [x, y, visible, complete] or index 3 for [x, y, score, visible, complete]
-        visible_index = 3 if len(point_data) > 4 else 2
+        # visible is at index -3 for [(x, y), visible, complete, name] or [(x, y), score, visible, complete, name]
+        visible_index = -3
         point_data[visible_index] = visible
-        instance[node] = point_data
+        node_idx = instance.skeleton.node_names.index(node)
+        instance.points[node_idx] = point_data
 
 
 class AddMissingInstanceNodes(EditCommand):
@@ -3747,12 +3747,14 @@ class AddMissingInstanceNodes(EditCommand):
         # the rect that's currently visible in the window view
         in_view_rect = context.app.player.getVisibleRect()
 
-        for node in context.state["skeleton"].nodes:
-            if node not in instance.nodes or instance[node].isnan():
+        for node_name in context.state["skeleton"].node_names:
+            node_idx = context.state["skeleton"].node_names.index(node_name)
+            if node_name not in instance.skeleton.node_names or np.any(np.isnan(instance.points[node_idx][0])):
                 # pick random points within currently zoomed view
                 x, y = cls.get_xy_in_rect(in_view_rect)
                 # set point for node
-                instance[node] = [x, y, visible, False]  # [x, y, visible, complete]
+                instance.points[node_idx] = np.array([([x, y], visible, False)], 
+                              dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool')])  # [(x, y), visible, complete]
 
     @staticmethod
     def get_xy_in_rect(rect: QtCore.QRectF):
@@ -3781,10 +3783,10 @@ class AddMissingInstanceNodes(EditCommand):
         )
 
         # Align the template on to the current instance with missing points
-        if instance.points:
+        if not np.all(np.isnan(instance.points["xy"])):
             aligned_template = align.align_instance_points(
                 source_points_array=template_points,
-                target_points_array=instance.points_array,
+                target_points_array=instance.points,
             )
         else:
             template_mean = np.nanmean(template_points, axis=0)
@@ -3798,7 +3800,8 @@ class AddMissingInstanceNodes(EditCommand):
         for i, node in enumerate(instance.skeleton.nodes):
             if node not in instance:
                 x, y = aligned_template[i]
-                instance[node] = [x, y, visible, False]  # [x, y, visible, complete]
+                instance[node] = np.array([([x, y], visible, False)], 
+                              dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool')])  # [(x, y), visible, complete]
 
     @classmethod
     def add_force_directed_nodes(
@@ -3814,7 +3817,8 @@ class AddMissingInstanceNodes(EditCommand):
         )
 
         for node, pos in node_positions.items():
-            instance[node] = [pos[0], pos[1], visible, False]  # [x, y, visible, complete]
+            instance[node] = np.array([([pos[0], pos[1]], visible, False)], 
+                              dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool')])  # [(x, y), visible, complete]
 
 
 class AddUserInstancesFromPredictions(EditCommand):
@@ -3836,15 +3840,11 @@ class AddUserInstancesFromPredictions(EditCommand):
             if node in copy_instance and not copy_instance[node].isnan():
                 # just copy x, y, and visible
                 # we don't want to copy a PredictedPoint or score attribute
-                # copy_instance[node] returns [x, y, visible, complete] or [x, y, score, visible, complete]
+                # copy_instance[node] returns [(x, y), visible, complete, name] or [(x, y), score, visible, complete, name]
                 point_data = copy_instance[node]
                 if len(point_data) >= 4:
-                    new_instance[node] = [
-                        point_data[0],  # x
-                        point_data[1],  # y
-                        point_data[3] if len(point_data) > 4 else point_data[2],  # visible
-                        False  # complete
-                    ]  # [x, y, visible, complete]
+                    new_instance[node] = np.array([([point_data[0][0], point_data[0][1]], point_data[-3], False)], 
+                              dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool')])  # [(x, y), visible, complete, name]
 
         # copy the track
         new_instance.track = copy_instance.track

@@ -85,7 +85,8 @@ class LabelsDeepPoseKitAdaptor(Adaptor):
                 points = dict()
                 for p in range(len(points_array)):
                     x, y, score = points_array[p]
-                    points[nodes[p]] = [x, y, True, False]  # [x, y, visible, complete]
+                    points[nodes[p]] = np.array([([x, y], True, False)], 
+                              dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool')])  # [(x, y), visible, complete]
 
                 inst = Instance(
                     skeleton=skeleton, track=tracks[track_idx], points=points
