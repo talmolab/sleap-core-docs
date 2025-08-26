@@ -3508,7 +3508,7 @@ class AddInstance(EditCommand):
         # Using right click and context menu with option "best"
         if (init_method == "best") and (location is not None):
             reference_node = next(
-                (node for node in copy_instance if not node.isnan()), None
+                (node for node in copy_instance if not np.any(np.isnan(node['xy']))), None
             )
             reference_x, reference_y = reference_node['xy']
             offset_x = location.x() - (reference_x * scale_width)
