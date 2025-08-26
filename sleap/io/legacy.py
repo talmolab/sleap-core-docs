@@ -128,8 +128,11 @@ def load_predicted_labels_json_old(
             predicted_instances.loc[predicted_instances["id"] == instance_id][
                 "tracking_score"
             ].values[0]
+            # Create the input array first, then use PredictedPointsArray.from_array()
+            from sleap_io.model.instance import PredictedPointsArray
             instance_points = {
-                data["skeleton"]["nodeNames"][n]: [x, y, confidence, v, False]  # [x, y, score, visible, complete]
+                data["skeleton"]["nodeNames"][n]: PredictedPointsArray.from_array(np.array([([x, y], confidence, v, False, data["skeleton"]["nodeNames"][n])], 
+                              dtype=[('xy', '<f8', (2,)), ('score', 'f4'), ('visible', 'bool'), ('complete', 'bool'), ('name', 'O')]))[0]  # [(x, y), score, visible, complete, name]
                 for x, y, n, v, confidence in zip(
                     *[
                         points[k][is_instance]
@@ -260,8 +263,11 @@ def load_labels_json_old(
         frame_instance_ids = np.unique(points["instanceId"][is_in_frame])
         for i, instance_id in enumerate(frame_instance_ids):
             is_instance = is_in_frame & (points["instanceId"] == instance_id)
+            # Create the input array first, then use PointsArray.from_array()
+            from sleap_io.model.instance import PointsArray
             instance_points = {
-                data["skeleton"]["nodeNames"][n]: [x, y, v, False]  # [x, y, visible, complete]
+                data["skeleton"]["nodeNames"][n]: PointsArray.from_array(np.array([([x, y], v, False, data["skeleton"]["nodeNames"][n])], 
+                              dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool'), ('name', 'O')]))[0]  # [(x, y), visible, complete, name]
                 for x, y, n, v in zip(
                     *[points[k][is_instance] for k in ["x", "y", "node", "visible"]]
                 )

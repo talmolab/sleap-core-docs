@@ -172,9 +172,18 @@ def make_mean_instance(
     points = []
     for i, p in enumerate(mean):
         if not np.isnan(p[0][0]) and not np.isnan(p[0][1]):
-            points.append([p[0][0] + OFFSET, p[0][1] + OFFSET, True, False])  # [x, y, visible, complete]
+            # Create the input array first, then use PointsArray.from_array()
+            from sleap_io.model.instance import PointsArray
+            input_array = np.array([([p[0][0] + OFFSET, p[0][1] + OFFSET], True, False, skeleton.node_names[i])], 
+                              dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool'), ('name', 'O')])
+            pt = PointsArray.from_array(input_array)[0]  # [(x, y), visible, complete, name]
+            points.append(pt)  # [x, y, visible, complete]
         else:
-            points.append([np.nan, np.nan, False, False])  # [x, y, visible, complete]
+            # Create the input array first, then use PointsArray.from_array()
+            input_array = np.array([([np.nan, np.nan], False, False, skeleton.node_names[i])], 
+                              dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool'), ('name', 'O')])
+            pt = PointsArray.from_array(input_array)[0]  # [(x, y), visible, complete, name]
+            points.append(pt)  # [x, y, visible, complete]
 
     new_instance = Instance(
         skeleton=skeleton,

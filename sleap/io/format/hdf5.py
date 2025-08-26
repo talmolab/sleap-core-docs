@@ -221,10 +221,10 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
                 points_array['name'] = skeleton.node_names
 
                 # Fill with your point data
-                for idx, ((x, y), visible, complete, name) in enumerate(points[i["point_id_start"] : i["point_id_end"]]):
-                    points_array[idx]['xy'] = [x, y]
-                    points_array[idx]['visible'] = visible
-                    points_array[idx]['complete'] = complete
+                for idx, pts in enumerate(points[i["point_id_start"] : i["point_id_end"]]):
+                    points_array[idx]['xy'] = np.array([pts[0], pts[1]]) if pts[0].shape == 2 else np.array([pts['x'], pts['y']])
+                    points_array[idx]['visible'] = pts['visible']
+                    points_array[idx]['complete'] = pts['complete']
 
                 instance = Instance(
                     skeleton=skeleton,
@@ -239,11 +239,11 @@ class LabelsV1Adaptor(format.adaptor.Adaptor):
                 points_array['name'] = skeleton.node_names
 
                 # Fill with your point data
-                for idx, ((x, y), score, visible, complete, name) in enumerate(pred_points[i["point_id_start"] : i["point_id_end"]]):
-                    points_array[idx]['xy'] = [x, y]
-                    points_array[idx]['visible'] = visible
-                    points_array[idx]['complete'] = complete
-                    points_array[idx]['score'] = score
+                for idx, pred_pts in enumerate(pred_points[i["point_id_start"] : i["point_id_end"]]):
+                    points_array[idx]['xy'] = np.array([pred_pts[0], pred_pts[1]]) if len(pred_pts[0]) == 2 else np.array([pred_pts['x'], pred_pts['y']])
+                    points_array[idx]['visible'] = pred_pts['visible']
+                    points_array[idx]['complete'] = pred_pts['complete']
+                    points_array[idx]['score'] = pred_pts['score']
 
                 instance = PredictedInstance(
                     skeleton=skeleton,

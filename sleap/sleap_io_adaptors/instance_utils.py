@@ -118,13 +118,8 @@ def node_points(instance) -> List[Tuple[Node, np.ndarray]]:
             point_data = valid_points[node_idx]
 
             # Convert to [x, y, visible, complete] format
-            point_array = np.array([
-                point_data["xy"][0],  # x
-                point_data["xy"][1],  # y
-                point_data["visible"],
-                point_data["complete"]
-            ])
-            node_points.append((node, point_array))
+
+            node_points.append((node, point_data))
 
     return node_points
 
@@ -138,8 +133,8 @@ def get_nodes_from_instance(instance: Instance) -> Tuple[Node, ...]:
         # Check if the point has valid coordinates (not NaN)
         if not np.isnan(point_data["xy"][0]) and not np.isnan(point_data["xy"][1]):
             # Check if the node exists in the skeleton
-            if node_name in instance.skeleton.nodes:
-                labeled_nodes.append(instance.skeleton.nodes[node_name])
+            if node_name in instance.skeleton.node_names:
+                labeled_nodes.append(node_name)
 
     return tuple(labeled_nodes)
 
@@ -217,6 +212,8 @@ def fill_missing(instance: Instance, max_x: Optional[float] = None, max_y: Optio
             from_predicted=instance.from_predicted
         )
     else:  # Instance
+        print(f"combined_points: {combined_points}")
+        print(f"instance.skeleton: {instance.skeleton}")
         new_instance = Instance(
             points=combined_points,
             skeleton=instance.skeleton,

@@ -121,8 +121,11 @@ class LabelsLeapMatlabAdaptor(Adaptor):
             for node_idx, node in enumerate(nodes):
                 x = points_[node_idx][0][i]
                 y = points_[node_idx][1][i]
-                new_inst[node] = np.array([([x, y], True, False)], 
-                              dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool')])  # [(x, y), visible, complete]
+                # Create the input array first, then use PointsArray.from_array()
+                from sleap_io.model.instance import PointsArray
+                input_array = np.array([([x, y], True, False, node.name)], 
+                              dtype=[('xy', '<f8', (2,)), ('visible', 'bool'), ('complete', 'bool'), ('name', 'O')])
+                new_inst[node_idx] = PointsArray.from_array(input_array)[0]
             if len(new_inst.points):
                 new_frame = LabeledFrame(video=vid, frame_idx=i)
                 new_frame.instances = (new_inst,)
