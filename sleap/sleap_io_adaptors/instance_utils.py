@@ -1,15 +1,14 @@
 """Helper functions for `sleap_io.Instance` objects."""
 
-from typing import TYPE_CHECKING, Tuple, Optional, List, Union, Dict
+from typing import Tuple, Optional, List, Union
 import numpy as np
 
-from sleap_io.model.skeleton import Node, Skeleton
+from sleap_io.model.skeleton import Node
 from sleap_io.model.instance import (
     Instance,
     PredictedInstance,
     PointsArray,
     PredictedPointsArray,
-    Track,
 )
 import attr
 import cattr

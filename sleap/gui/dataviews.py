@@ -29,7 +29,7 @@ from sleap.instance import LabeledFrame
 from sleap_io.model.skeleton import Skeleton
 from sleap.io.video import Video
 from sleap.sleap_io_adaptors.skeleton_utils import get_symmetry_node
-from sleap.sleap_io_adaptors.instance_utils import get_nodes_from_instance, node_points
+from sleap.sleap_io_adaptors.instance_utils import get_nodes_from_instance
 
 class GenericTableModel(QtCore.QAbstractTableModel):
     """
