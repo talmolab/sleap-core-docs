@@ -109,7 +109,8 @@ def node_points(instance) -> List[Tuple[Node, np.ndarray]]:
     node_points = []
 
     # Create mapping
-    for node_idx, node in enumerate(skeleton_nodes):
+    for node_idx in range(len(points_data)):
+        node = skeleton_nodes[node_idx]
         # Find the point data for this node
         point_data = points_data[node_idx]
 

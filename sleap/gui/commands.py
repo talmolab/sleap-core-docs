@@ -3533,7 +3533,7 @@ class AddInstance(EditCommand):
         for node in context.state["skeleton"].node_names:
             # If we're copying from a skeleton that has this node.
             node_idx = context.state["skeleton"].node_names.index(node)
-            if node in copy_instance.skeleton.node_names and not np.any(
+            if node_idx < len(copy_instance.points) and not np.any(
                 np.isnan(copy_instance.points[node_idx]["xy"])
             ):
                 # Ensure x, y inside current frame, then copy x, y, and visible.
@@ -3791,7 +3791,7 @@ class AddMissingInstanceNodes(EditCommand):
 
         for node_name in context.state["skeleton"].node_names:
             node_idx = context.state["skeleton"].node_names.index(node_name)
-            if node_name not in instance.skeleton.node_names or np.any(
+            if node_idx >= len(instance.points) or np.any(
                 np.isnan(instance.points[node_idx][0])
             ):
                 # pick random points within currently zoomed view
