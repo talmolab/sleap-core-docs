@@ -2,29 +2,18 @@
 Module for generating lists of suggested frames (for labeling or reviewing).
 """
 
-import attr
 import numpy as np
 import random
 
 from typing import Dict, List, Optional, Union
 
-from sleap.io.video import Video
-from sleap.io.dataset import Labels
+from sleap_io import Video, Labels, SuggestionFrame
 from sleap.info.feature_suggestions import (
     FeatureSuggestionPipeline,
     ParallelFeaturePipeline,
 )
 
 GroupType = int
-
-
-@attr.s(auto_attribs=True, slots=True)
-class SuggestionFrame:
-    """Object for storing a single suggested frame item."""
-
-    video: Video
-    frame_idx: int
-    group: Optional[GroupType] = None
 
 
 class VideoFrameSuggestions(object):
@@ -94,7 +83,7 @@ class VideoFrameSuggestions(object):
 
         for video in videos:
             # Get unique sample space
-            vid_idx = list(range(video.frames))
+            vid_idx = list(range(video.backend.num_frames))
             vid_sugg_idx = sugg_idx_dict[video]
             unique_idx = list(set(vid_idx) - set(vid_sugg_idx))
             n_frames = len(unique_idx)
@@ -322,7 +311,7 @@ class VideoFrameSuggestions(object):
         cls, video: Video, labels: "Labels", displacement_threshold: float
     ):
         # Get numpy of shape (frames, tracks, nodes, x, y)
-        labels_numpy = labels.numpy(video=video, all_frames=True, untracked=False)
+        labels_numpy = labels.numpy(video=video, untracked=False)
 
         # Return empty list if not enough frames
         n_frames, n_tracks, n_nodes, _ = labels_numpy.shape
@@ -365,9 +354,9 @@ class VideoFrameSuggestions(object):
         for video in videos:
             # Make sure when targeting all videos the from and to do not exceed
             # frame number
-            if frame_from > video.num_frames:
+            if frame_from > video.backend.num_frames:
                 continue
-            this_video_frame_to = min(frame_to, video.num_frames)
+            this_video_frame_to = min(frame_to, video.backend.num_frames)
             # Generate list of frame numbers
             idx = list(range(frame_from - 1, this_video_frame_to))
             proposed_suggestions.extend(cls.idx_list_to_frame_list(idx, video))
@@ -408,12 +397,10 @@ class VideoFrameSuggestions(object):
 
 def demo_gui():
     from sleap.gui.dialogs.formbuilder import YamlFormWidget
-    from sleap import Labels
+    from sleap_io import load_file
     from qtpy.QtWidgets import QApplication
 
-    labels = Labels.load_file(
-        "tests/data/json_format_v2/centered_pair_predictions.json"
-    )
+    labels = load_file("tests/data/json_format_v2/centered_pair_predictions.json")
 
     options_lists = dict(node=labels.skeletons[0].node_names)
 

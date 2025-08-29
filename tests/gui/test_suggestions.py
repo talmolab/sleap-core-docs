@@ -1,9 +1,9 @@
 from typing import List
 from sleap.gui.suggestions import SuggestionFrame, VideoFrameSuggestions
-from sleap.io.dataset import Labels
-from sleap.io.video import Video
-from sleap.instance import LabeledFrame, PredictedInstance, Track, PredictedPoint
-from sleap.skeleton import Skeleton
+from sleap_io import Video
+from sleap_io import LabeledFrame, Labels
+from sleap_io.model.instance import PredictedInstance, Track
+from sleap_io import Skeleton
 import numpy as np
 
 
@@ -40,7 +40,7 @@ def test_frame_increment(centered_pair_predictions: Labels):
     # Testing videos that have less frames than desired Samples per Video (stride)
     # Expected result is there should be n suggestions where n is equal to the frames
     # in the video.
-    vid_frames = centered_pair_predictions.video.num_frames
+    vid_frames = centered_pair_predictions.video.backend.num_frames
     suggestions = VideoFrameSuggestions.suggest(
         labels=centered_pair_predictions,
         params={
@@ -261,8 +261,8 @@ def assert_suggestions_unique(labels: Labels, new_suggestions: List[SuggestionFr
 
 def test_append_suggestions(small_robot_3_frame_vid: Video, stickman: Skeleton):
     """Ensure only unique suggestions are returned and that suggestions are appended."""
-    track_a = Track(0, "a")
-    track_b = Track(0, "b")
+    track_a = Track(name="a")
+    track_b = Track(name="b")
 
     lfs = [
         LabeledFrame(
@@ -273,8 +273,10 @@ def test_append_suggestions(small_robot_3_frame_vid: Video, stickman: Skeleton):
                     skeleton=stickman,
                     score=0.1,
                     points=dict(
-                        head=PredictedPoint(1, 2, score=0.5),
-                        neck=PredictedPoint(2, 3, score=0.5),
+                        head=([1, 2], 0.5, True, False),
+                        # (xy, score, visible, complete)
+                        neck=([2, 3], 0.5, True, False),
+                        # (xy, score, visible, complete)
                     ),
                     track=track_a,
                 ),
@@ -282,8 +284,10 @@ def test_append_suggestions(small_robot_3_frame_vid: Video, stickman: Skeleton):
                     skeleton=stickman,
                     score=0.5,
                     points=dict(
-                        head=PredictedPoint(11, 12, score=0.5),
-                        neck=PredictedPoint(12, 13, score=0.5),
+                        head=([11, 12], 0.5, True, False),
+                        # (xy, score, visible, complete)
+                        neck=([12, 13], 0.5, True, False),
+                        # (xy, score, visible, complete)
                     ),
                     track=track_b,
                 ),
@@ -297,8 +301,10 @@ def test_append_suggestions(small_robot_3_frame_vid: Video, stickman: Skeleton):
                     skeleton=stickman,
                     score=0.1,
                     points=dict(
-                        head=PredictedPoint(2, 1, score=0.5),
-                        neck=PredictedPoint(3, 2, score=0.5),
+                        head=([2, 1], 0.5, True, False),
+                        # (xy, score, visible, complete)
+                        neck=([3, 2], 0.5, True, False),
+                        # (xy, score, visible, complete)
                     ),
                     track=track_a,
                 ),
@@ -306,8 +312,10 @@ def test_append_suggestions(small_robot_3_frame_vid: Video, stickman: Skeleton):
                     skeleton=stickman,
                     score=0.5,
                     points=dict(
-                        head=PredictedPoint(2, 1, score=0.5),
-                        neck=PredictedPoint(3, 2, score=0.5),
+                        head=([2, 1], 0.5, True, False),
+                        # (xy, score, visible, complete)
+                        neck=([3, 2], 0.5, True, False),
+                        # (xy, score, visible, complete)
                     ),
                     track=track_b,
                 ),
@@ -321,8 +329,10 @@ def test_append_suggestions(small_robot_3_frame_vid: Video, stickman: Skeleton):
                     skeleton=stickman,
                     score=0.5,
                     points=dict(
-                        head=PredictedPoint(11, 12, score=0.5),
-                        neck=PredictedPoint(12, 13, score=0.5),
+                        head=([11, 12], 0.5, True, False),
+                        # (xy, score, visible, complete)
+                        neck=([12, 13], 0.5, True, False),
+                        # (xy, score, visible, complete)
                     ),
                     track=track_a,
                 ),
@@ -330,8 +340,10 @@ def test_append_suggestions(small_robot_3_frame_vid: Video, stickman: Skeleton):
                     skeleton=stickman,
                     score=0.5,
                     points=dict(
-                        head=PredictedPoint(1, 2, score=0.5),
-                        neck=PredictedPoint(2, 3, score=0.5),
+                        head=([1, 2], 0.5, True, False),
+                        # (xy, score, visible, complete)
+                        neck=([2, 3], 0.5, True, False),
+                        # (xy, score, visible, complete)
                     ),
                     track=track_b,
                 ),

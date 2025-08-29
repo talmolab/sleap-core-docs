@@ -8,9 +8,12 @@ import numpy as np
 
 from typing import Callable, Dict
 
-from sleap.instance import LabeledFrame
-from sleap.io.dataset import Labels
-from sleap.io.video import Video
+from sleap.sleap_io_adaptors.lf_labels_utils import get_track_occupancy
+from sleap_io import LabeledFrame
+from sleap_io import Labels
+from sleap_io import Video
+from sleap.sleap_io_adaptors.skeleton_utils import node_to_index
+from sleap.sleap_io_adaptors.video_utils import get_last_frame_idx
 
 
 @attr.s(auto_attribs=True)
@@ -135,16 +138,15 @@ class StatisticSeries:
             The series dictionary (see class docs for details)
         """
         reduce_funct = dict(sum=np.sum, mean=np.nanmean, max=np.max)[reduction]
-
-        track_count = self.labels.get_track_count(video)
+        track_count = len(get_track_occupancy(self.labels, video))
 
         try:
-            primary_node_idx = self.labels.skeletons[0].node_to_index(primary_node)
+            primary_node_idx = node_to_index(self.labels.skeletons[0], primary_node)
         except ValueError:
             print(f"Unable to locate node {primary_node} so using node 0")
             primary_node_idx = 0
 
-        last_frame_idx = video.num_frames - 1
+        last_frame_idx = get_last_frame_idx(video)
         location_matrix = np.full(
             (last_frame_idx + 1, track_count, 2), np.nan, dtype=float
         )

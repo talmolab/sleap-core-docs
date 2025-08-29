@@ -33,9 +33,8 @@ import pandas as pd
 
 from typing import Any, Dict, List, Tuple
 
-from sleap.io.dataset import Labels
-from sleap.io.video import Video
-from sleap import PredictedInstance
+from sleap_io import Labels, load_file, PredictedInstance
+from sleap_io import Video
 
 
 def get_tracks_as_np_strings(labels: Labels) -> List[bytes]:
@@ -94,7 +93,7 @@ def get_occupancy_and_points_matrices(
     except IndexError:
         print("There are no videos in this project. No occupancy matrix to return.")
         return
-    labeled_frames = labels.get(video)
+    labeled_frames = labels.find(video)
 
     frame_idxs = [lf.frame_idx for lf in labeled_frames]
     frame_idxs.sort()
@@ -454,7 +453,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     video_callback = Labels.make_video_callback([os.path.dirname(args.data_path)])
-    labels = Labels.load_file(args.data_path, video_search=video_callback)
+    # labels = Labels.load_file(args.data_path, video_search=video_callback)
+    labels = load_file(args.data_path)
 
     output_path = re.sub("(\\.json(\\.zip)?|\\.h5|\\.slp)$", "", args.data_path)
     output_path = output_path + ".tracking.h5"

@@ -15,8 +15,9 @@ import numpy as np
 
 from typing import Union
 
-from sleap import Labels, Video, Skeleton
-from sleap.instance import PredictedInstance, LabeledFrame, Track
+from sleap_io import Labels, Video, LabeledFrame
+from sleap_io import Skeleton
+from sleap_io.model.instance import PredictedInstance, Track
 
 from .adaptor import Adaptor, SleapObjectType
 from .filehandle import FileHandle
@@ -81,9 +82,11 @@ class SleapAnalysisAdaptor(Adaptor):
 
         if "track_names" in f and len(f["track_names"]):
             track_names_list = f["track_names"][:].T
-            tracks = [Track(0, track_name.decode()) for track_name in track_names_list]
+            tracks = [
+                Track(name=track_name.decode()) for track_name in track_names_list
+            ]
         else:
-            tracks = [Track(0, f"track_{i}") for i in range(track_count)]
+            tracks = [Track(name=f"track_{i}") for i in range(track_count)]
 
         if "node_names" in f:
             node_names_dset = f["node_names"][:].T
@@ -109,7 +112,7 @@ class SleapAnalysisAdaptor(Adaptor):
                     # make everything a PredictedInstance since the usual use
                     # case is to export predictions for analysis
                     instances.append(
-                        PredictedInstance.from_arrays(
+                        PredictedInstance.from_numpy(
                             points=points,
                             point_confidences=point_scores,
                             skeleton=skeleton,
@@ -122,7 +125,9 @@ class SleapAnalysisAdaptor(Adaptor):
                     LabeledFrame(video=video, frame_idx=frame_idx, instances=instances)
                 )
 
-        return Labels(labeled_frames=frames)
+        labels = Labels(labeled_frames=frames)
+        labels.update()
+        return labels
 
     @classmethod
     def write(
@@ -139,8 +144,8 @@ class SleapAnalysisAdaptor(Adaptor):
             source_object: The :py:class:`Labels` from which to get data from.
             video: The :py:class:`Video` from which toget data from. If no `video` is
                 specified, then the first video in `source_object` videos list will be
-                used. If there are no :py:class:`Labeled Frame`s in the `video`, then no
-                analysis file will be written.
+                used. If there are no :py:class:`Labeled Frame`s in the `video`,
+                then no analysis file will be written.
         """
         from sleap.info.write_tracking_h5 import main as write_analysis
 

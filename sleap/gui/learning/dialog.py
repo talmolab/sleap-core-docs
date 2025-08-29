@@ -12,11 +12,17 @@ import cattr
 from qtpy import QtCore, QtGui, QtWidgets
 
 import sleap
-from sleap import Labels, Video, Skeleton
+from sleap_io import Labels, Video, Skeleton, load_file
 from sleap.gui.dialogs.filedialog import FileDialog
 from sleap.gui.dialogs.formbuilder import YamlFormWidget
 from sleap.gui.learning import configs, receptivefield, runners, scopedkeydict
 from sleap.gui.learning.configs import TrainingConfigsGetter
+from sleap.sleap_io_adaptors.skeleton_utils import (
+    cycles,
+    is_arborescence,
+    root_nodes,
+    in_degree_over_one,
+)
 
 # List of fields which should show list of skeleton nodes
 NODE_LIST_FIELDS = [
@@ -61,7 +67,7 @@ class LearningDialog(QtWidgets.QDialog):
         super(LearningDialog, self).__init__()
 
         if labels is None:
-            labels = Labels.load_file(labels_filename)
+            labels = load_file(labels_filename)
 
         if skeleton is None and labels.skeletons:
             skeleton = labels.skeletons[0]
@@ -411,7 +417,11 @@ class LearningDialog(QtWidgets.QDialog):
             self.pipeline_form_widget.current_pipeline = recent_pipeline_name
         else:
             # Set default based on detection of single- vs multi-animal project.
-            if self.labels.max_user_instances == 1:
+            max_user_instance = 0
+            for lf in self.labels:
+                max_user_instance = max(max_user_instance, len(lf.user_instances))
+
+            if max_user_instance == 1:
                 self.pipeline_form_widget.current_pipeline = "single"
             else:
                 self.pipeline_form_widget.current_pipeline = "top-down"
@@ -677,15 +687,15 @@ class LearningDialog(QtWidgets.QDialog):
         if self.mode == "training" and self.current_pipeline == "bottom-up":
             skeleton = self.labels.skeletons[0]
 
-            if not skeleton.is_arborescence:
+            if not is_arborescence(skeleton):
                 message += (
                     "Cannot run bottom-up pipeline when skeleton is not an "
                     "arborescence."
                 )
 
-                root_names = [n.name for n in skeleton.root_nodes]
-                over_max_in_degree = [n.name for n in skeleton.in_degree_over_one]
-                cycles = skeleton.cycles
+                root_names = [n.name for n in root_nodes(skeleton)]
+                over_max_in_degree = [n.name for n in in_degree_over_one(skeleton)]
+                cycles_var = cycles(skeleton)
 
                 if len(root_names) > 1:
                     message += (
@@ -700,9 +710,9 @@ class LearningDialog(QtWidgets.QDialog):
                         "1).</li>"
                     )
 
-                if cycles:
+                if cycles_var:
                     cycle_strings = []
-                    for cycle in cycles:
+                    for cycle in cycles_var:
                         cycle_strings.append(
                             " &ndash;&gt; ".join((node.name for node in cycle))
                         )
@@ -865,10 +875,8 @@ class LearningDialog(QtWidgets.QDialog):
                 return
         else:
             self.labels.save(
-                tmp_dir.name + "/" + labels_pkg_filename,
-                with_images=True,
-                embed_all_labeled=False,
-                embed_suggested=include_suggestions,
+                filename=tmp_dir.name + "/" + labels_pkg_filename,
+                embed=True,
             )
 
         # Save config and scripts.
@@ -1383,7 +1391,7 @@ def demo_training_dialog():
     app = QtWidgets.QApplication([])
 
     filename = "tests/data/json_format_v1/centered_pair.json"
-    labels = Labels.load_file(filename)
+    labels = load_file(filename)
     win = LearningDialog("inference", labels_filename=filename, labels=labels)
 
     win.frame_selection = {"clip": {labels.videos[0]: (1, 2, 3, 4)}}

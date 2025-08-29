@@ -7,8 +7,8 @@ import numpy as np
 from scipy.optimize import linear_sum_assignment
 from typing import Callable, List, Optional, Union, Tuple
 
-from sleap.instance import Instance, PredictedInstance
-from sleap.io.dataset import Labels
+from sleap_io.model.instance import Instance, PredictedInstance
+from sleap_io import Labels
 
 
 def match_instance_lists(

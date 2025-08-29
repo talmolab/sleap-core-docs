@@ -19,8 +19,9 @@ from sleap.gui.legacy.config import TrainingJobConfig
 
 from qtpy import QtWidgets
 
-from sleap import Labels, Video, LabeledFrame
+from sleap_io import Labels, Video, LabeledFrame
 from sleap.gui.learning.configs import ConfigFileInfo
+from sleap.sleap_io_adaptors.lf_labels_utils import load_and_match
 
 logger = logging.getLogger(__name__)
 
@@ -388,7 +389,7 @@ class InferenceTask:
 
         if success and append_results:
             # Load frames from inference into results list
-            new_inference_labels = Labels.load_file(output_path, match_to=self.labels)
+            new_inference_labels = load_and_match(output_path, match_to=self.labels)
             self.results.extend(new_inference_labels.labeled_frames)
 
         # Return "success" or return code if failed.
@@ -409,18 +410,8 @@ class InferenceTask:
         )
         new_labels = Labels(self.results)
 
-        # Remove potentially conflicting predictions from the base dataset.
-        self.labels.remove_predictions(new_labels=new_labels)
-
-        # Merge predictions into current labels dataset.
-        _, _, new_conflicts = Labels.complex_merge_between(
-            self.labels,
-            new_labels=new_labels,
-            unify=False,  # since we used match_to when loading predictions file
-        )
-
-        # new predictions should replace old ones
-        Labels.finish_complex_merge(self.labels, new_conflicts)
+        # Merge pred results into base labels
+        self.labels.merge(new_labels)
 
 
 def write_pipeline_files(

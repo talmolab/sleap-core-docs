@@ -2,13 +2,13 @@ import numpy as np
 import os
 import pytest
 import cv2
-from sleap.io.dataset import Labels
+from sleap_io import Labels
 from sleap.io.visuals import (
     save_labeled_video,
     VideoMarkerThread,
     main as sleap_render,
 )
-from sleap.io.videowriter import resize_images
+from sleap.util import resize_images
 
 
 def test_serial_pipeline(centered_pair_predictions, tmpdir):
@@ -17,15 +17,15 @@ def test_serial_pipeline(centered_pair_predictions, tmpdir):
     scale = 0.25
 
     video = centered_pair_predictions.videos[video_idx]
-    frame_images = video.get_frames(frames)
+    frame_images = video.backend.get_frames(frames)
 
     # Make sure we can resize
     small_images = resize_images(frame_images, scale=scale)
 
     _, height, width, _ = small_images.shape
 
-    assert height == video.height // (1 / scale)
-    assert width == video.width // (1 / scale)
+    assert height == video.backend.img_shape[0] // (1 / scale)
+    assert width == video.backend.img_shape[1] // (1 / scale)
 
     marker_thread = VideoMarkerThread(
         in_q=None,

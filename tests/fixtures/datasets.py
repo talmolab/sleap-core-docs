@@ -1,16 +1,10 @@
 import pytest
 
-from sleap.instance import (
-    Instance,
-    PredictedInstance,
-    Point,
-    PredictedPoint,
-    LabeledFrame,
-    Track,
-)
-from sleap.skeleton import Skeleton
-from sleap.io.dataset import Labels
-from sleap.io.video import Video
+from sleap_io import LabeledFrame
+from sleap_io.model.instance import Instance, PredictedInstance, Track
+from sleap_io import Skeleton
+from sleap_io import Labels
+from sleap_io import Video
 
 TEST_JSON_LABELS = "tests/data/json_format_v1/centered_pair.json"
 TEST_JSON_PREDICTIONS = "tests/data/json_format_v2/centered_pair_predictions.json"
@@ -159,8 +153,8 @@ def simple_predictions():
     skeleton.add_node("a")
     skeleton.add_node("b")
 
-    track_a = Track(0, "a")
-    track_b = Track(0, "b")
+    track_a = Track(name="a")
+    track_b = Track(name="b")
 
     labels = Labels()
 
@@ -171,7 +165,8 @@ def simple_predictions():
             score=2,
             track=track_a,
             points=dict(
-                a=PredictedPoint(1, 1, score=0.5), b=PredictedPoint(1, 1, score=0.5)
+                a=([1, 1], 0.5, True, False),
+                b=([1, 1], 0.5, True, False),  # (xy, score, visible, complete)
             ),
         )
     )
@@ -181,7 +176,8 @@ def simple_predictions():
             score=5,
             track=track_b,
             points=dict(
-                a=PredictedPoint(1, 1, score=0.7), b=PredictedPoint(1, 1, score=0.7)
+                a=([1, 1], 0.7, True, False),
+                b=([1, 1], 0.7, True, False),  # (xy, score, visible, complete)
             ),
         )
     )
@@ -196,7 +192,8 @@ def simple_predictions():
             score=3,
             track=track_a,
             points=dict(
-                a=PredictedPoint(4, 5, score=1.5), b=PredictedPoint(1, 1, score=1.0)
+                a=([4, 5], 1.5, True, False),
+                b=([1, 1], 1.0, True, False),  # (xy, score, visible, complete)
             ),
         )
     )
@@ -206,7 +203,8 @@ def simple_predictions():
             score=6,
             track=track_b,
             points=dict(
-                a=PredictedPoint(6, 13, score=1.7), b=PredictedPoint(1, 1, score=1.0)
+                a=([6, 13], 1.7, True, False),
+                b=([1, 1], 1.0, True, False),  # (xy, score, visible, complete)
             ),
         )
     )
@@ -232,8 +230,8 @@ def multi_skel_vid_labels(hdf5_vid, small_robot_mp4_vid, skeleton, stickman):
         The Labels object containing all the labeled frames
     """
     labels = []
-    stick_tracks = [Track(spawned_on=0, name=f"Stickman {i}") for i in range(6)]
-    fly_tracks = [Track(spawned_on=0, name=f"Fly {i}") for i in range(6)]
+    stick_tracks = [Track(name=f"Stickman {i}") for i in range(6)]
+    fly_tracks = [Track(name=f"Fly {i}") for i in range(6)]
 
     # Make some tracks None to test that
     fly_tracks[3] = None
@@ -247,7 +245,11 @@ def multi_skel_vid_labels(hdf5_vid, small_robot_mp4_vid, skeleton, stickman):
         for i in range(6):
             fly_instances.append(Instance(skeleton=skeleton, track=fly_tracks[i]))
             for node in skeleton.nodes:
-                fly_instances[i][node] = Point(x=i % vid.width, y=i % vid.height)
+                fly_instances[i][node] = (
+                    [i % vid.width, i % vid.height],
+                    True,
+                    False,
+                )  # (xy, visible, complete)
 
         stickman_instances = []
         for i in range(6):
@@ -255,7 +257,11 @@ def multi_skel_vid_labels(hdf5_vid, small_robot_mp4_vid, skeleton, stickman):
                 Instance(skeleton=stickman, track=stick_tracks[i])
             )
             for node in stickman.nodes:
-                stickman_instances[i][node] = Point(x=i % vid.width, y=i % vid.height)
+                stickman_instances[i][node] = (
+                    [i % vid.width, i % vid.height],
+                    True,
+                    False,
+                )  # (xy, visible, complete)
 
         label.instances = stickman_instances + fly_instances
         labels.append(label)

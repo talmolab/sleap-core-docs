@@ -5,7 +5,6 @@ Reads:
 * SLEAP "analysis" file in .h5 format
 * LEAP dataset in .mat file
 * DeepLabCut dataset in .yaml or .csv file
-* DeepPoseKit dataset in .h5 file
 * COCO keypoints dataset in .json file
 
 Writes:
@@ -41,12 +40,11 @@ first transpose the datasets so they matche the shapes described above.
 """
 
 import argparse
-import os
 import re
 
 from pathlib import PurePath
 
-from sleap import Labels, Video
+from sleap_io import Labels, Video, save_file
 
 
 def create_parser():
@@ -69,7 +67,6 @@ def create_parser():
         default="slp",
         help="Output format. Default ('slp') is SLEAP dataset; "
         "'analysis' results in analysis.h5 file; "
-        "'analysis.nix' results in an analysis nix file;"
         "'analysis.csv' results in an analysis csv file;"
         "'h5' or 'json' results in SLEAP dataset "
         "with specified file format.",
@@ -104,24 +101,27 @@ def main(args: list = None):
     Args:
         args: A list of arguments to be passed into sleap-convert.
     """
+    # from sleap.sleap_io_adaptors.video import make_video_callback
+    from sleap_io import load_file
+
     parser = create_parser()
     args = parser.parse_args(args=args)
 
-    video_callback = Labels.make_video_callback([os.path.dirname(args.input_path)])
+    # video_callback = make_video_callback([os.path.dirname(args.input_path)])
     try:
-        labels: Labels = Labels.load_file(args.input_path, video_search=video_callback)
+        #         labels: Labels = Labels.load_file(args.input_path,
+        # video_search=video_callback) TODO: need to add this back
+        labels = load_file(args.input_path, format="*")
     except TypeError:
         print("Input file isn't SLEAP dataset so attempting other importers...")
-        from sleap.io.format import read
 
-        video_path = args.video if args.video else None
+        # video_path = args.video if args.video else None
 
-        labels = read(
+        labels = load_file(
             args.input_path,
-            for_object="labels",
-            as_format="*",
-            video_search=video_callback,
-            video=video_path,
+            format="*",
+            # video_search=video_callback,
+            # video=video_path, # TODO: need to add this back
         )
     if "analysis" in args.format:
         vids = []
@@ -136,9 +136,7 @@ def main(args: list = None):
         outnames = [path for path in args.outputs]
         if len(outnames) < len(vids):
             # if there are less outnames provided than videos to convert...
-            if "nix" in args.format:
-                out_suffix = "nix"
-            elif "csv" in args.format:
+            if "csv" in args.format:
                 out_suffix = "csv"
             else:
                 out_suffix = "h5"
@@ -156,16 +154,7 @@ def main(args: list = None):
                 )
                 outnames.append(dflt_name)
 
-        if "nix" in args.format:
-            from sleap.io.format.nix import NixAdaptor
-
-            for video, outname in zip(vids, outnames):
-                try:
-                    NixAdaptor.write(outname, labels, args.input_path, video)
-                except ValueError as e:
-                    print(e.args[0])
-
-        elif "csv" in args.format:
+        if "csv" in args.format:
             from sleap.info.write_tracking_h5 import main as write_analysis
 
             for video, output_path in zip(vids, outnames):
@@ -192,12 +181,12 @@ def main(args: list = None):
 
     elif len(args.outputs) > 0:
         print(f"Output SLEAP dataset: {args.outputs[0]}")
-        Labels.save_file(labels, args.outputs[0])
+        save_file(labels, args.outputs[0])
 
     elif args.format in ("slp", "h5", "json"):
         output_path = f"{args.input_path}.{args.format}"
         print(f"Output SLEAP dataset: {output_path}")
-        Labels.save_file(labels, output_path)
+        save_file(labels, output_path)
 
     else:
         print("You didn't specify how to convert the file.")

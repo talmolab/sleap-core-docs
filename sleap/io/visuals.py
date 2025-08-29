@@ -5,7 +5,6 @@ Module for generating videos with visual annotation overlays.
 from __future__ import annotations
 
 import logging
-import os
 from collections import deque
 from queue import Queue
 from threading import Thread
@@ -16,10 +15,11 @@ import cv2
 import numpy as np
 
 from sleap.gui.color import ColorManager
-from sleap.instance import Instance
-from sleap.io.dataset import Labels
-from sleap.io.video import Video
-from sleap.io.videowriter import _sentinel, write_video
+from sleap_io.model.instance import Instance
+from sleap_io import Video, Labels
+from sleap.sleap_io_adaptors.video_utils import _sentinel
+from sleap_io import save_video
+from sleap_io import load_file
 from sleap.util import usable_cpu_count
 
 logger = logging.getLogger(__name__)
@@ -403,37 +403,42 @@ def save_labeled_video(
         None.
     """
     # Create marker thread and queues.
-    q1 = Queue(maxsize=10)
-    q2 = Queue(maxsize=10)
-    thread_mark = VideoMarkerThread(
-        in_q=q1,
-        out_q=q2,
-        labels=labels,
-        video_idx=labels.videos.index(video),
-        scale=scale,
-        show_edges=show_edges,
-        edge_is_wedge=edge_is_wedge,
-        marker_size=marker_size,
-        crop_size_xy=crop_size_xy,
-        color_manager=color_manager,
-        palette=palette,
-        distinctly_color=distinctly_color,
-    )
+    # q1 = Queue(maxsize=10)
+    # q2 = Queue(maxsize=10)
+    # thread_mark = VideoMarkerThread(
+    #     in_q=q1,
+    #     out_q=q2,
+    #     labels=labels,
+    #     video_idx=labels.videos.index(video),
+    #     scale=scale,
+    #     show_edges=show_edges,
+    #     edge_is_wedge=edge_is_wedge,
+    #     marker_size=marker_size,
+    #     crop_size_xy=crop_size_xy,
+    #     color_manager=color_manager,
+    #     palette=palette,
+    #     distinctly_color=distinctly_color,
+    # )
 
     # Pass marker thread in as intrmediate thread to write_video (and write video).
-    intermediate_threads = [thread_mark]
-    write_video(
+    # intermediate_threads = [thread_mark]
+    save_video(
+        frames=[video.backend.get_frame(i) for i in frames],
         filename=filename,
-        video=video,
-        frames=frames,
         fps=fps,
-        scale=scale,
-        background=background,
-        gui_progress=gui_progress,
-        in_queue=q1,
-        out_queue=q2,
-        intermediate_threads=intermediate_threads,
-    )
+    )  # TODO: add other parameters
+    # write_video(
+    #     filename=filename,
+    #     video=video,
+    #     frames=frames,
+    #     fps=fps,
+    #     scale=scale,
+    #     background=background,
+    #     gui_progress=gui_progress,
+    #     in_queue=q1,
+    #     out_queue=q2,
+    #     intermediate_threads=intermediate_threads,
+    # )
 
 
 def has_nans(*vals):
@@ -529,9 +534,10 @@ def main(args: list = None):
         ),
     )
     args = parser.parse_args(args=args)
-    labels = Labels.load_file(
-        args.data_path, video_search=[os.path.dirname(args.data_path)]
-    )
+    labels = load_file(
+        args.data_path
+    )  # , video_search=[os.path.dirname(args.data_path)]
+    # TODO: video_search?
 
     if args.video_index >= len(labels.videos):
         raise IndexError(f"There is no video with index {args.video_index}.")

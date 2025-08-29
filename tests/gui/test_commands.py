@@ -7,8 +7,9 @@ import numpy as np
 from pathlib import PurePath, Path
 from qtpy import QtCore
 from typing import List
+from sleap_io.io.video_reading import MediaVideo
 
-from sleap import Skeleton, Track, PredictedInstance
+from sleap_io import Skeleton, Track, PredictedInstance, Labels, LabeledFrame, Instance
 from sleap.gui.app import MainWindow
 from sleap.gui.commands import (
     AddInstance,
@@ -25,20 +26,17 @@ from sleap.gui.commands import (
     DeleteFrameLimitPredictions,
     get_new_version_filename,
 )
-from sleap.instance import Instance, LabeledFrame
+from sleap_io import load_skeleton
 from sleap.io.convert import default_analysis_filename
-from sleap.io.dataset import Labels
 from sleap.io.format.adaptor import Adaptor
-from sleap.io.format.ndx_pose import NDXPoseAdaptor
 from sleap.io.pathutils import fix_path_separator
-from sleap.io.video import Video
+from sleap_io import Video
 from sleap.util import get_package_file
 
 # These imports cause trouble when running `pytest.main()` from within the file
 # Comment out to debug tests file via VSCode's "Debug Python File"
 from tests.info.test_h5 import extract_meta_hdf5
-from tests.io.test_video import assert_video_params
-from tests.io.test_formats import read_nix_meta
+from sleap.sleap_io_adaptors.video_utils import get_last_frame_idx
 
 
 def test_delete_user_dialog(centered_pair_predictions):
@@ -129,7 +127,7 @@ def test_RemoveVideo(
     assert context.state["video"] not in videos_to_remove
 
 
-@pytest.mark.parametrize("out_suffix", ["h5", "nix", "csv"])
+@pytest.mark.parametrize("out_suffix", ["h5", "csv"])
 def test_ExportAnalysisFile(
     centered_pair_predictions: Labels,
     centered_pair_predictions_hdf5_path: str,
@@ -208,7 +206,7 @@ def test_ExportAnalysisFile(
             output_paths.append(output_path)
 
             if labels_path is not None and not params["csv"]:
-                meta_reader = extract_meta_hdf5 if out_suffix == "h5" else read_nix_meta
+                meta_reader = extract_meta_hdf5
                 labels_key = "labels_path" if out_suffix == "h5" else "project"
                 read_meta = meta_reader(output_path, dset_names_in=["labels_path"])
                 assert read_meta[labels_key] == labels_path
@@ -313,6 +311,37 @@ def test_ExportAnalysisFile(
         okay = ExportAnalysisFile_ask(context=context, params=params)
 
 
+def assert_video_params(
+    video: Video,
+    filename: str = None,
+    filenames: List[str] = None,
+    grayscale: bool = None,
+    bgr: bool = None,
+    height: int = None,
+    width: int = None,
+    channels: int = None,
+    reset: bool = False,
+):
+    if filename is not None:
+        assert video.backend.filename == filename
+
+    if grayscale is not None:
+        assert video.backend.grayscale == grayscale
+    else:
+        assert video.backend._detect_grayscale == bool(grayscale is None)
+
+    if bgr is not None:
+        assert video.backend.bgr == bgr
+
+    if reset and isinstance(video.backend, MediaVideo):
+        assert video.backend._reader_ is None
+        assert video.backend._test_frame_ is None
+
+    # Getting the channels will assert some of the above are not None
+    if grayscale is not None:
+        assert video.backend.channels == 3 ** (not grayscale)
+
+
 def test_ToggleGrayscale(centered_pair_predictions: Labels):
     """Test functionality for ToggleGrayscale on mp4/avi video"""
     labels = centered_pair_predictions
@@ -374,7 +403,7 @@ def test_ReplaceVideo(
     # Ensure labels were truncated (Original video was fully labeled)
     new_last_lf_frame = get_last_lf_in_video(labels, video)
     # Original video was fully labeled
-    assert new_last_lf_frame == labels.video.last_frame_idx
+    assert new_last_lf_frame == get_last_frame_idx(labels.video)
 
     # Attempt to replace an mp4 with an hdf5 video
     with pytest.raises(TypeError):
@@ -419,7 +448,7 @@ def test_exportNWB(centered_pair_predictions, tmpdir):
     context.state["labels"] = labels
 
     # Ensure ".nwb" extension is appended to filename
-    params = {"adaptor": NDXPoseAdaptor()}
+    params = {"adaptor": "nwb"}
     SaveProjectAs_ask(context, params=params)
     assert PurePath(params["filename"]).suffix == ".nwb"
 
@@ -532,7 +561,7 @@ def test_OpenSkeleton(
     fly32_json = get_package_file("skeletons/fly32.json")
     OpenSkeleton_ask(context, params)
     assert params["filename"] == fly32_json
-    fly32_skeleton = Skeleton.load_json(fly32_json)
+    fly32_skeleton = load_skeleton(fly32_json)
     OpenSkeleton.do_action(context, params)
     assert_skeletons_match(labels.skeleton, fly32_skeleton)
 
@@ -587,7 +616,7 @@ def test_DeleteMultipleTracks(min_tracks_2node_labels: Labels):
     """Test that deleting multiple tracks works as expected."""
     labels = min_tracks_2node_labels
     tracks = labels.tracks
-    tracks.append(Track(name="unused", spawned_on=0))
+    tracks.append(Track(name="unused"))
     assert len(tracks) == 3
 
     # Set-up command context
@@ -599,7 +628,7 @@ def test_DeleteMultipleTracks(min_tracks_2node_labels: Labels):
     assert len(labels.tracks) == 2
 
     # Add back an unused track and delete all tracks
-    tracks.append(Track(name="unused", spawned_on=0))
+    tracks.append(Track(name="unused"))
     assert len(tracks) == 3
     context.deleteMultipleTracks(delete_all=True)
     assert len(labels.tracks) == 0
@@ -906,7 +935,7 @@ def test_exportLabelsPackage(export_extension, centered_pair_labels: Labels, tmp
             num_images += len(lfs_sugg)
         if not pred:
             num_images -= len(lfs_pred)
-        assert labels_reload.video.num_frames == num_images
+        assert labels_reload.video.backend.num_frames == num_images
 
     # Set-up CommandContext
     path_to_pkg = Path(tmpdir, "test_exportLabelsPackage.ext")

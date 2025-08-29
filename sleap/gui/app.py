@@ -76,12 +76,18 @@ from sleap.gui.widgets.docks import (
 from sleap.gui.widgets.slider import set_slider_marks_from_labels
 from sleap.gui.widgets.video import QtVideoPlayer
 from sleap.info.summary import StatisticSeries
-from sleap.instance import Instance
-from sleap.io.dataset import Labels
-from sleap.io.video import available_video_exts
+from sleap_io.model.instance import Instance
+from sleap_io import Labels
+from sleap.sleap_io_adaptors.video_utils import available_video_exts
 from sleap.prefs import prefs
-from sleap.skeleton import Skeleton
+from sleap_io.model.skeleton import Skeleton
 from sleap.util import parse_uri_path, get_config_file
+from sleap.sleap_io_adaptors.lf_labels_utils import (
+    get_labeled_frame_count,
+    get_instances_to_show,
+    find_last,
+    get_video_suggestions,
+)
 
 
 logger = getLogger(__name__)
@@ -222,7 +228,7 @@ class MainWindow(QMainWindow):
                 if hasattr(self.player.video, "backend") and hasattr(
                     self.player.video.backend, "close"
                 ):
-                    self.player.video.backend.close()
+                    self.player.video.close()
                 self.player.video = None
 
             # Stop the worker thread
@@ -344,7 +350,7 @@ class MainWindow(QMainWindow):
 
         def switch_frame(video):
             """Jump to last labeled frame"""
-            last_label = self.labels.find_last(video)
+            last_label = find_last(self.labels, video)
             if last_label is not None:
                 self.state["frame_idx"] = last_label.frame_idx
             else:
@@ -361,8 +367,8 @@ class MainWindow(QMainWindow):
             frame_to_spinbox = frame_chunk_layout.fields["frame_to"]
             frame_from_spinbox = frame_chunk_layout.fields["frame_from"]
             if video is not None:
-                frame_to_spinbox.setMaximum(video.num_frames)
-                frame_from_spinbox.setMaximum(video.num_frames)
+                frame_to_spinbox.setMaximum(video.backend.frames)
+                frame_from_spinbox.setMaximum(video.backend.frames)
 
         self.state.connect(
             "video",
@@ -451,27 +457,9 @@ class MainWindow(QMainWindow):
         )
         add_menu_item(
             import_types_menu,
-            "import_dpk",
-            "DeepPoseKit dataset...",
-            self.commands.importDPK,
-        )
-        add_menu_item(
-            import_types_menu,
-            "import_at",
-            "AlphaTracker dataset...",
-            self.commands.importAT,
-        )
-        add_menu_item(
-            import_types_menu,
             "import_nwb",
             "NWB dataset...",
             self.commands.importNWB,
-        )
-        add_menu_item(
-            import_types_menu,
-            "import_leap",
-            "LEAP Matlab dataset...",
-            self.commands.importLEAP,
         )
         add_menu_item(
             import_types_menu,
@@ -1223,7 +1211,7 @@ class MainWindow(QMainWindow):
             self._update_track_menu()
 
         if _has_topic([UpdateTopic.video]):
-            self.videos_dock.table.model().items = self.labels.videos
+            self.videos_dock.table.model().items = [x for x in self.labels.videos]
 
         if _has_topic([UpdateTopic.skeleton]):
             self.skeleton_dock.nodes_table.model().items = self.state["skeleton"]
@@ -1249,12 +1237,13 @@ class MainWindow(QMainWindow):
         if _has_topic([UpdateTopic.project_instances, UpdateTopic.suggestions]):
             # update count of suggested frames w/ labeled instances
             suggestion_status_text = ""
-            suggestion_list = self.labels.get_suggestions()
+            suggestion_list = self.labels.suggestions
             if suggestion_list:
                 labeled_count = 0
                 for suggestion in suggestion_list:
-                    lf = self.labels.get(
-                        (suggestion.video, suggestion.frame_idx), use_cache=True
+                    lf = self.labels.find(
+                        suggestion.video,
+                        suggestion.frame_idx,  # ), use_cache=True
                     )
                     if lf is not None and lf.has_user_instances:
                         labeled_count += 1
@@ -1321,12 +1310,25 @@ class MainWindow(QMainWindow):
         if message is None:
             message = ""
             if len(self.labels.videos) > 0 and current_video is not None:
-                message += f"Video {self.labels.videos.index(current_video) + 1}/"
+                for i, video in enumerate(self.labels.videos):
+                    if video.backend.filename == current_video.backend.filename:
+                        same_dataset = (
+                            (video.backend.dataset == current_video.backend.dataset)
+                            if hasattr(video.backend, "dataset")
+                            else True
+                        )  # `dataset` attr exists only for hdf5 backend
+                        # not for mediavideo
+                        if same_dataset:
+                            index = i
+                            break
+                message += f"Video {index + 1}/"
                 message += f"{len(self.labels.videos)}"
                 message += spacer
 
             if current_video is not None:
-                message += f"Frame: {frame_idx + 1:,}/{len(current_video):,}"
+                message += (
+                    f"Frame: {frame_idx + 1:,}/{current_video.backend.num_frames:,}"
+                )
 
             if self.player.seekbar.hasSelection():
                 start, end = self.state["frame_range"]
@@ -1338,31 +1340,32 @@ class MainWindow(QMainWindow):
             message += f"{spacer}Labeled Frames: "
             if current_video is not None:
                 message += str(
-                    self.labels.get_labeled_frame_count(current_video, "user")
+                    get_labeled_frame_count(self.labels, current_video, "user")
                 )
 
                 if len(self.labels.videos) > 1:
                     message += " in video, "
             if len(self.labels.videos) > 1:
-                project_user_frame_count = self.labels.get_labeled_frame_count(
-                    filter="user"
+                project_user_frame_count = get_labeled_frame_count(
+                    self.labels, filter="user"
                 )
                 message += f"{project_user_frame_count} in project"
 
             if current_video is not None:
-                pred_frame_count = self.labels.get_labeled_frame_count(
-                    current_video, "predicted"
+                pred_frame_count = get_labeled_frame_count(
+                    self.labels, current_video, "predicted"
                 )
                 if pred_frame_count:
                     message += f"{spacer}Predicted Frames: {pred_frame_count:,}"
-                    message += (
-                        f" ({pred_frame_count / current_video.num_frames * 100:.2f}%)"
+                    percentage = (
+                        pred_frame_count / current_video.backend.num_frames * 100
                     )
+                    message += f" ({percentage:.2f}%)"
                     message += " in video"
 
             lf = self.state["labeled_frame"]
             # TODO: revisit with LabeledFrame.unused_predictions() & instances_to_show()
-            n_instances = 0 if lf is None else len(lf.instances_to_show)
+            n_instances = 0 if lf is None else len(get_instances_to_show(lf))
             message += f"{spacer}Current frame: {n_instances} instances"
             if (n_instances > 0) and not self.state["show instances"]:
                 hide_key = self.shortcuts["show instances"].toString()
@@ -1504,13 +1507,16 @@ class MainWindow(QMainWindow):
         clip_range = self.state.get("frame_range", default=(0, 0))
 
         selection["clip"] = {current_video: encode_range(*clip_range)}
-        selection["video"] = {current_video: encode_range(0, current_video.num_frames)}
+        selection["video"] = {
+            current_video: encode_range(0, current_video.backend.num_frames)
+        }
         selection["all_videos"] = {
-            video: encode_range(0, video.num_frames) for video in self.labels.videos
+            video: encode_range(0, video.backend.num_frames)
+            for video in self.labels.videos
         }
 
         selection["suggestions"] = {
-            video: remove_user_labeled(video, self.labels.get_video_suggestions(video))
+            video: remove_user_labeled(video, get_video_suggestions(self.labels, video))
             for video in self.labels.videos
         }
 
