@@ -68,7 +68,7 @@ from sleap.gui.dialogs.missingfiles import MissingFilesDialog
 from sleap.gui.dialogs.frame_range import FrameRangeDialog
 from sleap.gui.state import GuiState
 from sleap.gui.suggestions import SuggestionFrame, VideoFrameSuggestions
-from sleap_io import LabeledFrame, Labels, load_file, save_file
+from sleap_io import LabeledFrame, Labels, save_file
 from sleap_io.model.instance import (
     Instance,
     PredictedInstance,
@@ -93,6 +93,8 @@ from sleap.sleap_io_adaptors.lf_labels_utils import (
     track_swap,
     find_track_occupancy,
     track_set_instance,
+    make_video_callback,
+    load_labels_video_search,
 )
 from sleap.sleap_io_adaptors.video_utils import get_last_frame_idx
 
@@ -754,17 +756,14 @@ class LoadProjectFile(LoadLabelsObject):
             filename = None
             has_loaded = True
         else:
-            # gui_video_callback = Labels.make_gui_video_callback(
-            #     search_paths=[os.path.dirname(filename)], context=params
-            # ) #TODO:
-
-            # gui_video_callback = make_video_callback(
-            #     search_paths=[os.path.dirname(filename)], use_gui=True, context=params
-            # ) # TODO:
+            gui_video_callback = make_video_callback(
+                search_paths=[os.path.dirname(filename)], context=params, use_gui=True
+            )
 
             try:
-                # labels = load_file(filename, video_search=gui_video_callback)
-                labels = load_file(filename)
+                labels = load_labels_video_search(
+                    filename, video_search=gui_video_callback
+                )
                 has_loaded = True
             except ValueError as e:
                 print(e)
@@ -3275,11 +3274,13 @@ class MergeProject(EditCommand):
             return
 
         for filename in filenames:
-            #  # TODO
+            gui_video_callback = make_video_callback(
+                search_paths=[os.path.dirname(filename)], use_gui=True
+            )
 
-            # new_labels = Labels.load_file(filename, video_search=gui_video_callback)
-            # TODO: use gui callback
-            new_labels = load_file(filename)
+            new_labels = load_labels_video_search(
+                filename, video_search=gui_video_callback
+            )
 
             # Merging data is handled by MergeDialog
             MergeDialog(base_labels=context.labels, new_labels=new_labels).exec_()
