@@ -51,7 +51,7 @@ class LossPlot(MplCanvas):
         )
 
         # Initialize line series for epoch training loss
-        self.series["epoch_loss"] = self._init_series(
+        self.series["train_loss"] = self._init_series(
             series_type=self.axes.plot,
             name="Epoch Training Loss",
             color=COLOR_TRAIN + (255,),
@@ -160,7 +160,7 @@ class LossPlot(MplCanvas):
             x: The x-coordinate of the data point.
             y: The y-coordinate of the data point.
             which: The type of data point. Possible values are:
-                * "epoch_loss"
+                * "train_loss"
                 * "val_loss"
         """
 
@@ -252,7 +252,7 @@ class LossPlot(MplCanvas):
 
             # Add best epoch validation loss if available
             if best_val_x is not None:
-                best_epoch = (best_val_x // epoch_size) + 1
+                best_epoch = best_val_x // epoch_size
                 best_val_text = self._get_best_validation_loss_text(
                     best_val_y, best_epoch
                 )
@@ -413,9 +413,7 @@ class LossPlot(MplCanvas):
         """Set up the title space.
 
         Returns:
-            The height of the title space as a decimal fraction of the total
-            figure height.
-
+            Height of the title space as a decimal fraction of the total figure height.
         """
 
         # Set a dummy title of the plot
@@ -453,8 +451,7 @@ class LossPlot(MplCanvas):
         self.axes.set_xlim(0, 1)
         self.axes.set_xlabel("Batches", fontweight="bold", fontsize="small")
 
-        # Set the x-label in the center of the axes and some amount above the bottom of
-        # the figure
+        # Set x-label in the center of the axes and some amount above bottom of fig
         blended_transform = mtransforms.blended_transform_factory(
             self.axes.transAxes, self.fig.transFigure
         )
@@ -488,9 +485,7 @@ class LossPlot(MplCanvas):
         """Set up the legend.
 
         Returns:
-            Tuple of the width and height of the legend as a decimal fraction of
-            the total figure width and height.
-
+            Tuple of the h,w of legend as a decimal fraction of the total figure h, w.
         """
 
         # Move the legend outside the plot on the upper left
@@ -510,8 +505,7 @@ class LossPlot(MplCanvas):
         # Transform the bounding box to figure coordinates
         bbox = bbox.transformed(self.fig.transFigure.inverted())
 
-        # Calculate the width and height of the legend as a percentage of the total
-        # figure width and height
+        # Calculate the h,w of legend as a percentage of the total figure h, w.
         return bbox.width, bbox.height
 
     def _setup_major_gridlines(self):
@@ -688,7 +682,7 @@ class LossViewer(QtWidgets.QMainWindow):
 
         self.mp_series = dict()
         self.mp_series["batch"] = self.canvas.series["batch"]
-        self.mp_series["epoch_loss"] = self.canvas.series["epoch_loss"]
+        self.mp_series["train_loss"] = self.canvas.series["train_loss"]
         self.mp_series["val_loss"] = self.canvas.series["val_loss"]
         self.mp_series["val_loss_best"] = self.canvas.series["val_loss_best"]
 
@@ -768,6 +762,7 @@ class LossViewer(QtWidgets.QMainWindow):
         self.epoch_in_plateau_flag = False
         self.last_batch_number = 0
         self.is_running = False
+        self.best_epoch_loss = None
 
     def set_message(self, text: str):
         """Set the chart title text."""
@@ -882,7 +877,7 @@ class LossViewer(QtWidgets.QMainWindow):
                 a new training session (when we're training multiple types
                 of models in a sequence, as for the top-down pipeline).
             * logs - dictionary with data relevant for plotting, can include
-                * loss
+                * train_loss
                 * val_loss
 
         Args:
@@ -913,9 +908,9 @@ class LossViewer(QtWidgets.QMainWindow):
                 elif msg["event"] == "epoch_end":
                     self.epoch_size = max(self.epoch_size, self.last_batch_number + 1)
                     self._add_datapoint(
-                        (self.epoch + 1) * self.epoch_size,
-                        msg["logs"]["loss"],
-                        "epoch_loss",
+                        x=(self.epoch + 1) * self.epoch_size,
+                        y=msg["logs"]["train_loss"],
+                        which="train_loss",
                     )
                     if "val_loss" in msg["logs"].keys():
                         # update variables and add points to plot
@@ -936,28 +931,36 @@ class LossViewer(QtWidgets.QMainWindow):
                             )
                             self.eta_ten_epochs_min = (mean_epoch_time * 10) // 60
 
-                            val_loss_delta = (
-                                self.penultimate_epoch_val_loss
-                                - self.last_epoch_val_loss
-                            )
-                            self.epoch_in_plateau_flag = (
-                                self.plateau_min_delta is not None
-                            ) and (
-                                (val_loss_delta < self.plateau_min_delta)
-                                or (self.best_val_y < self.last_epoch_val_loss)
-                            )
+                            if self.best_epoch_loss is None:
+                                self.best_epoch_loss = self.last_epoch_val_loss
+
+                            if self.plateau_min_delta is not None:
+                                # plateau check according to `rel` thrsh mode in torch.
+                                is_better = (
+                                    self.last_epoch_val_loss
+                                    < self.best_epoch_loss
+                                    * (1.0 - self.plateau_min_delta)
+                                )
+                            else:
+                                is_better = (
+                                    self.last_epoch_val_loss < self.best_epoch_loss
+                                )
+
+                            self.epoch_in_plateau_flag = not is_better
                             self.epochs_in_plateau = (
                                 self.epochs_in_plateau + 1
                                 if self.epoch_in_plateau_flag
                                 else 0
                             )
+                            if is_better:
+                                self.best_epoch_loss = self.last_epoch_val_loss
                     self.on_epoch.emit()
                 elif msg["event"] == "batch_end":
                     self.last_batch_number = msg["batch"]
                     self._add_datapoint(
-                        (self.epoch * self.epoch_size) + msg["batch"],
-                        msg["logs"]["loss"],
-                        "batch",
+                        x=(self.epoch * self.epoch_size) + msg["batch"],
+                        y=msg["logs"]["train_loss"],
+                        which="batch",
                     )
 
             # Check for messages again (up to times_to_check times).
@@ -977,7 +980,7 @@ class LossViewer(QtWidgets.QMainWindow):
             y: The loss value.
             which: Type of data point we're adding. Possible values are:
                 * "batch" (loss for the batch)
-                * "epoch_loss" (loss for the entire epoch)
+                * "train_loss" (loss for the entire epoch)
                 * "val_loss" (validation loss for the epoch)
         """
         if which == "batch":
@@ -1041,7 +1044,7 @@ class LossViewer(QtWidgets.QMainWindow):
             x: The x-coordinate of the data point.
             y: The y-coordinate of the data point.
             which: The type of data point. Possible values are:
-                * "epoch_loss"
+                * "train_loss"
                 * "val_loss"
         """
 

@@ -10,7 +10,7 @@ authors = [
     {name = "Talmo Pereira", email = "talmo@salk.edu"}
 ]
 license = {text = "BSD-3-Clause"}
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 keywords = ["deep learning", "pose estimation", "tracking", "neuroscience"]
 classifiers = [
     "Intended Audience :: Science/Research",
@@ -88,6 +88,10 @@ docs = [
 jupyter = [
     "jupyter",
     "jupyterlab",
+]
+
+sleap-nn = [
+    "sleap-nn[torch-cpu]"
 ]
 
 [project.urls]
