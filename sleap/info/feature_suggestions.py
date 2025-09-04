@@ -237,7 +237,7 @@ class FrameItem(object):
             h, w, c = img.shape
             h_, w_ = int(h // (1 / scale)), int(w // (1 / scale))
             # note that cv2 expects (width, height) instead of (rows, columns)
-            img = cv2.resize(np.squeeze(img), (w_, h_))[None, ...]
+            img = cv2.resize(np.squeeze(img), (w_, h_))
             if c == 1:
                 img = img[..., None]
             return img
@@ -411,7 +411,8 @@ class ItemStack(object):
 
             # Keep track of shape large enough to hold any of the images
             img_shape = img.shape
-            data_shape = [max(data_shape[i], img_shape[i + 1]) for i in (0, 1, 2)]
+            # get_raw_image returns 3D arrays (H, W, C), so use indices 0, 1, 2 directly
+            data_shape = [max(data_shape[i], img_shape[i]) for i in (0, 1, 2)]
 
             if data_shape != img_shape:
                 mixed_shapes = True
@@ -420,10 +421,11 @@ class ItemStack(object):
             # Make array large enough to hold any image and pad smaller images
             self.data = np.zeros((len(self.items), *data_shape), dtype="uint8")
             for i, img in enumerate(imgs):
-                _, rows, columns, channels = img.shape
+                rows, columns, channels = img.shape
                 self.data[i, :rows, :columns, :channels] = img
         else:
-            self.data = np.concatenate(imgs)
+            # All images have same shape, add batch dimension and concatenate
+            self.data = np.stack(imgs)
 
     def flatten(self):
         """Flattens each row of data to 1-d array."""
@@ -686,7 +688,7 @@ class ParallelFeaturePipeline(object):
         suggestions = []
         for video_idx, frame_idx, group in tuples:
             video = videos[video_idx]
-            suggestions.append(SuggestionFrame(video, frame_idx, group))
+            suggestions.append(SuggestionFrame(video, frame_idx))
         return suggestions
 
     @classmethod

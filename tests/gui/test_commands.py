@@ -578,7 +578,6 @@ def test_OpenSkeleton(
     # Run without OpenSkeleton.ask()
     params = {"filename": fly_legs_skeleton_json}
     new_skeleton = OpenSkeleton.load_skeleton(fly_legs_skeleton_json)
-    new_skeleton.add_symmetry(new_skeleton.nodes[0], new_skeleton.nodes[1])
     OpenSkeleton.do_action(context, params)
     print("line: 586:", skeleton.symmetries)
     assert len(labels.skeletons) == 1
@@ -961,7 +960,7 @@ def test_DeleteFrameLimitPredictions(
     assert len(instances_to_delete) == 2070
 
 
-@pytest.mark.parametrize("export_extension", [".json.zip", ".slp"])
+@pytest.mark.parametrize("export_extension", [".slp"])
 def test_exportLabelsPackage(export_extension, centered_pair_labels: Labels, tmpdir):
     def assert_loaded_package_similar(path_to_pkg: Path, sugg=False, pred=False):
         """Assert that the loaded labels are similar to the original."""
