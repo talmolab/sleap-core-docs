@@ -58,12 +58,12 @@ class MetricsTableDialog(QtWidgets.QWidget):
         button_layout.addWidget(btn)
 
         btn = QtWidgets.QPushButton("View Hyperparameters")
-        btn.clicked.connect(self._show_model_params)
+        btn.clicked.connect(lambda: self._show_model_params())
         button_layout.addWidget(btn)
         self._view_model_btn = btn
 
         btn = QtWidgets.QPushButton("View Metrics")
-        btn.clicked.connect(self._show_metric_details)
+        btn.clicked.connect(lambda: self._show_metric_details())
         button_layout.addWidget(btn)
         self._view_metrics_btn = btn
 
@@ -282,7 +282,7 @@ class DetailedMetricsDialog(QtWidgets.QWidget):
         if self.metrics:
             for key, val in self.metrics.items():
                 if (
-                    isinstance(val, np.float)
+                    isinstance(val, np.float64)
                     or isinstance(val, np.ndarray)
                     and not len(val.shape)
                 ):

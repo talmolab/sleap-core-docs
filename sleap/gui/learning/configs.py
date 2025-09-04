@@ -16,7 +16,7 @@ from typing import Any, Dict, List, Optional, Text
 
 from sleap_io import Skeleton, load_file
 from sleap import util as sleap_utils
-from sleap.gui.config_utils import get_head_from_omegaconf
+from sleap.gui.config_utils import get_head_from_omegaconf, get_skeleton_from_config
 from sleap.gui.dialogs.filedialog import FileDialog
 from sleap.gui.dialogs.formbuilder import FieldComboWidget
 from omegaconf import OmegaConf
@@ -108,7 +108,8 @@ class ConfigFileInfo:
         if self._skeleton is None and not self._tried_finding_skeleton:
             # if skeleton was saved in config, great!
             if self.config.data_config.skeletons:
-                self._skeleton = self.config.data_config.skeletons[0]
+                skeletons = get_skeleton_from_config(self.config.data_config.skeletons)
+                self._skeleton = skeletons[0] if skeletons else None
 
             # otherwise try loading it from validation labels (much slower!)
             else:
@@ -161,7 +162,11 @@ class ConfigFileInfo:
         cache_key = (dset_name, split_name)
         if cache_key not in self._dset_len_cache:
             n = None
-            filename = self._get_file_path(f"labels_gt.{split_name}.slp")
+            filename = (
+                self._get_file_path(f"labels_gt.{split_name}.slp")
+                if self._get_file_path(f"labels_gt.{split_name}.slp")
+                else self._get_file_path(f"labels_{split_name}_gt_0.slp")
+            )
             if filename is not None:
                 with h5py.File(filename, "r") as f:
                     n = f[dset_name].shape[0]
@@ -171,13 +176,27 @@ class ConfigFileInfo:
         return self._dset_len_cache[cache_key]
 
     def _get_metrics(self, split_name: Text):
-        metrics_path = self._get_file_path(f"metrics.{split_name}.npz")
+        metrics_path_nn = self._get_file_path(f"{split_name}_0_pred_metrics.npz")
 
-        if metrics_path is None:
-            return None
+        if metrics_path_nn is None:
+            metrics_path = self._get_file_path(f"metrics.{split_name}.npz")
+        else:
+            metrics_path = metrics_path_nn
 
         with np.load(metrics_path, allow_pickle=True) as data:
-            return data["metrics"].item()
+            if "metrics" in data:
+                return data["metrics"].item()
+
+            return_dict = {
+                "oks_voc.mAP": data["voc_metrics"].item().get("oks_voc.mAP"),
+                "vis.precision": data["visibility_metrics"].item().get("precision"),
+                "vis.recall": data["visibility_metrics"].item().get("recall"),
+                "dist.p95": data["distance_metrics"].item().get("p95"),
+                "dist.p75": data["distance_metrics"].item().get("p75"),
+                "dist.avg": data["distance_metrics"].item().get("avg"),
+                "dist.dists": data["distance_metrics"].item().get("dists"),
+            }
+            return return_dict
 
     @classmethod
     def from_config_file(cls, path: Text) -> "ConfigFileInfo":
