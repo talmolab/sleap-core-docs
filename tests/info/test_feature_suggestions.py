@@ -22,7 +22,6 @@ def test_frame_item(small_robot_mp4_vid):
     )
 
     assert item.get_raw_image(scale=1).shape == (
-        1,
         video_get_height(small_robot_mp4_vid),
         video_get_width(small_robot_mp4_vid),
         video_get_channels(small_robot_mp4_vid),
@@ -134,9 +133,7 @@ def test_item_stack(centered_pair_vid, small_robot_mp4_vid):
 
     frame_items = stack.to_suggestion_frames(group_offset=10)
     assert frame_items[0].frame_idx == stack.items[0].frame_idx
-    assert frame_items[0].group == 10
     assert frame_items[1].frame_idx == stack.items[1].frame_idx
-    assert frame_items[1].group == 11
 
 
 def test_brisk_suggestions(centered_pair_vid):

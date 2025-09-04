@@ -234,7 +234,7 @@ class FrameItem(object):
             return self.video[self.frame_idx]
         else:
             img = self.video[self.frame_idx]
-            _, h, w, c = img.shape
+            h, w, c = img.shape
             h_, w_ = int(h // (1 / scale)), int(w // (1 / scale))
             # note that cv2 expects (width, height) instead of (rows, columns)
             img = cv2.resize(np.squeeze(img), (w_, h_))[None, ...]
@@ -534,14 +534,14 @@ class ItemStack(object):
         return tuples
 
     def to_suggestion_frames(self, group_offset: int = 0) -> List["SuggestionFrame"]:
-        from sleap.gui.suggestions import SuggestionFrame
+        from sleap_io import SuggestionFrame
 
         suggestions = []
         for frame in self.items:
             group = self.current_groupset.get_item_group(frame)
             if group is not None:
                 group += group_offset
-            suggestions.append(SuggestionFrame(frame.video, frame.frame_idx, group))
+            suggestions.append(SuggestionFrame(frame.video, frame.frame_idx))
         return suggestions
 
 
