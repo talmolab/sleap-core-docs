@@ -1,7 +1,7 @@
 import pytest
 import json
 
-from sleap_io import Skeleton
+from sleap_io import Skeleton, load_skeleton
 from sleap_io.io.skeleton import SkeletonDecoder
 
 TEST_FLY_LEGS_SKELETON = "tests/data/skeleton/fly_skeleton_legs.json"
@@ -76,8 +76,4 @@ def skeleton():
 
 @pytest.fixture
 def flies13_skeleton():
-    with open("sleap/skeletons/flies13.json", "r") as f:
-        skeleton_data = json.load(f)
-    skeleton = SkeletonDecoder().decode(data=skeleton_data["nx_graph"])
-
-    return skeleton
+    return load_skeleton("sleap/skeletons/flies13.json")
