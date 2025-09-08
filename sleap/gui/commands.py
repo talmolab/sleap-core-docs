@@ -1763,8 +1763,7 @@ class ExportLabelsSubset(ExportFullPackage):
 
         # Get subset of labels to export
         labels: Labels = context.state["labels"]
-        frames_in_labels = [frame for frame in frames]
-        print(frames_in_labels)
+        frames_in_labels = [(video, frame) for frame in frames]
         labels_subset_unshifted: Labels = labels.extract(
             inds=frames_in_labels, copy=True
         )
