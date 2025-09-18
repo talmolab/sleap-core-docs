@@ -1269,7 +1269,7 @@ def test_ExportLabelsSubset(
     path_to_export = Path(path_to_export.with_suffix(".pkg.slp"))
     assert path_to_export.exists()
     assert path_to_export.is_file()
-    labels_subset: Labels = Labels.load_file(path_to_export.as_posix())
+    labels_subset: Labels = labels_load_file(path_to_export.as_posix())
     # Should only contain video from selected clip.
     assert len(labels_subset.videos) == 1
     n_frames_expected = upper_bound - lower_bound
