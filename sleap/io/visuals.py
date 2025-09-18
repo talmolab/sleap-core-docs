@@ -382,6 +382,7 @@ def save_labeled_video(
     palette: str = "standard",
     distinctly_color: str = "instances",
     gui_progress: bool = False,
+    chunk_size: int = 64,
 ):
     """Function to generate and save video with annotations.
 
@@ -409,30 +410,53 @@ def save_labeled_video(
         None.
     """
     # Create marker thread and queues.
-    # q1 = Queue(maxsize=10)
-    # q2 = Queue(maxsize=10)
-    # thread_mark = VideoMarkerThread(
-    #     in_q=q1,
-    #     out_q=q2,
-    #     labels=labels,
-    #     video_idx=labels.videos.index(video),
-    #     scale=scale,
-    #     show_edges=show_edges,
-    #     edge_is_wedge=edge_is_wedge,
-    #     marker_size=marker_size,
-    #     crop_size_xy=crop_size_xy,
-    #     color_manager=color_manager,
-    #     palette=palette,
-    #     distinctly_color=distinctly_color,
-    # )
+    in_q = Queue(maxsize=10)
+    out_q = Queue(maxsize=10)
+
+    marker_thread = VideoMarkerThread(
+        in_q=in_q,
+        out_q=out_q,
+        labels=labels,
+        video_idx=labels.videos.index(video),
+        scale=scale,
+        show_edges=show_edges,
+        edge_is_wedge=edge_is_wedge,
+        marker_size=marker_size,
+        crop_size_xy=crop_size_xy,
+        color_manager=color_manager,
+        palette=palette,
+        distinctly_color=distinctly_color,
+    )
+    marker_thread.start()
+
+    # Send frames to marker thread via input queue
+    for i0 in range(0, len(frames), chunk_size):
+        i1 = min(i0 + chunk_size, len(frames))
+        frame_inds = frames[i0:i1]
+        frame_imgs = video[frame_inds]
+        in_q.put((frame_inds, frame_imgs))
+    in_q.put(_sentinel)  # Signal end of input
+
+    # Collect annotated frames from the output queue
+    annotated_frames = []
+    while True:
+        imgs = out_q.get()
+        if imgs is _sentinel:
+            break
+        annotated_frames.extend(imgs)
+
+    marker_thread.join()
 
     # Pass marker thread in as intrmediate thread to write_video (and write video).
     # intermediate_threads = [thread_mark]
+
+    # Save video at end after getting annotated frames
     save_video(
-        frames=[video[i] for i in frames],
+        frames=annotated_frames,
         filename=filename,
         fps=fps,
     )  # TODO: add other parameters
+
     # write_video(
     #     filename=filename,
     #     video=video,
@@ -478,9 +502,9 @@ def main(args: list = None):
     )
     parser.add_argument("-f", "--fps", type=int, default=25, help="Frames per second")
     parser.add_argument("--scale", type=float, default=1.0, help="Output image scale")
-    parser.add_argument(
-        "--crop", type=str, default="", help="Crop size as <width>,<height>"
-    )
+    # parser.add_argument(
+    #     "--crop", type=str, default="", help="Crop size as <width>,<height>"
+    # )
     parser.add_argument(
         "--frames",
         type=frame_list,
@@ -530,15 +554,15 @@ def main(args: list = None):
             "'edges', and 'nodes' (default: 'nodes')"
         ),
     )
-    parser.add_argument(
-        "--background",
-        type=str,
-        default="original",
-        help=(
-            "Specify the type of background to be used to save the videos."
-            "Options for background: original, black, white and grey"
-        ),
-    )
+    # parser.add_argument(
+    #     "--background",
+    #     type=str,
+    #     default="original",
+    #     help=(
+    #         "Specify the type of background to be used to save the videos."
+    #         "Options for background: original, black, white and grey"
+    #     ),
+    # )
     args = parser.parse_args(args=args)
     labels = load_labels_video_search(
         args.data_path, video_search=[os.path.dirname(args.data_path)]
@@ -556,10 +580,10 @@ def main(args: list = None):
 
     filename = args.output or args.data_path + ".avi"
 
-    try:
-        crop_size_xy = list(map(int, args.crop.split(",")))
-    except Exception:
-        crop_size_xy = None
+    # try:
+    #     crop_size_xy = list(map(int, args.crop.split(",")))
+    # except Exception:
+    #     crop_size_xy = None
 
     save_labeled_video(
         filename=filename,
@@ -568,13 +592,13 @@ def main(args: list = None):
         frames=frames,
         fps=args.fps,
         scale=args.scale,
-        crop_size_xy=crop_size_xy,
+        crop_size_xy=None,  # default value since argument is commented out
         show_edges=args.show_edges > 0,
         edge_is_wedge=args.edge_is_wedge > 0,
         marker_size=args.marker_size,
         palette=args.palette,
         distinctly_color=args.distinctly_color,
-        background=args.background,
+        background="original",  # default value since argument is commented out
     )
 
     print(f"Video saved as: {filename}")

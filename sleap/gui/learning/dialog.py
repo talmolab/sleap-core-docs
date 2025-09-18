@@ -169,8 +169,8 @@ class LearningDialog(QtWidgets.QDialog):
 
         # Connect actions for buttons
         self.copy_button.clicked.connect(self.copy)
-        self.save_button.clicked.connect(self.save)
-        self.export_button.clicked.connect(self.export_package)
+        self.save_button.clicked.connect(lambda: self.save())
+        self.export_button.clicked.connect(lambda: self.export_package())
         self.cancel_button.clicked.connect(self.reject)
         self.run_button.clicked.connect(self.run)
 
@@ -321,7 +321,7 @@ class LearningDialog(QtWidgets.QDialog):
             "single_instance",
             "centroid",
             "centered_instance",
-            "multi_instance",
+            "bottomup",
             "multi_class_topdown",
             "multi_class_bottomup",
         )
@@ -422,7 +422,7 @@ class LearningDialog(QtWidgets.QDialog):
                 return "top-down-id"
             if recent_cfg_info.head_name in ("centroid", "centered_instance"):
                 return "top-down"
-            if recent_cfg_info.head_name in ("multi_instance",):
+            if recent_cfg_info.head_name in ("bottomup",):
                 return "bottom-up"
             if recent_cfg_info.head_name in ("single_instance",):
                 return "single"
@@ -450,7 +450,7 @@ class LearningDialog(QtWidgets.QDialog):
             "single_instance": "Single Instance Model Configuration",
             "centroid": "Centroid Model Configuration",
             "centered_instance": "Centered Instance Model Configuration",
-            "multi_instance": "Bottom-Up Model Configuration",
+            "bottomup": "Bottom-Up Model Configuration",
             "multi_class_topdown": "Top-Down-Id Model Configuration",
             "multi_class_bottomup": "Bottom-Up-Id Model Configuration",
         }
@@ -469,7 +469,7 @@ class LearningDialog(QtWidgets.QDialog):
                 self.add_tab("centroid")
                 self.add_tab("centered_instance")
             elif pipeline == "bottom-up":
-                self.add_tab("multi_instance")
+                self.add_tab("bottomup")
             elif pipeline == "top-down-id":
                 self.add_tab("centroid")
                 self.add_tab("multi_class_topdown")
@@ -833,8 +833,6 @@ class LearningDialog(QtWidgets.QDialog):
         if labels_filename is None:
             labels_filename = self.labels_filename
 
-        print(output_dir, type(output_dir))
-
         runners.write_pipeline_files(
             output_dir=output_dir,
             labels_filename=labels_filename,
@@ -846,7 +844,6 @@ class LearningDialog(QtWidgets.QDialog):
     def export_package(self, output_path: Optional[str] = None, gui: bool = True):
         """Export training job package."""
         # TODO: Warn if self.mode != "training"?
-
         if output_path is None or not output_path:
             # Prompt for output path.
             output_path, _ = FileDialog.save(

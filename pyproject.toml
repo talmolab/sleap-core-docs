@@ -92,8 +92,12 @@ jupyter = [
     "jupyterlab",
 ]
 
-sleap-nn = [
+nn-cpu = [
     "sleap-nn[torch-cpu]"
+]
+
+nn-gpu = [
+    "sleap-nn[torch-cuda128]"
 ]
 
 [project.urls]
@@ -108,9 +112,9 @@ sleap-render = "sleap.io.visuals:main"
 sleap-label = "sleap.gui.app:main"
 sleap-inspect = "sleap.info.labels:main"
 sleap-diagnostic = "sleap.diagnostic:main"
-# sleap-train = "sleap.nn.training:main"
-# sleap-track = "sleap.nn.inference:main"
-# sleap-export = "sleap.nn.inference:export_cli"
+sleap-train = "sleap.legacy_cli_adaptors:train_command"
+sleap-track = "sleap.legacy_cli_adaptors:track_command"
+# sleap-export = "sleap.legacy_cli_adaptors:export_cli"
 
 [tool.setuptools.packages.find]
 exclude = ["tests", "tests.*", "docs"]

@@ -2167,6 +2167,7 @@ class QtInstance(QGraphicsObject):
         """Duplicate the instance and add it to the scene."""
         # Add instance to the context
         if self.player.context is None:
+            print("self.player.context is None, cannot duplicate instance")
             return
 
         # Copy the instance and add it to the context
@@ -2195,11 +2196,14 @@ class QtInstance(QGraphicsObject):
                     # Set this QtInstance to be movable
                     qt_inst.setFlag(QGraphicsItem.ItemIsMovable)
 
+                    # Set all nodes to be movable
+                    for node in qt_inst.nodes.values():
+                        node.setFlag(QGraphicsItem.ItemIsMovable, True)
+
                     # Optionally grab the mouse and change cursor, so user can
                     # immediately drag
                     qt_inst.setCursor(Qt.ClosedHandCursor)
                     qt_inst.grabMouse()
-                    break
 
         # Connect the callback to the updatedSelection signal
         self.player.view.updatedSelection.connect(on_selection_update)
@@ -2217,11 +2221,12 @@ class QtInstance(QGraphicsObject):
 
     def mouseReleaseEvent(self, event):
         """Custom event handler for mouse release."""
+        # self.ungrabMouse() causes QGraphicsItem::ungrabMouse: warning
         if self.flags() & QGraphicsItem.ItemIsMovable:
             self.setFlag(QGraphicsItem.ItemIsMovable, False)
             self.updatePoints(user_change=True)
             self.updateBox()
-            # self.ungrabMouse()
+            self.ungrabMouse()
             super().mouseReleaseEvent(event)
 
 
