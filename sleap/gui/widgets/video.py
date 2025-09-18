@@ -2167,7 +2167,8 @@ class QtInstance(QGraphicsObject):
         """Duplicate the instance and add it to the scene."""
         # Add instance to the context
         if self.player.context is None:
-            print("self.player.context is None, cannot duplicate instance")
+            if self.player.state["debug mode"]:
+                print("self.player.context is None, cannot duplicate instance")
             return
 
         # Copy the instance and add it to the context
