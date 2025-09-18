@@ -212,7 +212,7 @@ class VideoMarkerThread(Thread):
         self, img: np.ndarray, instances: Optional[List["Instance"]] = None
     ) -> Tuple[int, int]:
         if instances:
-            centroids = np.array([inst.centroid for inst in instances])
+            centroids = np.array([np.nanmedian(inst.numpy(), axis=0) for inst in instances])
             center_xy = np.nanmedian(centroids, axis=0)
             self._crop_centers.append(center_xy)
 
