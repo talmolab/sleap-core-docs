@@ -43,7 +43,7 @@ jobs:
       - name: Build and upload docs (release event)
         if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
         run: |
-          mike deploy --update-aliases --allow-empty --push "${{ github.event.release.tag_name }}" stable
+          uv runmike deploy --update-aliases --allow-empty --push "${{ github.event.release.tag_name }}" stable
 
       - name: Get tag that 'stable' alias points to, or fallback to 'dev'
         id: get-stable-tag
@@ -68,7 +68,7 @@ jobs:
         if: github.event_name == 'push'
         run: |
           if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
-            mike deploy --update-aliases --allow-empty --push "${{ steps.get-stable-tag.outputs.stable_tag }}" stable
+            uv run mike deploy --update-aliases --allow-empty --push "${{ steps.get-stable-tag.outputs.stable_tag }}" stable
           else
-            mike deploy --update-aliases --allow-empty --push dev
+            uv run mike deploy --update-aliases --allow-empty --push dev
           fi
