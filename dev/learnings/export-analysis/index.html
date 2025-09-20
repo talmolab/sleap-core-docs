@@ -1674,7 +1674,7 @@
 
 <h1 id="export-data-for-analysis">Export Data For Analysis<a class="headerlink" href="#export-data-for-analysis" title="Permanent link">&para;</a></h1>
 <p>The easiest way to work with the data from SLEAP is to export an HDF5 file by choosing "<strong>Export Analysis HDF5...</strong>" in the "File" menu.</p>
-<p>See <a href="https://sleap.ai/api/sleap.io.convert.html#module-sleap.io.convert"><code>sleap.io.convert</code></a> for an explanation of the datasets inside the file.</p>
+<p>See <a href="../../reference/command-line-interfaces/#sleap-convert"><code>sleap.io.convert</code></a> for an explanation of the datasets inside the file.</p>
 <h2 id="matlab">MATLAB<a class="headerlink" href="#matlab" title="Permanent link">&para;</a></h2>
 <p>You can read this file in MATLAB like this:</p>
 <div class="highlight"><pre><span></span><code><span class="n">occupancy_matrix</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">h5read</span><span class="p">(</span><span class="s">&#39;path/to/analysis.h5&#39;</span><span class="p">,</span><span class="s">&#39;/track_occupancy&#39;</span><span class="p">)</span>
@@ -1691,7 +1691,7 @@ with h5py.File(&#39;path/to/analysis.h5&#39;, &#39;r&#39;) as f:
 print(occupancy_matrix.shape)
 print(tracks_matrix.shape)
 </code></pre></div></p>
-<p><strong>Note</strong>: The datasets are stored column-major as expected by MATLAB. This means that if you're working with the file in Python you may want to first transpose the datasets so they match the shapes described in <a href="https://sleap.ai/api/sleap.io.convert.html#module-sleap.io.convert"><code>sleap.io.convert</code></a>.</p>
+<p><strong>Note</strong>: The datasets are stored column-major as expected by MATLAB. This means that if you're working with the file in Python you may want to first transpose the datasets so they match the shapes described in <a href="../../reference/command-line-interfaces/#sleap-convert"><code>sleap.io.convert</code></a>.</p>
 
 
 
