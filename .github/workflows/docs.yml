@@ -1,64 +1,80 @@
-# Docs build
-name: Docs
+name: Deploy MkDocs to GitHub Pages
 
 on:
-  workflow_dispatch
-#   release:
-#     types:
-#       - published
-#   push:
-#     branches:
-#       - main
-#       - develop
-#     paths:
-#       - "sleap/**"
-#       - "docs/**"
-#       - "mkdocs.yml"
-#       - ".github/workflows/docs.yml"
+  push:
+    branches:
+      - main
+      - develop
+      - divya/change-to-mkdocs
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - ".github/workflows/deploy.yml"
+      - "environment.yml"
+  workflow_dispatch:
 
 jobs:
-  docs:
-    name: Docs
-    runs-on: "ubuntu-latest"
-    permissions:
-      # Give the default GITHUB_TOKEN write permission to commit and push the
-      # added or changed files to the repository.
-      contents: write
+  deploy:
+    runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Fetch all history for all branches
 
-      - name: Setup UV
-        uses: astral-sh/setup-uv@v6
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
         with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        run: |
-          uv sync --all-extras
+          miniforge-version: latest
+          conda-solver: "libmamba"
+          environment-file: environment.yml  # Use environment.yml file to set up the environment
+          activate-environment: sleap-docs-env  # The environment to activate after setup
 
       - name: Print environment info
+        shell: bash -l {0}
         run: |
-          uv run python --version
-          uv run pip freeze
+          which python
+          conda info
+          conda list
+          pip freeze
 
       - name: Setup Git user
         run: |
-            git config --global user.name "github-actions[bot]"
-            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Build and upload docs (release)
+      - name: Build and upload docs (release event)
         if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash -l {0}
         run: |
-            uv run mike deploy --update-aliases --allow-empty --push "${{ github.event.release.tag_name }}" latest
+          mike deploy --update-aliases --allow-empty --push "${{ github.event.release.tag_name }}" stable
 
-      - name: Build and upload docs (dev)
-        if: ${{ github.event_name == 'push' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get tag that 'stable' alias points to, or fallback to 'dev'
+        id: get-stable-tag
         run: |
-            uv run mike deploy --update-aliases --allow-empty --push dev
+          git fetch origin gh-pages || true
+          git checkout origin/gh-pages -- versions.json 2>/dev/null || true
+
+          if [ -f versions.json ]; then
+            stable_tag=$(jq -r '.[] | select(.aliases | index("stable")) | .version' versions.json)
+          fi
+
+          if [ -z "$stable_tag" ]; then
+            echo "No stable alias found. Falling back to 'dev'."
+            stable_tag="dev"
+          fi
+
+          echo "Using: $stable_tag"
+          echo "stable_tag=$stable_tag" >> $GITHUB_OUTPUT
+
+
+      - name: Build and upload docs (push event)
+        if: github.event_name == 'push'
+        shell: bash -l {0}
+        run: |
+          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+            mike deploy --update-aliases --allow-empty --push "${{ steps.get-stable-tag.outputs.stable_tag }}" stable
+          else
+            mike deploy --update-aliases --allow-empty --push dev
+          fi
