@@ -5,7 +5,7 @@ hide:
 
 # Tutorial
 
-The tutorial will walk you through the entire SLEAP workflow. You can follow along this tutorial and try running SLEAP on one of our [sample datasets](https://docs.sleap.ai/dev/reference/datasets/). Then you will be ready to start using SLEAP on your own data.
+The tutorial will walk you through the entire SLEAP workflow. You can follow along this tutorial and try running SLEAP on one of our [sample datasets](../reference/datasets.md). Then you will be ready to start using SLEAP on your own data.
 
 ## Table of Contents
 

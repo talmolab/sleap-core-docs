@@ -57,4 +57,4 @@ Below is a high-level overview of a typical end-to-end workflow in SLEAP. You ca
 11. **Exporting data for analysis**
      Finally you can export the generated data (including animal instance occupancy matrices and tracks) for further analysis (e.g. in Matlab or Python).
 
-     See [Export Analysis](tutorial/exporting-the-results.md) and example [Notebooks](notebooks/Analysis_examples) for details.
+     See [Export Analysis](tutorial/exporting-the-results.md) and example [Notebooks](notebooks/Analysis_examples.ipynb) for details.

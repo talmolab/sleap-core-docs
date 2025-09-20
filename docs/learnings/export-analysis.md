@@ -2,7 +2,7 @@
 
 The easiest way to work with the data from SLEAP is to export an HDF5 file by choosing "**Export Analysis HDF5...**" in the "File" menu.
 
-See [`sleap.io.convert`](https://sleap.ai/api/sleap.io.convert.html#module-sleap.io.convert) for an explanation of the datasets inside the file.
+See [`sleap.io.convert`](../reference/command-line-interfaces.md/#sleap-convert) for an explanation of the datasets inside the file.
 
 ## MATLAB
 
@@ -29,4 +29,4 @@ To read the file in Python you'll first need to install the [`h5py package`](htt
     ```
 
 
-**Note**: The datasets are stored column-major as expected by MATLAB. This means that if you're working with the file in Python you may want to first transpose the datasets so they match the shapes described in [`sleap.io.convert`](https://sleap.ai/api/sleap.io.convert.html#module-sleap.io.convert).
+**Note**: The datasets are stored column-major as expected by MATLAB. This means that if you're working with the file in Python you may want to first transpose the datasets so they match the shapes described in [`sleap.io.convert`](../reference/command-line-interfaces.md/#sleap-convert).

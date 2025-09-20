@@ -63,7 +63,7 @@ See [export-analysis](learnings/export-analysis.md) and [sleap-convert](referenc
 
 ### What do I do with the output of SLEAP?
 
-Check out the [Analysis examples](notebooks/Analysis_examples) notebooks.
+Check out the [Analysis examples](notebooks/Analysis_examples.ipynb) notebooks.
 
 ## Getting more help
 

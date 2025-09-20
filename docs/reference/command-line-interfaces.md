@@ -328,7 +328,7 @@ For example, to convert a predictions SLP file to an analysis HDF5 file:
 sleap-convert --format analysis -o "session1.predictions.analysis.h5" "session1.predictions.slp"
 ```
 
-See [Analysis examples](../notebooks/Analysis_examples) for how to work with these outputs.
+See [Analysis examples](../notebooks/Analysis_examples.ipynb) for how to work with these outputs.
 
 ### `sleap-inspect`
 
