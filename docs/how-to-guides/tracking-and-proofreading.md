@@ -49,7 +49,7 @@ and on the seekbar:
 
 If there are a large number of instances you're tracking, then a palette with a large number of distinct colors can make it easier to see each distinct instance. The "alphabet" palette has 26 visually distinctive colors.
 
-Sometimes the background in the video will make it hard to see certain colors in a palette. It's possible to edit palettes, as explained in the [`View`](../../learnings/gui/#view) menu section of the [`GUI`](../../learnings/gui).
+Sometimes the background in the video will make it hard to see certain colors in a palette. It's possible to edit palettes, as explained in the [`View`](../learnings/gui.md/#view) menu section of the [`GUI`](../learnings/gui.md).
 
 ## Proofreading
 
@@ -64,7 +64,7 @@ Here's a strategy that works well for fixing **lost** identities:
 3. Use the keyboard shortcut for the "**Next Track Spawn Frame**" command in the **"Go"** menu to jump to frames where a new track identity is spawned.
 4. Select the instance with the new track identity—either use the mouse, type a number key to jump to that instance, or use the **Select Next** key to cycle through instances.
 5. The color of the track trail may help you determine which track identity should have been used.
-6. Hold down the **Show tracks legend** key ([`selection_keys`](../../learnings/gui/#selection-keys)) with an instance already selected and you'll see a color-coded list of numbered tracks, like so:
+6. Hold down the **Show tracks legend** key ([`selection_keys`](../learnings/gui.md/#selection-keys)) with an instance already selected and you'll see a color-coded list of numbered tracks, like so:
 
 ![track-fixing-list](../assets/images/track-fixing-list.jpg)
 

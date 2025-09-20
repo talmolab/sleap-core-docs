@@ -16,7 +16,7 @@ Yes! You can install SLEAP as you normally would using the `conda` or `pip`-base
 
 ### What if I already have CUDA set up on my system?
 
-You can use the system CUDA installation by simply using the [pip package](../installation/#installation-methods) installation method.
+You can use the system CUDA installation by simply using the [pip package](installation.md/#installation-methods) installation method.
 
 Note that you will need to use a version compatible with **TensorFlow 2.6+** (**CUDA Toolkit v11.3** and **cuDNN v8.2**).
 
@@ -59,11 +59,11 @@ This is most likely an issue with the video compression format. [`See above`](#d
 
 ### How do I get predictions out?
 
-See [export-analysis](../learnings/export-analysis) and [sleap-convert](../reference/command-line-interfaces/#sleap-convert).
+See [export-analysis](learnings/export-analysis.md) and [sleap-convert](reference/command-line-interfaces.md/#sleap-convert).
 
 ### What do I do with the output of SLEAP?
 
-Check out the [Analysis examples](../notebooks/Analysis_examples) notebooks.
+Check out the [Analysis examples](notebooks/Analysis_examples) notebooks.
 
 ## Getting more help
 

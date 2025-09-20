@@ -27,7 +27,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv sync --extra dev --extra nn-cpu --extra docs
+          uv sync --extra dev --extra nn-cpu --extra docs --extra jupyter
 
       - name: Print environment info
         run: |

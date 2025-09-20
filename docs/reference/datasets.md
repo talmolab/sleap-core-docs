@@ -2,7 +2,7 @@
 
 Here we provide a number of sample and benchmark datasets that can be used for experimenting with or extending SLEAP.
 
-These datasets are all saved as `.pkg.slp` files, which are self-contained SLEAP labels together with embedded image data. See [Data structures](../../notebooks/Data_structures) for examples on how to work with SLEAP files.
+These datasets are all saved as `.pkg.slp` files, which are self-contained SLEAP labels together with embedded image data. See [Data structures](../notebooks/Data_structures) for examples on how to work with SLEAP files.
 
 For the full set of labeled datasets and trained models reported in the SLEAP paper ([Pereira et al., Nature Methods, 2022](https://www.nature.com/articles/s41592-022-01426-1)), please see the [OSF repository](https://osf.io/36har/).
 
