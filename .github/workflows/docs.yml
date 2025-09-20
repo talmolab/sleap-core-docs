@@ -6,10 +6,6 @@ on:
       - main
       - develop
       - divya/change-to-mkdocs
-    paths:
-      - "docs/**"
-      - "mkdocs.yml"
-      - ".github/workflows/docs.yml"
   workflow_dispatch:
 
 jobs:
