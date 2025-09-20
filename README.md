@@ -141,5 +141,5 @@ SLEAP is released under a [Clear BSD License](https://raw.githubusercontent.com/
 * [Tutorial](https://docs.sleap.ai/tutorial/overview/)
 * [Guides](https://docs.sleap.ai/how-to-guides/guides-overview/)
 * [Notebooks](https://docs.sleap.ai/notebooks/notebooks-overview/)
-* [Developer API](https://sleap.ai/api.html)
+* [Developer API](https://docs.sleap.ai/api)
 * [Help](https://docs.sleap.ai/help)
