@@ -1843,24 +1843,24 @@
 <h1 id="notebooks">Notebooks<a class="headerlink" href="#notebooks" title="Permanent link">&para;</a></h1>
 <p>Here are Jupyter notebooks you can run to try SLEAP on <a href="https://colab.research.google.com">Google Colaboratory</a> (Colab). Colab is great for running training and inference on your data if you don't have access to a local machine with a supported GPU.</p>
 <h2 id="basic-usage">Basic usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
-<h3 id="training-and-inference-on-an-example-dataset"><a href="../Training_and_inference_on_an_example_dataset">Training and inference on an example dataset</a><a class="headerlink" href="#training-and-inference-on-an-example-dataset" title="Permanent link">&para;</a></h3>
+<h3 id="training-and-inference-on-an-example-dataset"><a href="Training_and_inference_on_an_example_dataset">Training and inference on an example dataset</a><a class="headerlink" href="#training-and-inference-on-an-example-dataset" title="Permanent link">&para;</a></h3>
 <p>In this notebook, we'll show you how to install SLEAP on Colab, download a dataset from the <a href="https://github.com/talmolab/sleap-datasets">repository of sample datasets</a>, run training and inference on that dataset using the SLEAP command-line interface, and then download the predictions.<br />
 This notebook can be a good place to start since you'll be able to see how training and inference work without any of your own data and without having to edit anything in the notebook to get it to run correctly.</p>
-<h3 id="training-and-inference-on-your-own-data-using-google-drive"><a href="../Training_and_inference_using_Google_Drive">Training and inference on your own data using Google Drive</a><a class="headerlink" href="#training-and-inference-on-your-own-data-using-google-drive" title="Permanent link">&para;</a></h3>
+<h3 id="training-and-inference-on-your-own-data-using-google-drive"><a href="Training_and_inference_using_Google_Drive">Training and inference on your own data using Google Drive</a><a class="headerlink" href="#training-and-inference-on-your-own-data-using-google-drive" title="Permanent link">&para;</a></h3>
 <p>Once you're ready to run training and inference on your own SLEAP dataset, this notebook walks you through the process of using <a href="https://www.google.com/drive">Google Drive</a> to copy data to and from Colab (as well as running training and inference on your dataset).</p>
-<h3 id="analysis-examples"><a href="../Analysis_examples">Analysis examples</a><a class="headerlink" href="#analysis-examples" title="Permanent link">&para;</a></h3>
+<h3 id="analysis-examples"><a href="Analysis_examples">Analysis examples</a><a class="headerlink" href="#analysis-examples" title="Permanent link">&para;</a></h3>
 <p>Once you've used SLEAP to successfully estimate animal pose and track animals in your videos, you'll want to use the resulting data. This notebook walks you through some analysis examples which illustrate how to read and interpret the data in the analysis HDF5 files that you can export from SLEAP.</p>
 <h2 id="advanced-sleaping">Advanced SLEAPing<a class="headerlink" href="#advanced-sleaping" title="Permanent link">&para;</a></h2>
-<h3 id="data-structures"><a href="../Data_structures">Data structures</a><a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h3>
+<h3 id="data-structures"><a href="Data_structures">Data structures</a><a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h3>
 <p>SLEAP uses a set of core data structures that contain labels, predictions, and other metadata. In this notebook, we show you how to use them to develop custom analysis scripts and applications.<br />
 We demonstrate how to work with these data structures by interactively generating predictions from a trained model.</p>
-<h3 id="post-inference-tracking"><a href="../Post_inference_tracking">Post-inference tracking</a><a class="headerlink" href="#post-inference-tracking" title="Permanent link">&para;</a></h3>
+<h3 id="post-inference-tracking"><a href="Post_inference_tracking">Post-inference tracking</a><a class="headerlink" href="#post-inference-tracking" title="Permanent link">&para;</a></h3>
 <p>In this notebook, we show how to use the tracking functionality within SLEAP to re-track existing predictions. This is useful when experimenting with new ID tracking parameters without having to re-run pose estimation.</p>
-<h3 id="interactive-and-resumable-training"><a href="../Interactive_and_resumable_training">Interactive and resumable training</a><a class="headerlink" href="#interactive-and-resumable-training" title="Permanent link">&para;</a></h3>
+<h3 id="interactive-and-resumable-training"><a href="Interactive_and_resumable_training">Interactive and resumable training</a><a class="headerlink" href="#interactive-and-resumable-training" title="Permanent link">&para;</a></h3>
 <p>Training in SLEAP can be done via the GUI, CLI, or interactively in Python. Here we show how to use SLEAP's Python API to enable customizable training workflows, including resumable training for initialization from existing models.</p>
-<h3 id="interactive-and-realtime-inference"><a href="../Interactive_and_realtime_inference">Interactive and realtime inference</a><a class="headerlink" href="#interactive-and-realtime-inference" title="Permanent link">&para;</a></h3>
+<h3 id="interactive-and-realtime-inference"><a href="Interactive_and_realtime_inference">Interactive and realtime inference</a><a class="headerlink" href="#interactive-and-realtime-inference" title="Permanent link">&para;</a></h3>
 <p>Once you have trained models, you can run inference via the GUI, CLI, or interactively in Python. Here we show how to load trained models, use them to predict on new frames, and implement a basic version of a realtime SLEAP tracker for closed-loop applications.</p>
-<h3 id="model-evaluation"><a href="../Model_evaluation">Model evaluation</a><a class="headerlink" href="#model-evaluation" title="Permanent link">&para;</a></h3>
+<h3 id="model-evaluation"><a href="Model_evaluation">Model evaluation</a><a class="headerlink" href="#model-evaluation" title="Permanent link">&para;</a></h3>
 <p>After you've trained several models, you may want to compute some metrics for benchmarking and comparisons. This notebook walks through some of the types of metrics that SLEAP can compute for you, as well as how to recompute them.</p>
 
 

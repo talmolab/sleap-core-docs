@@ -1597,12 +1597,12 @@
 <h1 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h1>
 <p><img alt="Workflow" src="../assets/images/workflow.png" /></p>
 <p>In a nutshell, SLEAP allows you to train and use deep learning-based models that can automatically track the movements of any body parts of any number or type of animal from recorded videos. This enables precise and quantitative analysis of behavioral data.</p>
-<p>Below is a high-level overview of a typical end-to-end workflow in SLEAP. You can also step through this workflow yourself in the <a href="../tutorial/overview">Tutorial</a> section.</p>
+<p>Below is a high-level overview of a typical end-to-end workflow in SLEAP. You can also step through this workflow yourself in the <a href="../tutorial/overview/">Tutorial</a> section.</p>
 <ol>
 <li>
 <p><strong>Creating a new project and importing video file(s)</strong>
     You may import all or part of the video clips from your experiment footage. These video files will be used to build a ground-truth dataset and train the machine learning model that estimates animal pose.</p>
-<p>See <a href="../tutorial/importing-data">Importing new data</a>.</p>
+<p>See <a href="../tutorial/importing-data/">Importing new data</a>.</p>
 </li>
 <li>
 <p><strong>Defining animal skeleton(s)</strong>
@@ -1622,7 +1622,7 @@
 <li>
 <p><strong>Training a machine learning model using the labeled frames</strong>
     After you labeled a few frames you can train a machine learning model. SLEAP supports several approaches for training, each with its own set of parameters that can be configured.</p>
-<p>See <a href="../tutorial/training-a-model">Initial Training</a>.</p>
+<p>See <a href="../tutorial/training-a-model/">Initial Training</a>.</p>
 </li>
 <li>
 <p><strong>Applying the trained model to predict animal poses in unlabeled frames (inference)</strong>
@@ -1636,22 +1636,22 @@
 <li>
 <p><strong>[Optional] Importing additional videos from your experiment, and applying the trained model to predict animal poses</strong>
     Once the machine learning model performance is satisfactory (w.r.t. pose estimation quality), the next step is to predict the animal poses across all video frames from your experiment. This step is only needed if not all video(s) were imported in the first step.</p>
-<p>See <a href="../how-to-guides/importing-predictions-for-labeling">Import predictions for labeling</a>.</p>
+<p>See <a href="../how-to-guides/importing-predictions-for-labeling/">Import predictions for labeling</a>.</p>
 </li>
 <li>
 <p><strong>Applying the tracking algorithm to track animal instances across frames</strong>
     Tracking associates animal instances in consequent frames. Here too SLEAP provides several algorithms for tracking with their own configuration parameters.</p>
-<p>See <a href="../tutorial/tracking-new-data">Track new data</a>.</p>
+<p>See <a href="../tutorial/tracking-new-data/">Track new data</a>.</p>
 </li>
 <li>
 <p><strong>Proofreading and potentially correcting instance tracks</strong>
      This is a manual step where you can use SLEAP GUI to verify that the tracking is accurate, and make corrections as needed.</p>
-<p>See <a href="../tutorial/proofreading">Track Proofreading</a> for types of errors that may occur and how to correct them.</p>
+<p>See <a href="../tutorial/proofreading/">Track Proofreading</a> for types of errors that may occur and how to correct them.</p>
 </li>
 <li>
 <p><strong>Exporting data for analysis</strong>
      Finally you can export the generated data (including animal instance occupancy matrices and tracks) for further analysis (e.g. in Matlab or Python).</p>
-<p>See <a href="../tutorial/exporting-the-results">Export Analysis</a> and example <a href="../notebooks/Analysis_examples">Notebooks</a> for details.</p>
+<p>See <a href="../tutorial/exporting-the-results/">Export Analysis</a> and example <a href="notebooks/Analysis_examples">Notebooks</a> for details.</p>
 </li>
 </ol>
 
