@@ -3,6 +3,8 @@ name: Deploy MkDocs to GitHub Pages
 on:
   push:
     branches:
+      - main
+      - develop
       - divya/change-to-mkdocs
   workflow_dispatch:  # Allows manual triggering from GitHub UI
 
