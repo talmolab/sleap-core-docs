@@ -82,7 +82,7 @@ optional arguments:
 
 ### `sleap-export`
 
-`sleap-export` is a command-line interface for exporting trained models as a TensorFlow graph for use in other applications. See [this guide](https://www.tensorflow.org/guide/saved_model) for details on how TensorFlow saves models and the [`sleap.nn.inference.InferenceModel.export_model`](https://sleap.ai/api/sleap.nn.inference.html#sleap.nn.inference.InferenceModel.export_model) documentation.
+`sleap-export` is a command-line interface for exporting trained models as a TensorFlow graph for use in other applications. See [this guide](https://www.tensorflow.org/guide/saved_model) for details on how TensorFlow saves models and the [`sleap.nn.inference.InferenceModel.export_model`](https://docs.sleap.ai/api/sleap.nn.inference.html#sleap.nn.inference.InferenceModel.export_model) documentation.
 
 ```none
 usage: sleap-export [-h] [-m MODELS] [-e [EXPORT_PATH]]
