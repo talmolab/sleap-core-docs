@@ -1,0 +1,20 @@
+---
+hide:
+  - toc
+---
+
+# Tutorial
+
+The tutorial will walk you through the entire SLEAP workflow. You can follow along this tutorial and try running SLEAP on one of our [sample datasets](https://docs.sleap.ai/dev/reference/datasets/). Then you will be ready to start using SLEAP on your own data.
+
+## Table of Contents
+
+- [Setup](setup.md)
+- [Importing Data](importing-data.md)
+- [Initial Labeling](initial-labeling.md)
+- [Training a Model](training-a-model.md)
+- [Correcting Predictions](correcting-predictions.md)
+- [Tracking New Data](tracking-new-data.md)
+- [Proofreading](proofreading.md)
+- [Exporting the Results](exporting-the-results.md)
+- [I'm Done SLEAPing, Now What?](i-m-done-sleaping-now-what.md)
