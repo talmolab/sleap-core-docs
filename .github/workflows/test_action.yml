@@ -1,0 +1,12 @@
+name: Smoke Test
+on:
+  workflow_dispatch:
+  push:
+    branches: [ divya/test-actions ]
+
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "event=${{ github.event_name }} ref=${{ github.ref }}"
