@@ -1700,8 +1700,11 @@ class ExportLabelsSubset(ExportFullPackage):
         )
 
         # Save the labels subset to a new file.
-        params["labels"] = labels_subset
-        super().do_action(context=context, params=params)
+        if params.get("as_package", False):
+            params["labels"] = labels_subset
+            super().do_action(context=context, params=params)
+        else:
+            save_file(labels=labels_subset, filename=params["filename"])
 
         # Now let's open the new file.
         if params.get("open_new_project", False):
