@@ -1567,7 +1567,7 @@ def export_dataset_gui(
         labels,
         filename,
         format="slp",
-        embed=embed_option,
+        embed=embed_option if as_package else False,
         # progress_callback=update_progress if verbose else None, #TODO
     )
 
@@ -1700,11 +1700,8 @@ class ExportLabelsSubset(ExportFullPackage):
         )
 
         # Save the labels subset to a new file.
-        if params.get("as_package", False):
-            params["labels"] = labels_subset
-            super().do_action(context=context, params=params)
-        else:
-            save_file(labels=labels_subset, filename=params["filename"])
+        params["labels"] = labels_subset
+        super().do_action(context=context, params=params)
 
         # Now let's open the new file.
         if params.get("open_new_project", False):
