@@ -29,9 +29,13 @@ optional arguments:
 
 `sleap-train` is the command-line interface for training. Use this for training on a remote machine/cluster/colab notebook instead of through the GUI.
 
+!!! warning
+    The `--tensorboard` option is not currently supported. For experiment tracking and logging, consider using alternative options such as [Weights & Biases (WandB)](https://wandb.ai/) which are supported in the PyTorch backend ([nn.sleap.ai](https://nn.sleap.ai)). See the documentation for details on enabling these logging options.
+
+
 ```none
 usage: sleap-train [-h] [--video-paths VIDEO_PATHS] [--val_labels VAL_LABELS]
-                   [--test_labels TEST_LABELS] [--tensorboard] [--save_viz] 
+                   [--test_labels TEST_LABELS] [--save_viz] 
                    [--keep_viz] [--zmq] [--run_name RUN_NAME] [--prefix PREFIX]
                    [--suffix SUFFIX]
                    training_job_path [labels_path]
@@ -58,8 +62,6 @@ optional arguments:
   --base_checkpoint BASE_CHECKPOINT
                         Path to base checkpoint (directory containing best_model.h5)
                         to resume training from.
-  --tensorboard         Enable TensorBoard logging to the run path if not
-                        already specified in the training job config.
   --save_viz            Enable saving of prediction visualizations to the run
                         folder if not already specified in the training job
                         config.
@@ -80,28 +82,10 @@ optional arguments:
 
 ```
 
-### `sleap-export`
+!!! warning
+    The `sleap-export` command is **not currently supported** in the latest versions of SLEAP, as we have transitioned to a PyTorch backend (`sleap-nn`). For more information about the new backend, see the [sleap-nn documentation](https://nn.sleap.ai).
 
-`sleap-export` is a command-line interface for exporting trained models as a TensorFlow graph for use in other applications. See [this guide](https://www.tensorflow.org/guide/saved_model) for details on how TensorFlow saves models and the [`sleap.nn.inference.InferenceModel.export_model`](https://docs.sleap.ai/api/sleap.nn.inference.html#sleap.nn.inference.InferenceModel.export_model) documentation.
-
-```none
-usage: sleap-export [-h] [-m MODELS] [-e [EXPORT_PATH]]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -m MODELS, --model MODELS
-                        Path to trained model directory (with training_config.json). Multiple
-                        models can be specified, each preceded by --model.
-  -e [EXPORT_PATH], --export_path [EXPORT_PATH]
-                        Path to output directory where the frozen model will be exported to.
-                        Defaults to a folder named 'exported_model'.
-  -r, --ragged RAGGED
-                        Keep tensors ragged if present. If omitted, convert
-                        ragged tensors into regular tensors with NaN padding.
-  -n, --max_instances MAX_INSTANCES
-                        Limit maximum number of instances in multi-instance models.
-                        Not available for ID models. Defaults to None.
-```
+    `sleap-export` is still available in SLEAP versions **1.4.1 and earlier**. Please refer to the [legacy SLEAP documentation](http://legacy.sleap.ai/guides/cli.html#sleap-export) for details on using this command in older versions.
 
 ## Inference and Tracking
 
@@ -112,21 +96,17 @@ optional arguments:
 If you specify how many identities there should be in a frame (i.e., the number of animals) with the `--tracking.clean_instance_count` argument, then we will use a heuristic method to connect "breaks" in the track identities where we lose one identity and spawn another. This can be used as part of the inference pipeline (if models are specified), as part of the tracking-only pipeline (if the predictions file is specified and no models are specified), or by itself on predictions with pre-tracked identities (if you specify `--tracking.tracker none`). See [`Tracking and proofreading`](../how-to-guides/tracking-and-proofreading.md) for more details on tracking.
 
 ```none
-usage: sleap-track [-h] [-m MODELS] [--frames FRAMES] [--only-labeled-frames] [--only-suggested-frames] [-o OUTPUT] [--no-empty-frames]
-                   [--verbosity {none,rich,json}] [--video.dataset VIDEO.DATASET] [--video.input_format VIDEO.INPUT_FORMAT]
+usage: sleap-track [-h] [-m MODELS] [--frames FRAMES] [--only-labeled-frames] [--only-suggested-frames] [-o OUTPUT]
+                   [--video.dataset VIDEO.DATASET] [--video.input_format VIDEO.INPUT_FORMAT]
                    [--video.index VIDEO.INDEX] [--cpu | --first-gpu | --last-gpu | --gpu GPU] [--max_edge_length_ratio MAX_EDGE_LENGTH_RATIO]
                    [--dist_penalty_weight DIST_PENALTY_WEIGHT] [--batch_size BATCH_SIZE] [--open-in-gui] [--peak_threshold PEAK_THRESHOLD]
                    [-n MAX_INSTANCES] [--tracking.tracker TRACKING.TRACKER] [--tracking.max_tracking TRACKING.MAX_TRACKING]
-                   [--tracking.max_tracks TRACKING.MAX_TRACKS] [--tracking.target_instance_count TRACKING.TARGET_INSTANCE_COUNT]
-                   [--tracking.pre_cull_to_target TRACKING.PRE_CULL_TO_TARGET] [--tracking.pre_cull_iou_threshold TRACKING.PRE_CULL_IOU_THRESHOLD]
+                   [--tracking.max_tracks TRACKING.MAX_TRACKS]
                    [--tracking.post_connect_single_breaks TRACKING.POST_CONNECT_SINGLE_BREAKS]
-                   [--tracking.clean_instance_count TRACKING.CLEAN_INSTANCE_COUNT] [--tracking.clean_iou_threshold TRACKING.CLEAN_IOU_THRESHOLD]
                    [--tracking.similarity TRACKING.SIMILARITY] [--tracking.match TRACKING.MATCH] [--tracking.robust TRACKING.ROBUST]
                    [--tracking.track_window TRACKING.TRACK_WINDOW] [--tracking.min_new_track_points TRACKING.MIN_NEW_TRACK_POINTS]
                    [--tracking.min_match_points TRACKING.MIN_MATCH_POINTS] [--tracking.img_scale TRACKING.IMG_SCALE]
                    [--tracking.of_window_size TRACKING.OF_WINDOW_SIZE] [--tracking.of_max_levels TRACKING.OF_MAX_LEVELS]
-                   [--tracking.save_shifted_instances TRACKING.SAVE_SHIFTED_INSTANCES] [--tracking.kf_node_indices TRACKING.KF_NODE_INDICES]
-                   [--tracking.kf_init_frame_count TRACKING.KF_INIT_FRAME_COUNT]
                    [data_path]
 
 positional arguments:
@@ -149,10 +129,6 @@ optional arguments:
                         initialization during labeling.
   -o OUTPUT, --output OUTPUT
                         The output filename or directory path to use for the predicted data. If not provided, defaults to '[data_path].predictions.slp'.
-  --no-empty-frames     Clear any empty frames that did not have any detected instances before saving to output.
-  --verbosity {none,rich,json}
-                        Verbosity of inference progress reporting. 'none' does not output anything during inference, 'rich' displays an updating
-                        progress bar, and 'json' outputs the progress as a JSON encoded response to the console.
   --video.dataset VIDEO.DATASET
                         The dataset for HDF5 videos.
   --video.input_format VIDEO.INPUT_FORMAT
@@ -185,19 +161,9 @@ optional arguments:
                         Maximum number of tracks to be tracked by the tracker. (default: None)
   --tracking.target_instance_count TRACKING.TARGET_INSTANCE_COUNT
                         Target number of instances to track per frame. (default: 0)
-  --tracking.pre_cull_to_target TRACKING.PRE_CULL_TO_TARGET
-                        If non-zero and target_instance_count is also non-zero, then cull instances over target count per frame *before* tracking.
-                        (default: 0)
-  --tracking.pre_cull_iou_threshold TRACKING.PRE_CULL_IOU_THRESHOLD
-                        If non-zero and pre_cull_to_target also set, then use IOU threshold to remove overlapping instances over count *before*
-                        tracking. (default: 0)
   --tracking.post_connect_single_breaks TRACKING.POST_CONNECT_SINGLE_BREAKS
                         If non-zero and target_instance_count is also non-zero, then connect track breaks when exactly one track is lost and exactly
                         one track is spawned in frame. (default: 0)
-  --tracking.clean_instance_count TRACKING.CLEAN_INSTANCE_COUNT
-                        Target number of instances to clean *after* tracking. (default: 0)
-  --tracking.clean_iou_threshold TRACKING.CLEAN_IOU_THRESHOLD
-                        IOU to use when culling instances *after* tracking. (default: 0)
   --tracking.similarity TRACKING.SIMILARITY
                         Options: instance, normalized_instance, object_keypoint, centroid, iou (default: instance)
   --tracking.match TRACKING.MATCH
@@ -217,12 +183,6 @@ optional arguments:
                         For optical-flow: Optical flow window size to consider at each pyramid (default: 21)
   --tracking.of_max_levels TRACKING.OF_MAX_LEVELS
                         For optical-flow: Number of pyramid scale levels to consider (default: 3)
-  --tracking.save_shifted_instances TRACKING.SAVE_SHIFTED_INSTANCES
-                        If non-zero and tracking.tracker is set to flow, save the shifted instances between elapsed frames (default: 0)
-  --tracking.kf_node_indices TRACKING.KF_NODE_INDICES
-                        For Kalman filter: Indices of nodes to track. (default: )
-  --tracking.kf_init_frame_count TRACKING.KF_INIT_FRAME_COUNT
-                        For Kalman filter: Number of frames to track with other tracker. 0 means no Kalman filters will be used. (default: 0) Kalman filters require TRACKING.KF_NODE_INDICES, TRACKING.MAX_TRACKING and TRACKING.MAX_TRACKS or TRACKING.TARGET_INSTANCE_COUNT, TRACKING.TRACKER to be simple or simplemaxtracks, and TRACKING.SIMILARITY to not be normalized_instance.
 ```
 
 #### Examples

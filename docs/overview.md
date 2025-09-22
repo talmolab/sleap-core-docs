@@ -4,6 +4,10 @@
 
 In a nutshell, SLEAP allows you to train and use deep learning-based models that can automatically track the movements of any body parts of any number or type of animal from recorded videos. This enables precise and quantitative analysis of behavioral data.
 
+!!! warning "Documentation for New SLEAP Versions"
+    This documentation is for the **latest version of SLEAP**.  
+    If you are using **SLEAP version 1.4.1 or earlier**, please visit the [legacy documentation](http://legacy.sleap.ai).
+
 Below is a high-level overview of a typical end-to-end workflow in SLEAP. You can also step through this workflow yourself in the [Tutorial](tutorial/overview.md) section.
 
 1. **Creating a new project and importing video file(s)**
