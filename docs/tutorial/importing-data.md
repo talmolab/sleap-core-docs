@@ -95,33 +95,33 @@ The cloned folder/tutorial data will be located on the Desktop under the name **
 
 ## Import videos into SLEAP
 
-1. Open a terminal and activate the SLEAP environment by running the following command:
+1. Open a terminal. Then launch the SLEAP GUI by typing this command followed by <kbd>Enter</kbd> or <kbd>Return</kbd>:
 
     ```bash
-    conda activate sleap
+    uv run sleap-label
     ```
 
-2. Open a terminal. Then launch the SLEAP GUI by typing this command followed by <kbd>Enter</kbd> or <kbd>Return</kbd>:
-
-    ```bash
-    sleap-label
-    ```
+    !!! note "If you installed SLEAP with **pip**"
+        Make sure to first activate the SLEAP conda environment:
+        ```bash
+        conda activate sleap
+        ```
 
     ![](../assets/images/tutorial/open-gui.png)
 
-3. Go to **File** → **Add Videos...** to open the file browser.
+2. Go to **File** → **Add Videos...** to open the file browser.
 
     ![](../assets/images/tutorial/add-videos.png)
 
 
-4. **Open** the mice.mp4 from the git cloned folder **sleap-tutorial-data-main**. For future reference, SLEAP currently supports mp4, avi, and h5 files[^1].
+3. **Open** the mice.mp4 from the git cloned folder **sleap-tutorial-data-main**. For future reference, SLEAP currently supports mp4, avi, and h5 files[^1].
 [^1]: SLEAP currently supports mp4, avi, and h5 files. For mp4 and avi files, you’ll be asked whether to import the video as grayscale. For h5 files, you’ll be asked the dataset and whether the video is stored with channels first or last.
 
 
 
     ![](../assets/images/tutorial/import-mice-mp4.png)
 
-5. The video import interface will appear. Click **Import** to finish adding the videos.
+4. The video import interface will appear. Click **Import** to finish adding the videos.
 
     ![](../assets/images/tutorial/import.png)
 
@@ -152,7 +152,7 @@ The final skeleton setup should look like this:
 ![](../assets/images/tutorial/edges.png)
 
 
-You did it! 
+You did it!
 
 [*Next up:* Initial labeling](initial-labeling.md)
 
