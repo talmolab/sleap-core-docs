@@ -4,21 +4,8 @@
     This documentation is for the **latest version of SLEAP**.  
     If you are using **SLEAP version 1.4.1 or earlier**, please visit the [legacy documentation](http://legacy.sleap.ai).
 
-SLEAP can be installed as a Python package on Windows, Linux, and Mac OS. For quick install using conda, see below:
 
-
-
-=== "Windows and Linux"
-
-    ```bash
-    conda create -y -n sleap -c conda-forge -c nvidia -c sleap/label/dev -c sleap -c anaconda sleap=1.4.1
-    ```
-
-=== "Mac OS"
-
-    ```bash
-    conda create -y -n sleap -c conda-forge -c anaconda -c sleap sleap=1.4.1
-    ```
+SLEAP can be installed via [uv](https://docs.astral.sh/uv/), an ultra-fast Python package and project manager supported on Windows, Linux, and Mac OS. 
 
 For more in-depth installation instructions, see the [installation methods](#installation-methods). The newest version of SLEAP can always be found in the [Releases page](https://github.com/talmolab/sleap/releases).
 
@@ -27,12 +14,20 @@ For more in-depth installation instructions, see the [installation methods](#ins
     
     For detailed GPU setup instructions, see [gpu-support](#gpu-support).
 
-#### How to open a terminal:
+!!! note
+    For labeling purposes, the SLEAP GUI can be installed on its own. However, **sleap-nn** is a neural network backend available for training and inference w/ the SLEAP GUI. 
+    
+    For more details on this backend, see [sleap-nn](https://github.com/talmolab/sleap-nn).
+
+---
+## Installation methods
+
+**How to open a terminal:**
 !!! hint ""
     Installation requires entering commands in a terminal. To open one:
 
     === "Windows"
-        Open the *Start menu* and search for the *Anaconda Prompt* (if using Miniconda) or the *Command Prompt* if not.
+        Open the *Start menu* and search for the *Command Prompt*.
 
         !!! note
             On Windows, our personal preference is to use alternative terminal apps like [Cmder](https://cmder.app) or [Windows Terminal](https://aka.ms/terminal).
@@ -43,7 +38,52 @@ For more in-depth installation instructions, see the [installation methods](#ins
     === "Mac OS"
         Launch a new terminal by pressing <kbd>Cmd</kbd> + <kbd>Space</kbd> and searching for _Terminal_.
 
-## Package Manager
+**Prerequisites:** Python 3.11+ (required for all installation methods)
+
+!!! tip "Choose Your Installation Method"
+    - **[Installation with uv tool install](#installation-with-uv-tool-install)**: Use `uv tool install` to create a virtual environment in the uv tool directory. (Installation needed, preferred)
+    - **[Installation with pip](#installation-with-pip)**: Use `pip` to install from pypi in a conda env. (Recommended to use with a conda env)
+    - **[Installation from source](#development-setup-with-uv)**: Use `uv sync` to install from source. (For developmental purposes)
+
+## Installation with uv tool install
+
+`uv tool install` automatically installs sleap-nn and creates the `sleap-label` tool inside a virtual environement located inside the uv tool directory. This means that using `uvx` to run this tool will use this installed version. Installing via `uv tool install` also has the advantage of not loading dependencies each time, unlike `uvx` installation alone.
+
+!!! warning "First Time Setup"
+    Install [`uv`](https://github.com/astral-sh/uv) first - an ultra-fast Python package manager:
+    ```bash
+    # macOS/Linux
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    
+    # Windows
+    powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+    ```
+
+**Platform-Specific Commands**
+
+=== "Windows/Linux (CUDA 12.8)"
+    ```bash
+    uv tool install "sleap[nn-gpu]"
+    ```
+    !!! note "Other CUDA versions"
+        For other CUDA version installation options, see [sleap-nn installation](https://nn.sleap.ai/dev/installation/#platform-specific-installation) for other supported versions.
+
+=== "macOS/CPU Only"
+    ```bash
+    uv tool install "sleap[nn-cpu]"
+    ```
+
+!!! tip "How uv tool install Works"
+    - **Automatic Installation**: Downloads and installs SLEAP with dependencies
+    - **Isolated Environment**: Each run w/ uvx after installation runs in a clean, separated virtual environment
+    - **No Conflicts**: Won't interfere with your existing Python packages
+    - **Uses recent pkgs**: Uses the latest version from PyPI
+
+---
+
+## Installation with pip
+
+**Package Manager**
 
 SLEAP requires many complex dependencies, so we **strongly** recommend using a package manager such as [Miniforge](https://github.com/conda-forge/miniforge) or [Miniconda](https://docs.anaconda.com/free/miniconda/) to install SLEAP in its own isolated environment.
 
@@ -128,65 +168,11 @@ This is a minimal installer for conda that includes the `conda` package manager 
 See the [Miniconda website](https://docs.anaconda.com/free/miniconda/) for up-to-date installation instructions if the above instructions don't work for your system.
 
 
-## Installation methods
+**Pip installation**
 
-SLEAP can be installed three different ways: via `conda package`, `conda from source`, or `pip package`. Select one of the methods below to install SLEAP. We recommend `conda package`.
+SLEAP can be installed with pip via `pip package`. See below.
 
 !!! note ""
-
-    === "conda package"
-        **This is the recommended installation method**.
-        
-        === "Windows and Linux"
-            ```bash
-            conda create -y -n sleap -c conda-forge -c nvidia -c sleap/label/dev -c sleap -c anaconda sleap=1.4.1
-            ```
-            !!! note
-                - This comes with CUDA to enable GPU support. All you need is to have an NVIDIA GPU and [updated drivers](https://nvidia.com/drivers).
-                - If you already have CUDA installed on your system, this will not conflict with it.
-                - This will also work in CPU mode if you don't have a GPU on your machine.
-
-        === "Mac OS"
-            ```bash
-            conda create -y -n sleap -c conda-forge -c anaconda -c sleap sleap=1.4.1
-            ```
-            !!! note
-                This will also work in CPU mode if you don't have a GPU on your machine.
-
-    === "conda from source"
-        This is the **recommended method for development**.
-        
-        1. First, ensure git is installed:
-            ```bash
-            git --version
-            ```
-            If `git` is not recognized, then [install git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
-        
-        2. Then, clone the repository:
-            ```bash
-            git clone https://github.com/talmolab/sleap && cd sleap
-            ```
-        
-        3. Finally, install SLEAP from the environment file:
-        
-            === "Windows and Linux"
-                === "NVIDIA GPU"
-                    ```bash
-                    conda env create -f environment.yml -n sleap
-                    ```
-                === "CPU or other GPU"
-                    ```bash
-                    conda env create -f environment_no_cuda.yml -n sleap
-                    ```
-
-            === "Mac OS"
-                ```bash
-                conda env create -f environment_mac.yml -n sleap
-                ```
-
-        !!! note
-            - This installs SLEAP in development mode, which means that edits to the source code will be applied the next time you run SLEAP.
-            - Change the `-n sleap` in the command to create an environment with a different name (e.g., `-n sleap_develop`).
 
     === "pip package"
         This is the **recommended method for Google Colab only**.
@@ -196,63 +182,100 @@ SLEAP can be installed three different ways: via `conda package`, `conda from so
 
             We strongly recommend that you **only use this method if you know what you're doing**!
 
-        === "Windows and Linux"
+        !!! note
+            - Requires Python 3.11+
+
+        Although you do not need Miniconda installed to perform a `pip install`, we recommend [installing Miniconda](https://docs.anaconda.com/free/miniconda/) to create a new environment where we can isolate the `pip install`. Alternatively, you can use a venv if you have an existing Python 3.11+ installation. If you are working on **Google Colab**, skip to step 3 to perform the `pip install` without using a conda environment.
+
+        1. Otherwise, create a new conda environment where we will `pip install sleap`:
+
+            ```bash
+            conda create --name sleap pip python=3.11
+            ```
+
+        2. Then activate the environment to isolate the `pip install` from other environments on your computer:
+            ```bash
+            conda activate sleap
+            ```
+
+            !!! warning
+                Refrain from installing anything into the `base` environment. Always create a new environment to install new packages.
+
+        3. Finally, we can perform the `pip install`:
+
+            === "NVIDIA GPU (CUDA 12.8)"
+                ```bash
+                pip install sleap[nn-gpu]
+                ```
+
+            === "CPU"
+                ```bash
+                pip install sleap[nn-cpu]
+                ```
+
             !!! note
-                - Requires Python 3.7
-                - To enable GPU support, make sure that you have **CUDA Toolkit v11.3** and **cuDNN v8.2** installed.
+                The pypi distributed package of SLEAP ships with the following extras:
 
-            Although you do not need Miniconda installed to perform a `pip install`, we recommend [installing Miniconda](https://docs.anaconda.com/free/miniconda/) to create a new environment where we can isolate the `pip install`. Alternatively, you can use a venv if you have an existing Python 3.7 installation. If you are working on **Google Colab**, skip to step 3 to perform the `pip install` without using a conda environment.
+                - **pypi**: For installation without an conda environment file. All dependencies come from PyPI.
+                - **jupyter**: This installs all *pypi* and jupyter lab dependencies.
+                - **dev**: This installs all *jupyter* dependencies and developement tools for testing and building docs.
 
-            1. Otherwise, create a new conda environment where we will `pip install sleap`:
+## Development Setup with uv
 
-                === "NVIDIA GPU"
-                    ```bash
-                    conda create --name sleap pip python=3.7.12 cudatoolkit=11.3 cudnn=8.2 -c conda-forge -c nvidia
-                    ```
+For contributing to sleap-nn or development workflows.
 
-                === "CPU or other GPU"
-                    ```bash
-                    conda create --name sleap pip python=3.7.12
-                    ```
+!!! info "uv sync"
+    `uv sync` creates a `.venv` (virtual environment) inside your current working directory. This environment is only active within that directory and can't be directly accessed from outside. To use all installed packages, you must run commands with `uv run` (e.g., `uv run sleap-label ...` or `uv run pytest ...`).
 
+**1. Clone the Repository**
 
-            2. Then activate the environment to isolate the `pip install` from other environments on your computer:
-                ```bash
-                conda activate sleap
-                ```
+```bash
+git clone https://github.com/talmolab/sleap.git
+cd sleap
+```
 
-                !!! warning
-                    Refrain from installing anything into the `base` environment. Always create a new environment to install new packages.
+**2. Install uv (skip if already installed)**
 
-            3. Finally, we can perform the `pip install`:
-                ```bash
-                pip install sleap[pypi]==1.4.1
-                ```
+=== "macOS/Linux"
+    ```bash
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    ```
 
-                !!! note
-                    The pypi distributed package of SLEAP ships with the following extras:
+=== "Windows"
+    ```bash
+    powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+    ```
 
-                    - **pypi**: For installation without an conda environment file. All dependencies come from PyPI.
-                    - **jupyter**: This installs all *pypi* and jupyter lab dependencies.
-                    - **dev**: This installs all *jupyter* dependencies and developement tools for testing and building docs.
-                    - **conda_jupyter**: For installation using a conda environment file included in the source code. Most dependencies are listed as conda packages in the environment file and only a few come from PyPI to allow jupyter lab support.
-                    - **conda_dev**: For installation using [a conda environment](https://github.com/search?q=repo%3Atalmolab%2Fsleap+path%3Aenvironment*.yml&type=code) with a few PyPI dependencies for development tools.
+**3. Install Dependencies**
+    ```bash
+    uv sync --all-extras
+    ```
 
-        === "Mac OS"
-            Not supported.
+**4. Verify Development Setup**
 
+```bash
+# Run tests
+uv run pytest tests
+
+# Check code formatting
+uv run ruff check sleap tests
+
+# Run CLI command
+uv run sleap-label ...
+```
+
+---
 
 
 ## Testing that things are working
 
 If you installed using `conda`, first activate the `sleap` environment by opening a terminal and typing:
 
-
 ```
 conda activate sleap
 ```
-!!! hint
-    === "Not sure what `conda` environments you already installed? You can get a list of the environments on your system with:"
+!!! hint "Not sure what `conda` environments you already installed?"
+    You can get a list of the environments on your system with:
     ```
     conda env list
     ```
@@ -278,20 +301,19 @@ python -c "import sleap; sleap.versions()"
 <small>Output:</small>
 
 ```
-(sleap_develop) λ python -c "import sleap; sleap.versions()"
-SLEAP: 1.2.0
-TensorFlow: 2.7.1
-Numpy: 1.21.5
-Python: 3.7.11
-OS: Windows-10-10.0.19041-SP0
+(sleap) λ python -c "import sleap; sleap.versions()"
+SLEAP: 1.5.0
+Numpy: 2.3.2
+Python: 3.12.1
+OS: macOS-14.4.1-arm64-arm-64bit
 ```
 
 
 ### GPU support
 
-Assuming you installed using either of the `conda`-based methods on Windows or Linux, SLEAP should automatically have GPU support enabled.
+Assuming you installed using either `uv` or the `pip`-based methods, SLEAP should automatically have GPU support enabled.
 
-To check, verify that SLEAP can detect the GPUs on your system:
+<!-- To check, verify that SLEAP can detect the GPUs on your system:
 
 ```bash
 python -c "import sleap; sleap.system_summary()"
@@ -308,20 +330,26 @@ python -c "import sleap; sleap.system_summary()"
       Device: /physical_device:GPU:1
              Available: True
             Initalized: False
-         Memory growth: None
+         Memory growth: None -->
 
-SLEAP uses TensorFlow for GPU acceleration. To directly check if TensorFlow is detecting your GPUs:
+SLEAP uses PyTorch for GPU acceleration. To directly check if PyTorch is detecting your GPUs:
 
 ```bash
-python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
+python -c "import torch; print(torch.cuda.is_available())"
 ```
 
 <small>**Output:**</small>
 
-    (sleap_develop) λ python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
-    [PhysicalDevice(name='/physical_device:GPU:0', device_type='GPU'), PhysicalDevice(name='/physical_device:GPU:1', device_type='GPU')]
+    (sleap) λ python -c "import torch; print(torch.cuda.is_available())"
+    False
 
-!!! note
+    # Test run on Apple Silicon architecture
+
+!!! info "macOS MPS Support"
+    Even with `[nn-cpu]` when installing SLEAP, macOS automatically enables MPS (Metal Performance Shaders) for Apple Silicon acceleration via [sleap-nn backend](https://nn.sleap.ai/dev/installation/#platform-specific-installation).
+
+
+<!-- !!! note
     - GPU support requires an NVIDIA GPU.
     - If you haven't yet (or in a while), update to the [latest NVIDIA drivers for your GPU](https://nvidia.com/drivers).
     - We use the official conda packages for [cudatoolkit](https://anaconda.org/anaconda/cudatoolkit) and [cudnn](https://anaconda.org/anaconda/cudnn), so no external installations are required. If you already have those installed on your system, they should not interfere with the ones in the SLEAP environment.
@@ -334,9 +362,9 @@ python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU')
     ```bash
     pip install tensorflow==2.6.3
     ```
-    or follow the note below.
+    or follow the note below. -->
 
-!!! note
+<!-- !!! note
     If you are on Linux, have a NVIDIA GPU, but cannot detect your GPU:
 
     ```bash
@@ -367,25 +395,36 @@ python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU')
     echo 'export LD_LIBRARY_PATH=$SLEAP_OLD_LD_LIBRARY_PATH' >> $CONDA_PREFIX/etc/conda/deactivate.d/sleap_deactivate.sh
     ```
 
-    These commands only need to be run once and will subsequently run automatically upon [de]activating your `sleap` environment.
+    These commands only need to be run once and will subsequently run automatically upon [de]activating your `sleap` environment. -->
 
 ## Upgrading and uninstalling
 
 We **strongly recommend** installing SLEAP in a fresh environment when updating. This is because dependency versions might change, and depending on the state of your previous environment, directly updating might break compatibility with some of them.
 
-To uninstall an existing environment named `sleap`:
+To uninstall an existing `uv` venv or `conda` environment named `sleap`:
 
-```bash
-conda env remove -n sleap
-```
-
-!!! hint
-    Not sure what `conda` environments you already installed? You can get a list of the environments on your system with:
+=== "uv venv"
     ```bash
-    conda env list
+    # Installed with uv
+    rm -rf path/to/venv
+
+    # Alternatively
+    uv deactivate
+    uv remove
     ```
 
-Once the environment has been removed, you are free to install SLEAP using any of the installation methods above into an environment of the same name.
+=== "conda environment"
+    ```bash
+    # Installed with pip
+    conda env remove -n sleap
+    ```
+    !!! hint "Not sure what `conda` environments you already installed?"
+        You can get a list of the environments on your system with:
+        ```
+        conda env list
+        ```
+
+Once the environment has been removed, you are free to install SLEAP using any of the installation methods above into a venv or conda environment of the same name.
 
 ## Getting help
 
@@ -397,10 +436,20 @@ If you get any errors or the GUI fails to launch, try running the diagnostics to
 sleap-diagnostic
 ```
 
-If you were not able to get SLEAP installed, activate the conda environment it is in and generate a list of the package versions installed:
+!!! hint "If you were not able to get SLEAP installed:"
 
-```bash
-conda list
-```
+    === "Installed w/ uv:"
+        Run the following command on the venv created by `uv tool install`:
+
+        ```bash
+        uv pip list 
+        ```
+
+    === "Installed w/ pip:"
+        Activate the conda environment it is in and generate a list of the package versions installed:
+
+        ```bash
+        conda list
+        ```
 
 Then, [open a new Issue](https://github.com/talmolab/sleap/issues) providing the versions from either command above, as well as any errors you saw in the console during the installation. Or [start a discussion](https://github.com/talmolab/sleap/discussions) to get help from the community.
