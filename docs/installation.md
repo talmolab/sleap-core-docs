@@ -175,13 +175,8 @@ SLEAP can be installed with pip via `pip package`. See below.
 !!! note ""
 
     === "pip package"
-        This is the **recommended method for Google Colab only**.
+        This is the **recommended method for Google Colab**.
         
-        !!! warning
-            This will uninstall existing libraries and potentially install conflicting ones.
-
-            We strongly recommend that you **only use this method if you know what you're doing**!
-
         !!! note
             - Requires Python 3.11+
 
@@ -216,9 +211,11 @@ SLEAP can be installed with pip via `pip package`. See below.
             !!! note
                 The pypi distributed package of SLEAP ships with the following extras:
 
-                - **pypi**: For installation without an conda environment file. All dependencies come from PyPI.
-                - **jupyter**: This installs all *pypi* and jupyter lab dependencies.
                 - **dev**: This installs all *jupyter* dependencies and developement tools for testing and building docs.
+                - **docs**: This installs all *docs*-related dependencies (ex. mkdocs).
+                - **nn-cpu**: This installs sleap-nn with torch-cpu.
+                - **nn-gpu**: This installs sleap-nn with torch-cuda128
+                - **jupyter**: This installs all *pypi* and jupyter lab dependencies.
 
 ## Development Setup with uv
 
@@ -269,7 +266,7 @@ uv run sleap-label ...
 
 ## Testing that things are working
 
-If you installed using `conda`, first activate the `sleap` environment by opening a terminal and typing:
+**If you installed using `conda`**, first activate the `sleap` environment by opening a terminal and typing:
 
 ```
 conda activate sleap
