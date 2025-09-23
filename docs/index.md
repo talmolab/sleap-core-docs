@@ -3,10 +3,6 @@
 
 SLEAP is an open-source deep-learning based framework for multi-animal pose tracking ([Pereira et al., Nature Methods, 2022](https://www.nature.com/articles/s41592-022-01426-1)). It can be used to track any type or number of animals and includes an advanced labeling/training GUI for active learning and proofreading.
 
-!!! warning "Documentation for New SLEAP Versions"
-    This documentation is for the **latest version of SLEAP**.  
-    If you are using **SLEAP version 1.4.1 or earlier**, please visit the [legacy documentation](http://legacy.sleap.ai).
-
 
 ## Features
 
@@ -31,6 +27,10 @@ SLEAP is an open-source deep-learning based framework for multi-animal pose trac
 SLEAP is installed as a Python package. We strongly recommend using [Miniconda](https://www.anaconda.com/docs/getting-started/miniconda/main) to install SLEAP in its own environment.
 
 You can find the latest version of SLEAP in the [Releases](https://github.com/talmolab/sleap/releases) page.
+
+!!! warning "Documentation for New SLEAP Versions"
+    This documentation is for the **latest version of SLEAP**.  
+    If you are using **SLEAP version 1.4.1 or earlier**, please visit the [legacy documentation](http://legacy.sleap.ai).
 
 ### Quick install
 

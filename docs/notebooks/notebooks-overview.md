@@ -10,7 +10,7 @@ Here are Jupyter notebooks you can run to try SLEAP on [Google Colaboratory](htt
 
 ### [Training and inference on an example dataset](Training_and_inference_on_an_example_dataset.ipynb)
 
-In this notebook, we'll show you how to install SLEAP on Colab, download a dataset from the [repository of sample datasets](https://github.com/talmolab/sleap-datasets), run training and inference on that dataset using the SLEAP command-line interface, and then download the predictions.  
+In this notebook, we'll show you how to install `sleap-io` and `sleap-nn` on Colab, download a dataset from the [repository of sample datasets](https://github.com/talmolab/sleap-datasets), run training and inference on that dataset using the `slepa-nn` command-line interface, and then download the predictions.  
 This notebook can be a good place to start since you'll be able to see how training and inference work without any of your own data and without having to edit anything in the notebook to get it to run correctly.
 
 ### [Training and inference on your own data using Google Drive](Training_and_inference_using_Google_Drive.ipynb)
@@ -34,7 +34,7 @@ In this notebook, we show how to use the tracking functionality within SLEAP to 
 
 ### [Interactive and resumable training](Interactive_and_resumable_training.ipynb)
 
-Training in SLEAP can be done via the GUI, CLI, or interactively in Python. Here we show how to use SLEAP's Python API to enable customizable training workflows, including resumable training for initialization from existing models.
+Training in SLEAP can be done via the GUI, CLI, or interactively in Python. Here we show how to use `sleap-nn`'s Python API to enable customizable training workflows, including resumable training for initialization from existing models.
 
 ### [Interactive and realtime inference](Interactive_and_realtime_inference.ipynb)
 
