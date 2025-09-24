@@ -54,6 +54,7 @@ We **label a frame** by creating an instance for each visible animal.
     !!! tip
         * To quickly move the entire instance, hold <kbd>alt</kbd> (PC) or <kbd>option</kbd> (Mac) while dragging any node of the instance.
         * You can rotate the instance by holding down the <kbd>alt</kbd> (PC) or <kbd>option</kbd> (Mac) while you then click on a node and use the scroll-wheel.
+        * To copy an entire instance, hold <kbd>Win</kbd> (PC) or <kbd>cmd</kbd> (Mac) while clicking any node of the instance.
 
 ## Save the project
 

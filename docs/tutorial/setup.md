@@ -11,12 +11,18 @@ SLEAP uses deep neural networks to learn how to predict poses from data. Trainin
 
 If you know you have a GPU on your machine or have a [Mac with Apple Silicon](https://support.apple.com/en-us/116943), you can install SLEAP locally and follow along this tutorial.
 
+!!! tip "sleap-nn neural-network backend"
+    The SLEAP GUI can be installed and used independently of the sleap-nn backend for **labeling**. However, for this tutorial it is important that you have sleap-nn installed with the correct **PyTorch and CUDA versions** according to your machine (ex. CPU or GPU).
+
+    To check which PyTorch and CUDA versions you should have installed, see [here](https://nn.sleap.ai/dev/installation/).
+
+
 ## Install SLEAP locally
 
 **See the [main SLEAP installation instructions](../installation.md) for detailed installation instructions.**
 
 If you have either a Linux or Windows laptop with a GPU, or a [Mac with Apple Silicon](https://support.apple.com/en-us/116943), SLEAP will work natively with hardware acceleration.
-
+<!-- 
 1. Make sure that you have [Miniforge](https://github.com/conda-forge/miniforge) installed.
 
     You can also use Miniconda or vanilla Anaconda, but we recommend Miniforge since it
@@ -69,7 +75,7 @@ If you have either a Linux or Windows laptop with a GPU, or a [Mac with Apple Si
 
         ```bash
         mamba create -y -n sleap -c conda-forge -c anaconda -c sleap sleap=1.3.3
-        ```
+        ``` -->
 
 
 [*Next up:* Importing data](importing-data.md)
