@@ -613,8 +613,6 @@
       
         
       
-        
-      
     
     
     
@@ -774,29 +772,6 @@
   
   <span class="md-ellipsis">
     Running SLEAP remotely
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../how-to-guides/using-bonsai-with-sleap/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Using Bonsai with SLEAP
     
   </span>
   
@@ -2140,7 +2115,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h1 id="model-evaluation">Model evaluation<a class="anchor-link" href="#model-evaluation">¶</a></h1><p>After you've trained several models, you may want to generate some accuracy metrics to compare between them. This notebook demonstrates how you'll do that given a trained model.</p>
-<p>Let's start by installing SLEAP and downloading the trained model.</p>
+<p>Let's start by installing <code>sleap-nn</code> and downloading the trained model.</p>
 </div>
 </div>
 </div>
@@ -2150,7 +2125,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-1">
@@ -2163,14 +2138,16 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="err">!</span><span class="n">pip</span> <span class="n">uninstall</span> <span class="o">-</span><span class="n">qqq</span> <span class="o">-</span><span class="n">y</span> <span class="n">opencv</span><span class="o">-</span><span class="n">python</span> <span class="n">opencv</span><span class="o">-</span><span class="n">contrib</span><span class="o">-</span><span class="n">python</span>
-<span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">qqq</span> <span class="s2">"sleap[pypi]&gt;=1.3.3"</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># This should take care of all the torch dependencies on colab:</span>
+<span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">qqq</span> <span class="s2">"sleap-nn[torch-cpu]"</span>
+
 <span class="err">!</span><span class="n">apt</span> <span class="o">-</span><span class="n">qq</span> <span class="n">install</span> <span class="n">tree</span>
 <span class="err">!</span><span class="n">wget</span> <span class="o">-</span><span class="n">q</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">storage</span><span class="o">.</span><span class="n">googleapis</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">sleap</span><span class="o">-</span><span class="n">data</span><span class="o">/</span><span class="n">reference</span><span class="o">/</span><span class="n">flies13</span><span class="o">/</span><span class="n">td_fast</span><span class="mf">.210505_012601</span><span class="o">.</span><span class="n">centered_instance</span><span class="o">.</span><span class="n">n</span><span class="o">%</span><span class="mi">3</span><span class="n">D1800</span><span class="o">.</span><span class="n">zip</span>
 <span class="err">!</span><span class="n">unzip</span> <span class="o">-</span><span class="n">qq</span> <span class="o">-</span><span class="n">o</span> <span class="o">-</span><span class="n">d</span> <span class="s2">"td_fast.210505_012601.centered_instance.n=1800"</span> <span class="s2">"td_fast.210505_012601.centered_instance.n=1800.zip"</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-1">!pip uninstall -qqq -y opencv-python opencv-contrib-python
-!pip install -qqq "sleap[pypi]&gt;=1.3.3"
+<div class="clipboard-copy-txt" id="cell-1"># This should take care of all the torch dependencies on colab:
+!pip install -qqq "sleap-nn[torch-cpu]"
+
 !apt -qq install tree
 !wget -q https://storage.googleapis.com/sleap-data/reference/flies13/td_fast.210505_012601.centered_instance.n%3D1800.zip
 !unzip -qq -o -d "td_fast.210505_012601.centered_instance.n=1800" "td_fast.210505_012601.centered_instance.n=1800.zip"</div>
@@ -2185,8 +2162,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre><span class="ansi-red-intense-fg ansi-bold">E: </span>Could not open lock file /var/lib/dpkg/lock-frontend - open (13: Permission denied)
-<span class="ansi-red-intense-fg ansi-bold">E: </span>Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), are you root?
+<pre>zsh:1: command not found: pip
+zsh:1: command not found: apt
 </pre>
 </div>
 </div>
@@ -2215,7 +2192,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-2">
@@ -2242,25 +2219,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre><span class="ansi-blue-intense-fg ansi-bold">td_fast.210505_012601.centered_instance.n=1800</span>
-├── best_model.h5
-├── initial_config.json
-├── labels_gt.test.slp
-├── labels_gt.train.slp
-├── labels_gt.val.slp
-├── labels_pr.test.slp
-├── labels_pr.train.slp
-├── labels_pr.val.slp
-├── labels_pr.with_centroid.test.slp
-├── metrics.test.npz
-├── metrics.train.npz
-├── metrics.val.npz
-├── metrics.with_centroid.test.npz
-├── model_info.json
-├── training_config.json
-└── training_log.csv
-
-0 directories, 16 files
+<pre>zsh:1: command not found: tree
 </pre>
 </div>
 </div>
@@ -2284,13 +2243,13 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-3">
@@ -2303,50 +2262,23 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sleap</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
-
-<span class="n">mpl</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">"seaborn-deep"</span><span class="p">)</span>
-<span class="n">sleap</span><span class="o">.</span><span class="n">versions</span><span class="p">()</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sleap_nn.evaluation</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_metrics</span><span class="p">,</span> <span class="n">Evaluator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-3">import sleap
+<div class="clipboard-copy-txt" id="cell-3">
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
-
-mpl.style.use("seaborn-deep")
-sleap.versions()</div>
+from sleap_nn.evaluation import load_metrics, Evaluator
+from pathlib import Path
 </div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2023-09-01 14:13:14.982109: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /home/talmolab/micromamba/envs/sleap_jupyter/lib/python3.7/site-packages/cv2/../../lib64:
-2023-09-01 14:13:14.982120: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>SLEAP: 1.3.1
-TensorFlow: 2.8.4
-Numpy: 1.21.6
-Python: 3.7.12
-OS: Linux-5.15.0-78-generic-x86_64-with-debian-bookworm-sid
-</pre>
 </div>
 </div>
 </div>
@@ -2369,7 +2301,7 @@ OS: Linux-5.15.0-78-generic-x86_64-with-debian-bookworm-sid
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-4">
@@ -2382,9 +2314,9 @@ OS: Linux-5.15.0-78-generic-x86_64-with-debian-bookworm-sid
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">sleap</span><span class="o">.</span><span class="n">load_metrics</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">load_metrics</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-4">help(sleap.load_metrics)</div>
+<div class="clipboard-copy-txt" id="cell-4">help(load_metrics)</div>
 </div>
 </div>
 </div>
@@ -2396,39 +2328,16 @@ OS: Linux-5.15.0-78-generic-x86_64-with-debian-bookworm-sid
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Help on function load_metrics in module sleap.nn.evals:
+<pre>Help on function load_metrics in module sleap_nn.evaluation:
 
-load_metrics(model_path: str, split: str = 'val') -&gt; typing.Dict[str, typing.Any]
-    Load metrics for a model.
-    
+load_metrics(model_path: str, split='val')
+    Load the metrics for a given model and split.
+
     Args:
         model_path: Path to a model folder or metrics file (.npz).
         split: Name of the split to load the metrics for. Must be `"train"`, `"val"` or
             `"test"` (default: `"val"`). Ignored if a path to a metrics NPZ file is
             provided.
-    
-    Returns:
-        The loaded metrics as a dictionary with keys:
-    
-        - `"vis.tp"`: Visibility - True Positives
-        - `"vis.fp"`: Visibility - False Positives
-        - `"vis.tn"`: Visibility - True Negatives
-        - `"vis.fn"`: Visibility - False Negatives
-        - `"vis.precision"`: Visibility - Precision
-        - `"vis.recall"`: Visibility - Recall
-        - `"dist.avg"`: Average Distance (ground truth vs prediction)
-        - `"dist.p50"`: Distance for 50th percentile
-        - `"dist.p75"`: Distance for 75th percentile
-        - `"dist.p90"`: Distance for 90th percentile
-        - `"dist.p95"`: Distance for 95th percentile
-        - `"dist.p99"`: Distance for 99th percentile
-        - `"dist.dists"`: All distances
-        - `"pck.mPCK"`: Mean Percentage of Correct Keypoints (PCK)
-        - `"oks.mOKS"`: Mean Object Keypoint Similarity (OKS)
-        - `"oks_voc.mAP"`: VOC with OKS scores - mean Average Precision (mAP)
-        - `"oks_voc.mAR"`: VOC with OKS scores - mean Average Recall (mAR)
-        - `"pck_voc.mAP"`: VOC with PCK scores - mean Average Precision (mAP)
-        - `"pck_voc.mAR"`: VOC with PCK scores - mean Average Recall (mAR)
 
 </pre>
 </div>
@@ -2454,7 +2363,7 @@ load_metrics(model_path: str, split: str = 'val') -&gt; typing.Dict[str, typing.
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-5">
@@ -2467,10 +2376,14 @@ load_metrics(model_path: str, split: str = 'val') -&gt; typing.Dict[str, typing.
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">metrics</span> <span class="o">=</span> <span class="n">sleap</span><span class="o">.</span><span class="n">load_metrics</span><span class="p">(</span><span class="s2">"td_fast.210505_012601.centered_instance.n=1800"</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="s2">"val"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sleap_nn</span>
+
+<span class="n">metrics</span> <span class="o">=</span> <span class="n">sleap_nn</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">load_metrics</span><span class="p">(</span><span class="s2">"td_fast.210505_012601.centered_instance.n=1800/metrics.test.npz"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5">metrics = sleap.load_metrics("td_fast.210505_012601.centered_instance.n=1800", split="val")
+<div class="clipboard-copy-txt" id="cell-5">import sleap_nn
+
+metrics = sleap_nn.evaluation.load_metrics("td_fast.210505_012601.centered_instance.n=1800/metrics.test.npz")
 print("\n".join(metrics.keys()))</div>
 </div>
 </div>
@@ -2482,44 +2395,47 @@ print("\n".join(metrics.keys()))</div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>vis.tp
-vis.fp
-vis.tn
-vis.fn
-vis.precision
-vis.recall
-dist.dists
-dist.avg
-dist.p50
-dist.p75
-dist.p90
-dist.p95
-dist.p99
-pck.thresholds
-pck.pcks
-pck.mPCK_parts
-pck.mPCK
-oks.mOKS
-oks_voc.match_score_thresholds
-oks_voc.recall_thresholds
-oks_voc.match_scores
-oks_voc.precisions
-oks_voc.recalls
-oks_voc.AP
-oks_voc.AR
-oks_voc.mAP
-oks_voc.mAR
-pck_voc.match_score_thresholds
-pck_voc.recall_thresholds
-pck_voc.match_scores
-pck_voc.precisions
-pck_voc.recalls
-pck_voc.AP
-pck_voc.AR
-pck_voc.mAP
-pck_voc.mAR
-</pre>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ModuleNotFoundError</span>                       Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[6]</span><span class="ansi-green-fg">, line 3</span>
+<span class="ansi-green-fg">      1</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">sleap_nn</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">3</span> metrics = <span class="ansi-yellow-bg">sleap_nn</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">evaluation</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">load_metrics</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-fg ansi-yellow-bg">"</span><span class="ansi-yellow-fg ansi-yellow-bg">td_fast.210505_012601.centered_instance.n=1800/metrics.test.npz</span><span class="ansi-yellow-fg ansi-yellow-bg">"</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-fg">      4</span> <span style="color: rgb(0,135,0)">print</span>(<span class="ansi-yellow-fg">"</span><span class="ansi-bold" style="color: rgb(175,95,0)">\n</span><span class="ansi-yellow-fg">"</span>.join(metrics.keys()))
+
+<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/Desktop/talmolab/sleap-nn/sleap_nn/evaluation.py:698</span>, in <span class="ansi-cyan-fg">load_metrics</span><span class="ansi-blue-fg">(model_path, split)</span>
+<span class="ansi-green-fg">    696</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">FileNotFoundError</span>(<span class="ansi-yellow-fg">f</span><span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">Metrics file not found at </span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>metrics_path<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span class="ansi-yellow-fg">"</span>)
+<span class="ansi-green-fg">    697</span> <span class="ansi-bold" style="color: rgb(0,135,0)">with</span> np.load(metrics_path, allow_pickle=<span class="ansi-bold" style="color: rgb(0,135,0)">True</span>) <span class="ansi-bold" style="color: rgb(0,135,0)">as</span> data:
+<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">698</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span class="ansi-yellow-bg">data</span><span class="ansi-yellow-bg">[</span><span class="ansi-yellow-fg ansi-yellow-bg">"</span><span class="ansi-yellow-fg ansi-yellow-bg">metrics</span><span class="ansi-yellow-fg ansi-yellow-bg">"</span><span class="ansi-yellow-bg">]</span>.item()
+
+<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/numpy/lib/_npyio_impl.py:257</span>, in <span class="ansi-cyan-fg">NpzFile.__getitem__</span><span class="ansi-blue-fg">(self, key)</span>
+<span class="ansi-green-fg">    247</span> <span style="color: rgb(0,135,0)">bytes</span>.seek(<span class="ansi-green-fg">0</span>)
+<span class="ansi-green-fg">    248</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> magic == <span style="color: rgb(0,135,0)">format</span>.MAGIC_PREFIX:
+<span class="ansi-green-fg">    249</span>     <span style="color: rgb(95,135,135)"># FIXME: This seems like it will copy strings around</span>
+<span class="ansi-green-fg">    250</span>     <span style="color: rgb(95,135,135)">#   more than is strictly necessary.  The zipfile</span>
+<span class="ansi-green-fg">   (...)</span><span class="ansi-green-fg">    255</span>     <span style="color: rgb(95,135,135)">#   (or at least uncompress) the data</span>
+<span class="ansi-green-fg">    256</span>     <span style="color: rgb(95,135,135)">#   directly into the array memory.</span>
+<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">257</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">format</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">read_array</span><span class="ansi-yellow-bg">(</span>
+<span class="ansi-green-fg">    258</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">bytes</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-fg">    259</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">allow_pickle</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">allow_pickle</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-fg">    260</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">pickle_kwargs</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">pickle_kwargs</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-fg">    261</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">max_header_size</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">max_header_size</span>
+<span class="ansi-green-fg">    262</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-fg">    263</span> <span class="ansi-bold" style="color: rgb(0,135,0)">else</span>:
+<span class="ansi-green-fg">    264</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span style="color: rgb(0,135,0)">bytes</span>.read()
+
+<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/numpy/lib/_format_impl.py:838</span>, in <span class="ansi-cyan-fg">read_array</span><span class="ansi-blue-fg">(fp, allow_pickle, pickle_kwargs, max_header_size)</span>
+<span class="ansi-green-fg">    836</span>     pickle_kwargs = {}
+<span class="ansi-green-fg">    837</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
+<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">838</span>     array = <span class="ansi-yellow-bg">pickle</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">load</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">fp</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">pickle_kwargs</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-fg">    839</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span> <span class="ansi-bold" style="color: rgb(215,95,95)">UnicodeError</span> <span class="ansi-bold" style="color: rgb(0,135,0)">as</span> err:
+<span class="ansi-green-fg">    840</span>     <span style="color: rgb(95,135,135)"># Friendlier error message</span>
+<span class="ansi-green-fg">    841</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">UnicodeError</span>(<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">Unpickling a python object failed: </span><span class="ansi-bold" style="color: rgb(175,95,135)">%r</span><span class="ansi-bold" style="color: rgb(175,95,0)">\n</span><span class="ansi-yellow-fg">"</span>
+<span class="ansi-green-fg">    842</span>                        <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">You may need to pass the encoding= option </span><span class="ansi-yellow-fg">"</span>
+<span class="ansi-green-fg">    843</span>                        <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">to numpy.load</span><span class="ansi-yellow-fg">"</span> % (err,)) <span class="ansi-bold" style="color: rgb(0,135,0)">from</span><span style="color: rgb(188,188,188)"> </span><span class="ansi-blue-intense-fg ansi-bold">err</span>
+
+<span class="ansi-red-fg">ModuleNotFoundError</span>: No module named 'sleap.instance'</pre>
 </div>
 </div>
 </div>
@@ -2572,11 +2488,16 @@ print("Error distance (95%):", metrics["dist.p95"])</div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Error distance (50%): 0.9010142093245521
-Error distance (90%): 2.0545800141197903
-Error distance (95%): 3.0166608700891056
-</pre>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[8]</span><span class="ansi-green-fg">, line 1</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> <span style="color: rgb(0,135,0)">print</span>(<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">Error distance (50</span><span class="ansi-yellow-fg">%</span><span class="ansi-yellow-fg">):</span><span class="ansi-yellow-fg">"</span>, <span class="ansi-yellow-bg">metrics</span>[<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">dist.p50</span><span class="ansi-yellow-fg">"</span>])
+<span class="ansi-green-fg">      2</span> <span style="color: rgb(0,135,0)">print</span>(<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">Error distance (90</span><span class="ansi-yellow-fg">%</span><span class="ansi-yellow-fg">):</span><span class="ansi-yellow-fg">"</span>, metrics[<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">dist.p90</span><span class="ansi-yellow-fg">"</span>])
+<span class="ansi-green-fg">      3</span> <span style="color: rgb(0,135,0)">print</span>(<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">Error distance (95</span><span class="ansi-yellow-fg">%</span><span class="ansi-yellow-fg">):</span><span class="ansi-yellow-fg">"</span>, metrics[<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">dist.p95</span><span class="ansi-yellow-fg">"</span>])
+
+<span class="ansi-red-fg">NameError</span>: name 'metrics' is not defined</pre>
 </div>
 </div>
 </div>
@@ -2867,7 +2788,7 @@ mAR: 0.8885
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-12">
@@ -2880,13 +2801,17 @@ mAR: 0.8885
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">predictor</span> <span class="o">=</span> <span class="n">sleap</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="s2">"td_fast.210505_012601.centered_instance.n=1800"</span><span class="p">)</span>
-<span class="n">labels_gt</span> <span class="o">=</span> <span class="n">sleap</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="s2">"test.pkg.slp"</span><span class="p">)</span>
-<span class="n">labels_pr</span> <span class="o">=</span> <span class="n">predictor</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">labels_gt</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sleap_nn.predict</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_inference</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sleap_io</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sio</span>
+
+<span class="n">labels_gt</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">load_slp</span><span class="p">(</span><span class="s2">"test.pkg.slp"</span><span class="p">)</span>
+<span class="n">labels_pr</span> <span class="o">=</span> <span class="n">run_inference</span><span class="p">(</span><span class="n">data_path</span><span class="o">=</span><span class="s2">"test.pkg.slp"</span><span class="p">,</span> <span class="n">model_paths</span><span class="o">=</span><span class="p">[</span><span class="s2">"td_fast.210505_012601.centered_instance.n=1800"</span><span class="p">])</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-12">predictor = sleap.load_model("td_fast.210505_012601.centered_instance.n=1800")
-labels_gt = sleap.load_file("test.pkg.slp")
-labels_pr = predictor.predict(labels_gt)</div>
+<div class="clipboard-copy-txt" id="cell-12">from sleap_nn.predict import run_inference
+import sleap_io as sio
+
+labels_gt = sio.load_slp("test.pkg.slp")
+labels_pr = run_inference(data_path="test.pkg.slp", model_paths=["td_fast.210505_012601.centered_instance.n=1800"])</div>
 </div>
 </div>
 </div>
@@ -2961,7 +2886,7 @@ To enable them in other operations, rebuild TensorFlow with the appropriate comp
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-13">
@@ -2974,7 +2899,11 @@ To enable them in other operations, rebuild TensorFlow with the appropriate comp
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">metrics</span> <span class="o">=</span> <span class="n">sleap</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">evals</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">labels_gt</span><span class="p">,</span> <span class="n">labels_pr</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sleap_nn.evaluation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Evaluator</span>
+
+<span class="n">evals</span> <span class="o">=</span> <span class="n">Evaluator</span><span class="p">(</span><span class="n">labels_gt</span><span class="p">,</span> <span class="n">labels_pr</span><span class="p">)</span>
+
+<span class="n">metrics</span> <span class="o">=</span> <span class="n">evals</span><span class="o">.</span><span class="n">evaluate</span><span class="p">()</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Error distance (50%):"</span><span class="p">,</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">"dist.p50"</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Error distance (90%):"</span><span class="p">,</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">"dist.p90"</span><span class="p">])</span>
@@ -2982,7 +2911,11 @@ To enable them in other operations, rebuild TensorFlow with the appropriate comp
 <span class="nb">print</span><span class="p">(</span><span class="s2">"mAP:"</span><span class="p">,</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">"oks_voc.mAP"</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"mAR:"</span><span class="p">,</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">"oks_voc.mAR"</span><span class="p">])</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-13">metrics = sleap.nn.evals.evaluate(labels_gt, labels_pr)
+<div class="clipboard-copy-txt" id="cell-13">from sleap_nn.evaluation import Evaluator
+
+evals = Evaluator(labels_gt, labels_pr)
+
+metrics = evals.evaluate()
 
 print("Error distance (50%):", metrics["dist.p50"])
 print("Error distance (90%):", metrics["dist.p90"])

@@ -613,8 +613,6 @@
       
         
       
-        
-      
     
     
     
@@ -774,29 +772,6 @@
   
   <span class="md-ellipsis">
     Running SLEAP remotely
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../how-to-guides/using-bonsai-with-sleap/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Using Bonsai with SLEAP
     
   </span>
   
@@ -1119,9 +1094,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-setup-sleap" class="md-nav__link">
+  <a href="#1-setup" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Setup SLEAP
+      1. Setup
     </span>
   </a>
   
@@ -1747,9 +1722,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-setup-sleap" class="md-nav__link">
+  <a href="#1-setup" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Setup SLEAP
+      1. Setup
     </span>
   </a>
   
@@ -2251,7 +2226,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="interactive-and-realtime-inference">Interactive and realtime inference<a class="anchor-link" href="#interactive-and-realtime-inference">¶</a></h1><p>For most workflows, using the <a href="../../reference/command-line-interfaces/#sleap-track"><code>sleap-track</code> CLI</a> is probably the most convenient option, but if you're developing a custom application you can take advantage of SLEAP's inference API to use your trained models in your own custom scripts.</p>
+<h1 id="interactive-and-realtime-inference">Interactive and realtime inference<a class="anchor-link" href="#interactive-and-realtime-inference">¶</a></h1><p>For most workflows, using the <a href="../../reference/command-line-interfaces/#sleap-track"><code>sleap-track</code> CLI</a> or <a href="https://nn.sleap.ai/latest/inference"><code>sleap-nn track</code> CLI</a> is probably the most convenient option, but if you're developing a custom application you can take advantage of SLEAP's inference API to use your trained models in your own custom scripts.</p>
 <p>In this notebook we will explore how to predict poses from raw images in pure Python, and do some basic benchmarking on a simulated realtime predictor that could be used to enable closed-loop experiments.</p>
 </div>
 </div>
@@ -2263,7 +2238,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="1-setup-sleap">1. Setup SLEAP<a class="anchor-link" href="#1-setup-sleap">¶</a></h2><p>Run this cell first to install SLEAP. If you get a dependency error in subsequent cells, just click <strong>Runtime</strong> → <strong>Restart runtime</strong> to reload the packages.</p>
+<h2 id="1-setup">1. Setup<a class="anchor-link" href="#1-setup">¶</a></h2><p>Run this cell first to install sleap-nn. If you get a dependency error in subsequent cells, just click <strong>Runtime</strong> → <strong>Restart runtime</strong> to reload the packages.</p>
 <p>Don't forget to set <strong>Runtime</strong> → <strong>Change runtime type</strong> → <strong>GPU</strong> as the accelerator.</p>
 </div>
 </div>
@@ -2288,20 +2263,12 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># This should take care of all the dependencies on colab:</span>
-<span class="err">!</span><span class="n">pip</span> <span class="n">uninstall</span> <span class="o">-</span><span class="n">qqq</span> <span class="o">-</span><span class="n">y</span> <span class="n">opencv</span><span class="o">-</span><span class="n">python</span> <span class="n">opencv</span><span class="o">-</span><span class="n">contrib</span><span class="o">-</span><span class="n">python</span>
-<span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">qqq</span> <span class="s2">"sleap[pypi]&gt;=1.3.3"</span>
-
-
-<span class="c1"># But to do it locally, we'd recommend the conda package (available on Windows + Linux):</span>
-<span class="c1"># conda create -n sleap -c sleap -c conda-forge -c nvidia sleap</span>
+<span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">qqq</span> <span class="s2">"sleap-io"</span>
+<span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">qqq</span> <span class="s2">"sleap-nn[torch-cpu]"</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-1"># This should take care of all the dependencies on colab:
-!pip uninstall -qqq -y opencv-python opencv-contrib-python
-!pip install -qqq "sleap[pypi]&gt;=1.3.3"
-
-
-# But to do it locally, we'd recommend the conda package (available on Windows + Linux):
-# conda create -n sleap -c sleap -c conda-forge -c nvidia sleap</div>
+!pip install -qqq "sleap-io"
+!pip install -qqq "sleap-nn[torch-cpu]"</div>
 </div>
 </div>
 </div>
@@ -2313,9 +2280,9 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre><span class="ansi-red-fg">ERROR: Cannot uninstall opencv-python 4.6.0, RECORD file not found. Hint: The package was installed by conda.</span><span class="ansi-red-fg">
-</span><span class="ansi-red-fg">ERROR: Cannot uninstall shiboken2 5.15.6, RECORD file not found. You might be able to recover from this via: 'pip install --force-reinstall --no-deps shiboken2==5.15.6'.</span><span class="ansi-red-fg">
-</span></pre>
+<pre>zsh:1: command not found: pip
+zsh:1: command not found: pip
+</pre>
 </div>
 </div>
 </div>
@@ -2351,15 +2318,13 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sleap</span>
-<span class="n">sleap</span><span class="o">.</span><span class="n">disable_preallocation</span><span class="p">()</span>  <span class="c1"># This initializes the GPU and prevents TensorFlow from filling the entire GPU memory</span>
-<span class="n">sleap</span><span class="o">.</span><span class="n">versions</span><span class="p">()</span>
-<span class="n">sleap</span><span class="o">.</span><span class="n">system_summary</span><span class="p">()</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sleap_nn</span>
+
+<span class="n">sleap_nn</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-2">import sleap
-sleap.disable_preallocation()  # This initializes the GPU and prevents TensorFlow from filling the entire GPU memory
-sleap.versions()
-sleap.system_summary()</div>
+<div class="clipboard-copy-txt" id="cell-2">import sleap_nn
+
+sleap_nn.__version__</div>
 </div>
 </div>
 </div>
@@ -2368,29 +2333,10 @@ sleap.system_summary()</div>
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>SLEAP: 1.3.2
-TensorFlow: 2.7.0
-Numpy: 1.21.5
-Python: 3.7.12
-OS: Linux-5.15.0-78-generic-x86_64-with-debian-bookworm-sid
-GPUs: 1/1 available
-  Device: /physical_device:GPU:0
-         Available: True
-        Initalized: False
-     Memory growth: True
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2023-09-01 13:56:37.731425: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:56:37.735933: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:56:37.736867: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-</pre>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[2]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>'0.0.1'</pre>
 </div>
 </div>
 </div>
@@ -2448,46 +2394,30 @@ GPUs: 1/1 available
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 81.3M  100 81.3M    0     0  23.7M      0  0:00:03  0:00:03 --:--:-- 23.7M
+100 81.3M  100 81.3M    0     0  31.1M      0  0:00:02  0:00:02 --:--:-- 31.1M
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 6223k  100 6223k    0     0  30.2M      0 --:--:-- --:--:-- --:--:-- 30.3M
+100 6223k  100 6223k    0     0  24.8M      0 --:--:-- --:--:-- --:--:-- 24.9M
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 32.2M  100 32.2M    0     0  14.5M      0  0:00:02  0:00:02 --:--:-- 14.5M
-total 1.1G
-drwxrwxr-x  5 talmolab talmolab 4.0K Sep  1 13:56  .
-drwxrwxr-x 10 talmolab talmolab 4.0K Aug 31 15:43  ..
--rw-rw-r--  1 talmolab talmolab  82M May 20  2021  190719_090330_wt_18159206_rig1.2@15000-17560.mp4.1
--rw-rw-r--  1 talmolab talmolab 1.6M May 20  2021  190719_090330_wt_18159206_rig1.2@15000-17560.slp
--rw-rw-r--  1 talmolab talmolab 1.6M May 20  2021  190719_090330_wt_18159206_rig1.2@15000-17560.slp.1
-drwxrwxr-x  2 talmolab talmolab 4.0K Jun 20 10:00  analysis_example
--rw-rw-r--  1 talmolab talmolab 713K Jun 20 10:00  Analysis_examples.ipynb
--rw-rw-r--  1 talmolab talmolab  33M Sep  1 13:56  centered_instance_id_model.zip
--rw-rw-r--  1 talmolab talmolab 6.1M May 20  2021 'centroid.fast.210504_182918.centroid.n=1800.zip'
--rw-rw-r--  1 talmolab talmolab 6.1M May 20  2021 'centroid.fast.210504_182918.centroid.n=1800.zip.1'
--rw-rw-r--  1 talmolab talmolab 6.1M Sep  1 13:56  centroid_model.zip
-drwxrwxr-x  4 talmolab talmolab 4.0K Sep  1 13:30  dataset
--rw-rw-r--  1 talmolab talmolab 481K Sep  1 13:49  Data_structures.ipynb
--rw-rw-r--  1 talmolab talmolab 661K Aug 31 12:52  fly_clip.mp4
--rw-rw-r--  1 talmolab talmolab 4.1K Jun 20 10:00  index.rst
--rw-rw-r--  1 talmolab talmolab 197K Sep  1 13:53  Interactive_and_realtime_inference.ipynb
--rw-rw-r--  1 talmolab talmolab 120K Aug 31 12:25  Interactive_and_resumable_training.ipynb
--rw-rw-r--  1 talmolab talmolab 620M Aug 31 12:14  labels.pkg.slp
--rw-rw-r--  1 talmolab talmolab 1.6M Aug 31 12:05  labels_with_images.pkg.slp
--rw-rw-r--  1 talmolab talmolab 158K Aug 31 12:35  Model_evaluation.ipynb
-drwxrwxr-x  4 talmolab talmolab 4.0K Sep  1 13:39  models
--rw-rw-r--  1 talmolab talmolab 157K Aug 31 12:52  Post_inference_tracking.ipynb
--rw-rw-r--  1 talmolab talmolab 412K Aug 31 12:52  predictions.slp
--rw-rw-r--  1 talmolab talmolab 422K Aug 31 12:52  retracked.slp
--rw-rw-r--  1 talmolab talmolab  30M May 20  2021 'td_fast.210505_012601.centered_instance.n=1800.zip'
--rw-rw-r--  1 talmolab talmolab  30M May 20  2021 'td_fast.210505_012601.centered_instance.n=1800.zip.1'
--rw-rw-r--  1 talmolab talmolab  30M May 20  2021 'td_fast.210505_012601.centered_instance.n=1800.zip.2'
--rw-rw-r--  1 talmolab talmolab  78M May  6  2021  test.pkg.slp
--rw-rw-r--  1 talmolab talmolab  89M Sep  1 13:42  trained_models.zip
--rw-rw-r--  1 talmolab talmolab  94K Sep  1 13:44  Training_and_inference_on_an_example_dataset.ipynb
--rw-rw-r--  1 talmolab talmolab  12K Aug 31 11:39  Training_and_inference_using_Google_Drive.ipynb
--rw-rw-r--  1 talmolab talmolab  82M Sep  1 13:56  video.mp4
+100 32.2M  100 32.2M    0     0  18.6M      0  0:00:01  0:00:01 --:--:-- 18.6M
+total 281920
+drwxr-xr-x@ 16 divyasesh  staff   512B Sep 22 12:06 <span class="ansi-blue-fg">.</span>
+drwxr-xr-x@ 14 divyasesh  staff   448B Sep 19 20:29 <span class="ansi-blue-fg">..</span>
+-rw-r--r--@  1 divyasesh  staff   713K Sep 22 10:30 Analysis_examples.ipynb
+-rw-r--r--@  1 divyasesh  staff   462K Sep 22 12:05 Data_structures.ipynb
+-rw-r--r--@  1 divyasesh  staff   178K Sep 22 12:06 Interactive_and_realtime_inference.ipynb
+-rw-r--r--@  1 divyasesh  staff    45K Sep 19 19:36 Interactive_and_resumable_training.ipynb
+-rw-r--r--@  1 divyasesh  staff   157K Sep 22 11:23 Model_evaluation.ipynb
+-rw-r--r--@  1 divyasesh  staff   127K Sep 22 12:06 Post_inference_tracking.ipynb
+-rw-r--r--@  1 divyasesh  staff   471K Sep 19 19:36 SLEAP_Tutorial_at_Cosyne_2024_Using_exported_data.ipynb
+-rw-r--r--@  1 divyasesh  staff    93K Sep 19 19:36 Training_and_inference_on_an_example_dataset.ipynb
+-rw-r--r--@  1 divyasesh  staff    12K Sep 19 19:36 Training_and_inference_using_Google_Drive.ipynb
+-rw-r--r--@  1 divyasesh  staff    32M Sep 22 12:07 centered_instance_id_model.zip
+-rw-r--r--@  1 divyasesh  staff   6.1M Sep 22 12:06 centroid_model.zip
+-rw-r--r--@  1 divyasesh  staff   3.4K Sep 22 11:01 notebooks-overview.md
+-rw-r--r--@  1 divyasesh  staff    16K Sep 19 19:36 sleap_io_idtracker_IDs.ipynb
+-rw-r--r--@  1 divyasesh  staff    81M Sep 22 12:06 video.mp4
 </pre>
 </div>
 </div>

@@ -613,8 +613,6 @@
       
         
       
-        
-      
     
     
     
@@ -784,29 +782,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../how-to-guides/using-bonsai-with-sleap/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Using Bonsai with SLEAP
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -958,9 +933,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#install-sleap" class="md-nav__link">
+  <a href="#install-sleap-nn" class="md-nav__link">
     <span class="md-ellipsis">
-      Install SLEAP
+      Install sleap-nn
     </span>
   </a>
   
@@ -1747,9 +1722,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#install-sleap" class="md-nav__link">
+  <a href="#install-sleap-nn" class="md-nav__link">
     <span class="md-ellipsis">
-      Install SLEAP
+      Install sleap-nn
     </span>
   </a>
   
@@ -2262,7 +2237,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>In this notebook we'll install SLEAP, download a sample dataset, run training and inference on that dataset using the SLEAP command-line interface, and then download the predictions.</p>
+<p>In this notebook we'll install <a href="https://nn.sleap.ai/latest"><code>sleap-nn</code></a>, download a sample dataset, run training and inference on that dataset using the <code>sleap-nn</code>, and then download the predictions.</p>
+<p><strong>Note:</strong> If you only need to perform training and inference (and not use the full SLEAP GUI or labeling tools), you don't need to install the entire <code>sleap</code> package. You can just install <a href="https://nn.sleap.ai/latest"><code>sleap-nn</code></a>, which is a lighter-weight package focused on model training and inference.</p>
 </div>
 </div>
 </div>
@@ -2273,7 +2249,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="install-sleap">Install SLEAP<a class="anchor-link" href="#install-sleap">¶</a></h2><p>Note: Before installing SLEAP check <a href="https://github.com/talmolab/sleap/releases">SLEAP releases</a> page for the latest version.</p>
+<h2 id="install-sleap-nn">Install sleap-nn<a class="anchor-link" href="#install-sleap-nn">¶</a></h2>
 </div>
 </div>
 </div>
@@ -2283,7 +2259,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [36]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-1">
@@ -2296,11 +2272,15 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="err">!</span><span class="n">pip</span> <span class="n">uninstall</span> <span class="o">-</span><span class="n">qqq</span> <span class="o">-</span><span class="n">y</span> <span class="n">opencv</span><span class="o">-</span><span class="n">python</span> <span class="n">opencv</span><span class="o">-</span><span class="n">contrib</span><span class="o">-</span><span class="n">python</span>
-<span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">qqq</span> <span class="s2">"sleap[pypi]&gt;=1.3.3"</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">qqq</span> <span class="s2">"sleap-nn[torch-cpu]"</span>
+
+<span class="c1"># if you have GPU (in colab, enable GPU runtime)</span>
+<span class="c1"># !pip install -qqq "sleap-nn[torch-cuda-128]"</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-1">!pip uninstall -qqq -y opencv-python opencv-contrib-python
-!pip install -qqq "sleap[pypi]&gt;=1.3.3"</div>
+<div class="clipboard-copy-txt" id="cell-1">!pip install -qqq "sleap-nn[torch-cpu]"
+
+# if you have GPU (in colab, enable GPU runtime)
+# !pip install -qqq "sleap-nn[torch-cuda-128]"</div>
 </div>
 </div>
 </div>
@@ -2312,9 +2292,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre><span class="ansi-red-fg">ERROR: Cannot uninstall opencv-python 4.6.0, RECORD file not found. Hint: The package was installed by conda.</span><span class="ansi-red-fg">
-</span><span class="ansi-red-fg">ERROR: Cannot uninstall shiboken2 5.15.6, RECORD file not found. You might be able to recover from this via: 'pip install --force-reinstall --no-deps shiboken2==5.15.6'.</span><span class="ansi-red-fg">
-</span></pre>
+<pre>zsh:1: command not found: pip
+</pre>
 </div>
 </div>
 </div>
@@ -2337,7 +2316,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-2">
@@ -2374,29 +2353,28 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>E: Could not open lock file /var/lib/dpkg/lock-frontend - open (13: Permission denied)
-E: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), are you root?
---2023-09-01 13:30:33--  https://github.com/talmolab/sleap-datasets/releases/download/dm-courtship-v1/drosophila-melanogaster-courtship.zip
-Resolving github.com (github.com)... 192.30.255.113
-Connecting to github.com (github.com)|192.30.255.113|:443... connected.
+<pre>zsh:1: command not found: apt-get
+--2025-09-23 22:49:59--  https://github.com/talmolab/sleap-datasets/releases/download/dm-courtship-v1/drosophila-melanogaster-courtship.zip
+Resolving github.com (github.com)... 140.82.116.4
+Connecting to github.com (github.com)|140.82.116.4|:443... connected.
 HTTP request sent, awaiting response... 302 Found
-Location: https://objects.githubusercontent.com/github-production-release-asset-2e65be/263375180/16df8d00-94f1-11ea-98d1-6c03a2f89e1c?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230901%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20230901T203033Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=b9b0638744af3144affdc46668c749128bd6c4f23ca2a1313821c7bbcd54ccdd&amp;X-Amz-SignedHeaders=host&amp;actor_id=0&amp;key_id=0&amp;repo_id=263375180&amp;response-content-disposition=attachment%3B%20filename%3Ddrosophila-melanogaster-courtship.zip&amp;response-content-type=application%2Foctet-stream [following]
---2023-09-01 13:30:33--  https://objects.githubusercontent.com/github-production-release-asset-2e65be/263375180/16df8d00-94f1-11ea-98d1-6c03a2f89e1c?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230901%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20230901T203033Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=b9b0638744af3144affdc46668c749128bd6c4f23ca2a1313821c7bbcd54ccdd&amp;X-Amz-SignedHeaders=host&amp;actor_id=0&amp;key_id=0&amp;repo_id=263375180&amp;response-content-disposition=attachment%3B%20filename%3Ddrosophila-melanogaster-courtship.zip&amp;response-content-type=application%2Foctet-stream
-Resolving objects.githubusercontent.com (objects.githubusercontent.com)... 185.199.108.133, 185.199.109.133, 185.199.110.133, ...
-Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.108.133|:443... connected.
+Location: https://release-assets.githubusercontent.com/github-production-release-asset/263375180/16df8d00-94f1-11ea-98d1-6c03a2f89e1c?sp=r&amp;sv=2018-11-09&amp;sr=b&amp;spr=https&amp;se=2025-09-24T06%3A32%3A23Z&amp;rscd=attachment%3B+filename%3Ddrosophila-melanogaster-courtship.zip&amp;rsct=application%2Foctet-stream&amp;skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&amp;sktid=398a6654-997b-47e9-b12b-9515b896b4de&amp;skt=2025-09-24T05%3A32%3A15Z&amp;ske=2025-09-24T06%3A32%3A23Z&amp;sks=b&amp;skv=2018-11-09&amp;sig=Ij3ERUXEA5fEIAbcmukQghtno0Fl4j0%2BrI9epJ%2FH4Jw%3D&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1ODY5MzI5OSwibmJmIjoxNzU4NjkyOTk5LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.Z7KygNVvJl9-7hx2zZxvJ2Nk11iVAFbZHyRtvwuRNOA&amp;response-content-disposition=attachment%3B%20filename%3Ddrosophila-melanogaster-courtship.zip&amp;response-content-type=application%2Foctet-stream [following]
+--2025-09-23 22:49:59--  https://release-assets.githubusercontent.com/github-production-release-asset/263375180/16df8d00-94f1-11ea-98d1-6c03a2f89e1c?sp=r&amp;sv=2018-11-09&amp;sr=b&amp;spr=https&amp;se=2025-09-24T06%3A32%3A23Z&amp;rscd=attachment%3B+filename%3Ddrosophila-melanogaster-courtship.zip&amp;rsct=application%2Foctet-stream&amp;skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&amp;sktid=398a6654-997b-47e9-b12b-9515b896b4de&amp;skt=2025-09-24T05%3A32%3A15Z&amp;ske=2025-09-24T06%3A32%3A23Z&amp;sks=b&amp;skv=2018-11-09&amp;sig=Ij3ERUXEA5fEIAbcmukQghtno0Fl4j0%2BrI9epJ%2FH4Jw%3D&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1ODY5MzI5OSwibmJmIjoxNzU4NjkyOTk5LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.Z7KygNVvJl9-7hx2zZxvJ2Nk11iVAFbZHyRtvwuRNOA&amp;response-content-disposition=attachment%3B%20filename%3Ddrosophila-melanogaster-courtship.zip&amp;response-content-type=application%2Foctet-stream
+Resolving release-assets.githubusercontent.com (release-assets.githubusercontent.com)... 185.199.109.133, 185.199.110.133, 185.199.111.133, ...
+Connecting to release-assets.githubusercontent.com (release-assets.githubusercontent.com)|185.199.109.133|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 111973079 (107M) [application/octet-stream]
 Saving to: ‘dataset.zip’
 
-dataset.zip         100%[===================&gt;] 106.79M  63.0MB/s    in 1.7s    
+dataset.zip         100%[===================&gt;] 106.79M  39.0MB/s    in 2.7s    
 
-2023-09-01 13:30:35 (63.0 MB/s) - ‘dataset.zip’ saved [111973079/111973079]
+2025-09-23 22:50:02 (39.0 MB/s) - ‘dataset.zip’ saved [111973079/111973079]
 
 Archive:  dataset.zip
-   creating: dataset/drosophila-melanogaster-courtship/
+   creating: dataset/drosophila-melanogaster-courtship
   inflating: dataset/drosophila-melanogaster-courtship/.DS_Store  
-   creating: dataset/__MACOSX/
-   creating: dataset/__MACOSX/drosophila-melanogaster-courtship/
+   creating: dataset/__MACOSX
+   creating: dataset/__MACOSX/drosophila-melanogaster-courtship
   inflating: dataset/__MACOSX/drosophila-melanogaster-courtship/._.DS_Store  
   inflating: dataset/drosophila-melanogaster-courtship/20190128_113421.mp4  
   inflating: dataset/__MACOSX/drosophila-melanogaster-courtship/._20190128_113421.mp4  
@@ -2404,15 +2382,7 @@ Archive:  dataset.zip
   inflating: dataset/__MACOSX/drosophila-melanogaster-courtship/._courtship_labels.slp  
   inflating: dataset/drosophila-melanogaster-courtship/example.jpg  
   inflating: dataset/__MACOSX/drosophila-melanogaster-courtship/._example.jpg  
-<span class="ansi-blue-intense-fg ansi-bold">dataset</span>
-├── <span class="ansi-blue-intense-fg ansi-bold">drosophila-melanogaster-courtship</span>
-│   ├── <span class="ansi-green-intense-fg ansi-bold">20190128_113421.mp4</span>
-│   ├── <span class="ansi-green-intense-fg ansi-bold">courtship_labels.slp</span>
-│   └── <span class="ansi-magenta-intense-fg ansi-bold">example.jpg</span>
-└── <span class="ansi-blue-intense-fg ansi-bold">__MACOSX</span>
-    └── <span class="ansi-blue-intense-fg ansi-bold">drosophila-melanogaster-courtship</span>
-
-3 directories, 3 files
+zsh:1: command not found: tree
 </pre>
 </div>
 </div>
@@ -2427,7 +2397,7 @@ Archive:  dataset.zip
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 id="train-models">Train models<a class="anchor-link" href="#train-models">¶</a></h2><p>For the top-down pipeline, we'll need train two models: a centroid model and a centered-instance model.</p>
-<p>Using the command-line interface, we'll first train a model for centroids using the default <strong>training profile</strong>. The training profile determines the model architecture, the learning rate, and other parameters.</p>
+<p>We'll first train a model for centroids using the default <strong>training profile</strong>. The training profile determines the model architecture, the learning rate, and other parameters.</p>
 <p>When you start training, you'll first see the training parameters and then the training and validation loss for each training epoch.</p>
 <p>As soon as you're satisfied with the validation loss you see for an epoch during training, you're welcome to stop training by clicking the stop button. The version of the model with the lowest validation loss is saved during training, and that's what will be used for inference.</p>
 <p>If you don't stop training, it will run for 200 epochs or until validation loss fails to improve for some number of epochs (controlled by the <code>early_stopping</code> fields in the training profile).</p>
@@ -2440,7 +2410,7 @@ Archive:  dataset.zip
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [25]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-3">
@@ -2453,9 +2423,13 @@ Archive:  dataset.zip
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="err">!</span><span class="n">sleap</span><span class="o">-</span><span class="n">train</span> <span class="n">baseline</span><span class="o">.</span><span class="n">centroid</span><span class="o">.</span><span class="n">json</span> <span class="s2">"dataset/drosophila-melanogaster-courtship/courtship_labels.slp"</span> <span class="o">--</span><span class="n">run_name</span> <span class="s2">"courtship.centroid"</span> <span class="o">--</span><span class="n">video</span><span class="o">-</span><span class="n">paths</span> <span class="s2">"dataset/drosophila-melanogaster-courtship/20190128_113421.mp4"</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Let's get the default config files</span>
+<span class="err">!</span><span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="n">baseline</span><span class="o">.</span><span class="n">centroid</span><span class="o">.</span><span class="n">yaml</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">talmolab</span><span class="o">/</span><span class="n">sleap</span><span class="o">-</span><span class="n">nn</span><span class="o">/</span><span class="n">refs</span><span class="o">/</span><span class="n">heads</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">sample_configs</span><span class="o">/</span><span class="n">config_centroid_unet</span><span class="o">.</span><span class="n">yaml</span>
+<span class="err">!</span><span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="n">baseline</span><span class="o">.</span><span class="n">centered_instance</span><span class="o">.</span><span class="n">yaml</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">talmolab</span><span class="o">/</span><span class="n">sleap</span><span class="o">-</span><span class="n">nn</span><span class="o">/</span><span class="n">refs</span><span class="o">/</span><span class="n">heads</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">sample_configs</span><span class="o">/</span><span class="n">config_topdown_centered_instance_unet</span><span class="o">.</span><span class="n">yaml</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-3">!sleap-train baseline.centroid.json "dataset/drosophila-melanogaster-courtship/courtship_labels.slp" --run_name "courtship.centroid" --video-paths "dataset/drosophila-melanogaster-courtship/20190128_113421.mp4"</div>
+<div class="clipboard-copy-txt" id="cell-3"># Let's get the default config files
+!wget -O baseline.centroid.yaml https://raw.githubusercontent.com/talmolab/sleap-nn/refs/heads/main/docs/sample_configs/config_centroid_unet.yaml
+!wget -O baseline.centered_instance.yaml https://raw.githubusercontent.com/talmolab/sleap-nn/refs/heads/main/docs/sample_configs/config_topdown_centered_instance_unet.yaml</div>
 </div>
 </div>
 </div>
@@ -2467,370 +2441,544 @@ Archive:  dataset.zip
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>INFO:sleap.nn.training:Versions:
-SLEAP: 1.3.2
-TensorFlow: 2.7.0
-Numpy: 1.21.5
-Python: 3.7.12
-OS: Linux-5.15.0-78-generic-x86_64-with-debian-bookworm-sid
-INFO:sleap.nn.training:Training labels file: dataset/drosophila-melanogaster-courtship/courtship_labels.slp
-INFO:sleap.nn.training:Training profile: /home/talmolab/sleap-estimates-animal-poses/pull-requests/sleap/sleap/training_profiles/baseline.centroid.json
-INFO:sleap.nn.training:
-INFO:sleap.nn.training:Arguments:
-INFO:sleap.nn.training:{
-    "training_job_path": "baseline.centroid.json",
-    "labels_path": "dataset/drosophila-melanogaster-courtship/courtship_labels.slp",
-    "video_paths": [
-        "dataset/drosophila-melanogaster-courtship/20190128_113421.mp4"
-    ],
-    "val_labels": null,
-    "test_labels": null,
-    "base_checkpoint": null,
-    "tensorboard": false,
-    "save_viz": false,
-    "zmq": false,
-    "run_name": "courtship.centroid",
-    "prefix": "",
-    "suffix": "",
-    "cpu": false,
-    "first_gpu": false,
-    "last_gpu": false,
-    "gpu": "auto"
-}
-INFO:sleap.nn.training:
-INFO:sleap.nn.training:Training job:
-INFO:sleap.nn.training:{
-    "data": {
-        "labels": {
-            "training_labels": null,
-            "validation_labels": null,
-            "validation_fraction": 0.1,
-            "test_labels": null,
-            "split_by_inds": false,
-            "training_inds": null,
-            "validation_inds": null,
-            "test_inds": null,
-            "search_path_hints": [],
-            "skeletons": []
-        },
-        "preprocessing": {
-            "ensure_rgb": false,
-            "ensure_grayscale": false,
-            "imagenet_mode": null,
-            "input_scaling": 0.5,
-            "pad_to_stride": null,
-            "resize_and_pad_to_target": true,
-            "target_height": null,
-            "target_width": null
-        },
-        "instance_cropping": {
-            "center_on_part": null,
-            "crop_size": null,
-            "crop_size_detection_padding": 16
-        }
-    },
-    "model": {
-        "backbone": {
-            "leap": null,
-            "unet": {
-                "stem_stride": null,
-                "max_stride": 16,
-                "output_stride": 2,
-                "filters": 16,
-                "filters_rate": 2.0,
-                "middle_block": true,
-                "up_interpolate": true,
-                "stacks": 1
-            },
-            "hourglass": null,
-            "resnet": null,
-            "pretrained_encoder": null
-        },
-        "heads": {
-            "single_instance": null,
-            "centroid": {
-                "anchor_part": null,
-                "sigma": 2.5,
-                "output_stride": 2,
-                "loss_weight": 1.0,
-                "offset_refinement": false
-            },
-            "centered_instance": null,
-            "multi_instance": null,
-            "multi_class_bottomup": null,
-            "multi_class_topdown": null
-        },
-        "base_checkpoint": null
-    },
-    "optimization": {
-        "preload_data": true,
-        "augmentation_config": {
-            "rotate": true,
-            "rotation_min_angle": -15.0,
-            "rotation_max_angle": 15.0,
-            "translate": false,
-            "translate_min": -5,
-            "translate_max": 5,
-            "scale": false,
-            "scale_min": 0.9,
-            "scale_max": 1.1,
-            "uniform_noise": false,
-            "uniform_noise_min_val": 0.0,
-            "uniform_noise_max_val": 10.0,
-            "gaussian_noise": false,
-            "gaussian_noise_mean": 5.0,
-            "gaussian_noise_stddev": 1.0,
-            "contrast": false,
-            "contrast_min_gamma": 0.5,
-            "contrast_max_gamma": 2.0,
-            "brightness": false,
-            "brightness_min_val": 0.0,
-            "brightness_max_val": 10.0,
-            "random_crop": false,
-            "random_crop_height": 256,
-            "random_crop_width": 256,
-            "random_flip": false,
-            "flip_horizontal": true
-        },
-        "online_shuffling": true,
-        "shuffle_buffer_size": 128,
-        "prefetch": true,
-        "batch_size": 4,
-        "batches_per_epoch": null,
-        "min_batches_per_epoch": 200,
-        "val_batches_per_epoch": null,
-        "min_val_batches_per_epoch": 10,
-        "epochs": 200,
-        "optimizer": "adam",
-        "initial_learning_rate": 0.0001,
-        "learning_rate_schedule": {
-            "reduce_on_plateau": true,
-            "reduction_factor": 0.5,
-            "plateau_min_delta": 1e-08,
-            "plateau_patience": 5,
-            "plateau_cooldown": 3,
-            "min_learning_rate": 1e-08
-        },
-        "hard_keypoint_mining": {
-            "online_mining": false,
-            "hard_to_easy_ratio": 2.0,
-            "min_hard_keypoints": 2,
-            "max_hard_keypoints": null,
-            "loss_scale": 5.0
-        },
-        "early_stopping": {
-            "stop_training_on_plateau": true,
-            "plateau_min_delta": 1e-08,
-            "plateau_patience": 20
-        }
-    },
-    "outputs": {
-        "save_outputs": true,
-        "run_name": "courtship.centroid",
-        "run_name_prefix": "",
-        "run_name_suffix": null,
-        "runs_folder": "models",
-        "tags": [],
-        "save_visualizations": true,
-        "keep_viz_images": true,
-        "zip_outputs": false,
-        "log_to_csv": true,
-        "checkpointing": {
-            "initial_model": false,
-            "best_model": true,
-            "every_epoch": false,
-            "latest_model": false,
-            "final_model": false
-        },
-        "tensorboard": {
-            "write_logs": false,
-            "loss_frequency": "epoch",
-            "architecture_graph": false,
-            "profile_graph": false,
-            "visualizations": true
-        },
-        "zmq": {
-            "subscribe_to_controller": false,
-            "controller_address": "tcp://127.0.0.1:9000",
-            "controller_polling_timeout": 10,
-            "publish_updates": false,
-            "publish_address": "tcp://127.0.0.1:9001"
-        }
-    },
-    "name": "",
-    "description": "",
-    "sleap_version": "1.3.2",
-    "filename": "/home/talmolab/sleap-estimates-animal-poses/pull-requests/sleap/sleap/training_profiles/baseline.centroid.json"
-}
-INFO:sleap.nn.training:
-2023-09-01 13:30:38.827290: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:30:38.831845: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:30:38.832633: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-INFO:sleap.nn.training:Auto-selected GPU 0 with 22980 MiB of free memory.
-INFO:sleap.nn.training:Using GPU 0 for acceleration.
-INFO:sleap.nn.training:Disabled GPU memory pre-allocation.
-INFO:sleap.nn.training:System:
-GPUs: 1/1 available
-  Device: /physical_device:GPU:0
-         Available: True
-        Initalized: False
-     Memory growth: True
-INFO:sleap.nn.training:
-INFO:sleap.nn.training:Initializing trainer...
-INFO:sleap.nn.training:Loading training labels from: dataset/drosophila-melanogaster-courtship/courtship_labels.slp
-INFO:sleap.nn.training:Creating training and validation splits from validation fraction: 0.1
-INFO:sleap.nn.training:  Splits: Training = 134 / Validation = 15.
-INFO:sleap.nn.training:Setting up for training...
-INFO:sleap.nn.training:Setting up pipeline builders...
-INFO:sleap.nn.training:Setting up model...
-INFO:sleap.nn.training:Building test pipeline...
-2023-09-01 13:30:39.755154: I tensorflow/core/platform/cpu_feature_guard.cc:151] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F FMA
-To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2023-09-01 13:30:39.756024: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:30:39.757213: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:30:39.758315: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:30:40.089801: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:30:40.090652: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:30:40.091464: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:30:40.092164: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1525] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 21084 MB memory:  -&gt; device: 0, name: NVIDIA RTX A5000, pci bus id: 0000:01:00.0, compute capability: 8.6
-INFO:sleap.nn.training:Loaded test example. [1.326s]
-INFO:sleap.nn.training:  Input shape: (512, 512, 3)
-INFO:sleap.nn.training:Created Keras model.
-INFO:sleap.nn.training:  Backbone: UNet(stacks=1, filters=16, filters_rate=2.0, kernel_size=3, stem_kernel_size=7, convs_per_block=2, stem_blocks=0, down_blocks=4, middle_block=True, up_blocks=3, up_interpolate=True, block_contraction=False)
-INFO:sleap.nn.training:  Max stride: 16
-INFO:sleap.nn.training:  Parameters: 1,953,393
-INFO:sleap.nn.training:  Heads: 
-INFO:sleap.nn.training:    [0] = CentroidConfmapsHead(anchor_part=None, sigma=2.5, output_stride=2, loss_weight=1.0)
-INFO:sleap.nn.training:  Outputs: 
-INFO:sleap.nn.training:    [0] = KerasTensor(type_spec=TensorSpec(shape=(None, 256, 256, 1), dtype=tf.float32, name=None), name='CentroidConfmapsHead/BiasAdd:0', description="created by layer 'CentroidConfmapsHead'")
-INFO:sleap.nn.training:Training from scratch
-INFO:sleap.nn.training:Setting up data pipelines...
-INFO:sleap.nn.training:Training set: n = 134
-INFO:sleap.nn.training:Validation set: n = 15
-INFO:sleap.nn.training:Setting up optimization...
-INFO:sleap.nn.training:  Learning rate schedule: LearningRateScheduleConfig(reduce_on_plateau=True, reduction_factor=0.5, plateau_min_delta=1e-08, plateau_patience=5, plateau_cooldown=3, min_learning_rate=1e-08)
-INFO:sleap.nn.training:  Early stopping: EarlyStoppingConfig(stop_training_on_plateau=True, plateau_min_delta=1e-08, plateau_patience=20)
-INFO:sleap.nn.training:Setting up outputs...
-INFO:sleap.nn.training:Created run path: models/courtship.centroid
-INFO:sleap.nn.training:Setting up visualization...
-INFO:sleap.nn.training:Finished trainer set up. [3.5s]
-INFO:sleap.nn.training:Creating tf.data.Datasets for training data generation...
-INFO:sleap.nn.training:Finished creating training datasets. [5.4s]
-INFO:sleap.nn.training:Starting training loop...
-Epoch 1/200
-2023-09-01 13:30:49.814560: I tensorflow/stream_executor/cuda/cuda_dnn.cc:366] Loaded cuDNN version 8201
-2023-09-01 13:31:07.940585: I tensorflow/stream_executor/cuda/cuda_blas.cc:1774] TensorFloat-32 will be used for the matrix multiplication. This will only be logged once.
-200/200 - 20s - loss: 2.5945e-04 - val_loss: 1.5190e-04 - lr: 1.0000e-04 - 20s/epoch - 99ms/step
-Epoch 2/200
-200/200 - 11s - loss: 1.2513e-04 - val_loss: 9.5694e-05 - lr: 1.0000e-04 - 11s/epoch - 57ms/step
-Epoch 3/200
-200/200 - 11s - loss: 9.6987e-05 - val_loss: 6.8224e-05 - lr: 1.0000e-04 - 11s/epoch - 57ms/step
-Epoch 4/200
-200/200 - 12s - loss: 8.1486e-05 - val_loss: 5.0657e-05 - lr: 1.0000e-04 - 12s/epoch - 58ms/step
-Epoch 5/200
-200/200 - 11s - loss: 7.2174e-05 - val_loss: 5.3859e-05 - lr: 1.0000e-04 - 11s/epoch - 55ms/step
-Epoch 6/200
-200/200 - 11s - loss: 5.9181e-05 - val_loss: 7.0259e-05 - lr: 1.0000e-04 - 11s/epoch - 55ms/step
-Epoch 7/200
-200/200 - 11s - loss: 4.9353e-05 - val_loss: 4.9832e-05 - lr: 1.0000e-04 - 11s/epoch - 57ms/step
-Epoch 8/200
-200/200 - 11s - loss: 3.8997e-05 - val_loss: 4.4787e-05 - lr: 1.0000e-04 - 11s/epoch - 55ms/step
-Epoch 9/200
-200/200 - 11s - loss: 3.5596e-05 - val_loss: 6.5150e-05 - lr: 1.0000e-04 - 11s/epoch - 55ms/step
-Epoch 10/200
-200/200 - 12s - loss: 2.9256e-05 - val_loss: 3.8968e-05 - lr: 1.0000e-04 - 12s/epoch - 58ms/step
-Epoch 11/200
-200/200 - 11s - loss: 2.8572e-05 - val_loss: 3.5451e-05 - lr: 1.0000e-04 - 11s/epoch - 55ms/step
-Epoch 12/200
-200/200 - 11s - loss: 2.2156e-05 - val_loss: 4.8602e-05 - lr: 1.0000e-04 - 11s/epoch - 53ms/step
-Epoch 13/200
-200/200 - 11s - loss: 1.7656e-05 - val_loss: 4.1905e-05 - lr: 1.0000e-04 - 11s/epoch - 55ms/step
-Epoch 14/200
-200/200 - 11s - loss: 1.6440e-05 - val_loss: 3.6607e-05 - lr: 1.0000e-04 - 11s/epoch - 55ms/step
-Epoch 15/200
-200/200 - 11s - loss: 1.4415e-05 - val_loss: 4.1699e-05 - lr: 1.0000e-04 - 11s/epoch - 55ms/step
-Epoch 16/200
-200/200 - 11s - loss: 1.3589e-05 - val_loss: 3.5362e-05 - lr: 1.0000e-04 - 11s/epoch - 56ms/step
-Epoch 17/200
-200/200 - 11s - loss: 1.0888e-05 - val_loss: 2.1600e-05 - lr: 1.0000e-04 - 11s/epoch - 56ms/step
-Epoch 18/200
-200/200 - 11s - loss: 1.0426e-05 - val_loss: 3.6782e-05 - lr: 1.0000e-04 - 11s/epoch - 55ms/step
-Epoch 19/200
-200/200 - 11s - loss: 9.9092e-06 - val_loss: 3.8284e-05 - lr: 1.0000e-04 - 11s/epoch - 56ms/step
-Epoch 20/200
-200/200 - 11s - loss: 8.0018e-06 - val_loss: 2.9439e-05 - lr: 1.0000e-04 - 11s/epoch - 57ms/step
-Epoch 21/200
-200/200 - 11s - loss: 7.7977e-06 - val_loss: 2.8703e-05 - lr: 1.0000e-04 - 11s/epoch - 56ms/step
-Epoch 22/200
+<pre>--2025-09-23 22:50:13--  https://raw.githubusercontent.com/talmolab/sleap-nn/refs/heads/main/docs/sample_configs/config_centroid_unet.yaml
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 2606:50c0:8003::154, 2606:50c0:8000::154, 2606:50c0:8001::154, ...
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|2606:50c0:8003::154|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 3286 (3.2K) [text/plain]
+Saving to: ‘baseline.centroid.yaml’
 
-Epoch 00022: ReduceLROnPlateau reducing learning rate to 4.999999873689376e-05.
-200/200 - 11s - loss: 6.5981e-06 - val_loss: 3.6030e-05 - lr: 1.0000e-04 - 11s/epoch - 55ms/step
-Epoch 23/200
-200/200 - 11s - loss: 4.6479e-06 - val_loss: 2.8081e-05 - lr: 5.0000e-05 - 11s/epoch - 55ms/step
-Epoch 24/200
-200/200 - 11s - loss: 4.2579e-06 - val_loss: 3.7954e-05 - lr: 5.0000e-05 - 11s/epoch - 55ms/step
-Epoch 25/200
-200/200 - 11s - loss: 3.9628e-06 - val_loss: 2.6399e-05 - lr: 5.0000e-05 - 11s/epoch - 56ms/step
-Epoch 26/200
-200/200 - 11s - loss: 3.6915e-06 - val_loss: 1.9973e-05 - lr: 5.0000e-05 - 11s/epoch - 56ms/step
-Epoch 27/200
-200/200 - 11s - loss: 3.4726e-06 - val_loss: 3.5831e-05 - lr: 5.0000e-05 - 11s/epoch - 55ms/step
-Epoch 28/200
-200/200 - 11s - loss: 3.2110e-06 - val_loss: 2.7290e-05 - lr: 5.0000e-05 - 11s/epoch - 56ms/step
-Epoch 29/200
-200/200 - 11s - loss: 3.3421e-06 - val_loss: 3.1827e-05 - lr: 5.0000e-05 - 11s/epoch - 56ms/step
-Epoch 30/200
-200/200 - 11s - loss: 3.3472e-06 - val_loss: 3.4653e-05 - lr: 5.0000e-05 - 11s/epoch - 56ms/step
-Epoch 31/200
+baseline.centroid.y 100%[===================&gt;]   3.21K  --.-KB/s    in 0s      
 
-Epoch 00031: ReduceLROnPlateau reducing learning rate to 2.499999936844688e-05.
-200/200 - 11s - loss: 3.1221e-06 - val_loss: 2.7741e-05 - lr: 5.0000e-05 - 11s/epoch - 56ms/step
-Epoch 32/200
-200/200 - 11s - loss: 2.5739e-06 - val_loss: 3.2486e-05 - lr: 2.5000e-05 - 11s/epoch - 55ms/step
-Epoch 33/200
-200/200 - 11s - loss: 2.5589e-06 - val_loss: 3.3135e-05 - lr: 2.5000e-05 - 11s/epoch - 56ms/step
-Epoch 34/200
-200/200 - 11s - loss: 2.4215e-06 - val_loss: 2.8923e-05 - lr: 2.5000e-05 - 11s/epoch - 56ms/step
-Epoch 35/200
-200/200 - 11s - loss: 2.4033e-06 - val_loss: 2.8776e-05 - lr: 2.5000e-05 - 11s/epoch - 56ms/step
-Epoch 36/200
-200/200 - 11s - loss: 2.3358e-06 - val_loss: 2.5874e-05 - lr: 2.5000e-05 - 11s/epoch - 56ms/step
-Epoch 37/200
-200/200 - 11s - loss: 2.2922e-06 - val_loss: 3.6051e-05 - lr: 2.5000e-05 - 11s/epoch - 55ms/step
-Epoch 38/200
+2025-09-23 22:50:13 (33.0 MB/s) - ‘baseline.centroid.yaml’ saved [3286/3286]
 
-Epoch 00038: ReduceLROnPlateau reducing learning rate to 1.249999968422344e-05.
-200/200 - 11s - loss: 2.1278e-06 - val_loss: 2.4898e-05 - lr: 2.5000e-05 - 11s/epoch - 55ms/step
-Epoch 39/200
-200/200 - 11s - loss: 2.0474e-06 - val_loss: 2.8901e-05 - lr: 1.2500e-05 - 11s/epoch - 56ms/step
-Epoch 40/200
-200/200 - 11s - loss: 2.0612e-06 - val_loss: 3.7469e-05 - lr: 1.2500e-05 - 11s/epoch - 56ms/step
-Epoch 41/200
-200/200 - 11s - loss: 1.8414e-06 - val_loss: 2.8496e-05 - lr: 1.2500e-05 - 11s/epoch - 56ms/step
-Epoch 42/200
-200/200 - 11s - loss: 2.0196e-06 - val_loss: 3.5206e-05 - lr: 1.2500e-05 - 11s/epoch - 56ms/step
-Epoch 43/200
-200/200 - 11s - loss: 1.8551e-06 - val_loss: 2.6483e-05 - lr: 1.2500e-05 - 11s/epoch - 56ms/step
-Epoch 44/200
-200/200 - 11s - loss: 1.9705e-06 - val_loss: 2.4643e-05 - lr: 1.2500e-05 - 11s/epoch - 55ms/step
-Epoch 45/200
+--2025-09-23 22:50:14--  https://raw.githubusercontent.com/talmolab/sleap-nn/refs/heads/main/docs/sample_configs/config_topdown_centered_instance_unet.yaml
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 2606:50c0:8003::154, 2606:50c0:8000::154, 2606:50c0:8001::154, ...
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|2606:50c0:8003::154|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 3114 (3.0K) [text/plain]
+Saving to: ‘baseline.centered_instance.yaml’
 
-Epoch 00045: ReduceLROnPlateau reducing learning rate to 6.24999984211172e-06.
-200/200 - 11s - loss: 1.9136e-06 - val_loss: 2.8379e-05 - lr: 1.2500e-05 - 11s/epoch - 56ms/step
-Epoch 46/200
-200/200 - 11s - loss: 1.7911e-06 - val_loss: 4.0055e-05 - lr: 6.2500e-06 - 11s/epoch - 56ms/step
-Epoch 00046: early stopping
-INFO:sleap.nn.training:Finished training loop. [8.7 min]
-INFO:sleap.nn.training:Deleting visualization directory: models/courtship.centroid/viz
-INFO:sleap.nn.training:Saving evaluation metrics to model folder...
-Predicting... <span style="color: rgb(114,156,31)">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-magenta-fg">100%</span> ETA: <span class="ansi-cyan-fg">0:00:00</span> <span class="ansi-red-fg">33.7 FPS</span>31m51.9 FPS31m52.6 FPSFPS
-INFO:sleap.nn.evals:Saved predictions: models/courtship.centroid/labels_pr.train.slp
-INFO:sleap.nn.evals:Saved metrics: models/courtship.centroid/metrics.train.npz
-INFO:sleap.nn.evals:OKS mAP: 0.725241
-Predicting... <span style="color: rgb(114,156,31)">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-magenta-fg">100%</span> ETA: <span class="ansi-cyan-fg">0:00:00</span> <span class="ansi-red-fg">7.3 FPS</span>0:00:01 <span class="ansi-red-fg">184.6 FPS</span>m
-INFO:sleap.nn.evals:Saved predictions: models/courtship.centroid/labels_pr.val.slp
-INFO:sleap.nn.evals:Saved metrics: models/courtship.centroid/metrics.val.npz
-INFO:sleap.nn.evals:OKS mAP: 0.870526
+baseline.centered_i 100%[===================&gt;]   3.04K  --.-KB/s    in 0s      
+
+2025-09-23 22:50:14 (32.3 MB/s) - ‘baseline.centered_instance.yaml’ saved [3114/3114]
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-4">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="err">!</span><span class="n">sleap</span><span class="o">-</span><span class="n">nn</span> <span class="n">train</span> <span class="o">--</span><span class="n">config</span><span class="o">-</span><span class="n">name</span> <span class="n">baseline</span><span class="o">.</span><span class="n">centroid</span> <span class="o">--</span><span class="n">config</span><span class="o">-</span><span class="nb">dir</span> <span class="o">.</span>  <span class="s2">"data_config.train_labels_path=[dataset/drosophila-melanogaster-courtship/courtship_labels.slp]"</span> <span class="n">trainer_config</span><span class="o">.</span><span class="n">ckpt_dir</span><span class="o">=</span><span class="s2">"models"</span> <span class="n">trainer_config</span><span class="o">.</span><span class="n">run_name</span><span class="o">=</span><span class="s2">"courtship.centroid"</span> <span class="n">trainer_config</span><span class="o">.</span><span class="n">max_epochs</span><span class="o">=</span><span class="mi">200</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-4">!sleap-nn train --config-name baseline.centroid --config-dir .  "data_config.train_labels_path=[dataset/drosophila-melanogaster-courtship/courtship_labels.slp]" trainer_config.ckpt_dir="models" trainer_config.run_name="courtship.centroid" trainer_config.max_epochs=200</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>2025-09-23 22:51:31 | INFO | sleap_nn.cli:train:98 | Input config:
+2025-09-23 22:51:31 | INFO | sleap_nn.cli:train:99 | 
+data_config:
+  train_labels_path:
+  - dataset/drosophila-melanogaster-courtship/courtship_labels.slp
+  val_labels_path: null
+  validation_fraction: 0.1
+  test_file_path: null
+  provider: LabelsReader
+  user_instances_only: true
+  data_pipeline_fw: torch_dataset
+  cache_img_path: null
+  use_existing_imgs: false
+  delete_cache_imgs_after_training: true
+  preprocessing:
+    ensure_rgb: false
+    ensure_grayscale: false
+    max_height: null
+    max_width: null
+    scale: 0.5
+    crop_size: null
+    min_crop_size: 100
+  use_augmentations_train: true
+  augmentation_config:
+    intensity:
+      uniform_noise_min: 0.0
+      uniform_noise_max: 1.0
+      uniform_noise_p: 0.0
+      gaussian_noise_mean: 5.0
+      gaussian_noise_std: 1.0
+      gaussian_noise_p: 0.0
+      contrast_min: 0.9
+      contrast_max: 1.1
+      contrast_p: 0.0
+      brightness_min: 0.9
+      brightness_max: 1.1
+      brightness_p: 0.0
+    geometric:
+      rotation_min: -15.0
+      rotation_max: 15.0
+      scale_min: 1.0
+      scale_max: 1.0
+      translate_width: 0.0
+      translate_height: 0.0
+      affine_p: 1.0
+      erase_scale_min: 0.0001
+      erase_scale_max: 0.01
+      erase_ratio_min: 1.0
+      erase_ratio_max: 1.0
+      erase_p: 0.0
+      mixup_lambda_min: 0.01
+      mixup_lambda_max: 0.05
+      mixup_p: 0.0
+  skeletons: null
+model_config:
+  init_weights: xavier
+  pretrained_backbone_weights: null
+  pretrained_head_weights: null
+  backbone_config:
+    unet:
+      in_channels: 1
+      kernel_size: 3
+      filters: 16
+      filters_rate: 2.0
+      max_stride: 16
+      stem_stride: null
+      middle_block: true
+      up_interpolate: true
+      stacks: 1
+      convs_per_block: 2
+      output_stride: 2
+    convnext: null
+    swint: null
+  head_configs:
+    single_instance: null
+    centroid:
+      confmaps:
+        sigma: 1.5
+        output_stride: 2
+        anchor_part: null
+    centered_instance: null
+    bottomup: null
+  total_params: null
+trainer_config:
+  train_data_loader:
+    batch_size: 4
+    shuffle: true
+    num_workers: 0
+  val_data_loader:
+    batch_size: 4
+    shuffle: false
+    num_workers: 0
+  model_ckpt:
+    save_top_k: 1
+    save_last: false
+  trainer_devices: null
+  trainer_device_indices: null
+  trainer_accelerator: auto
+  profiler: null
+  trainer_strategy: auto
+  enable_progress_bar: true
+  min_train_steps_per_epoch: 200
+  train_steps_per_epoch: null
+  visualize_preds_during_training: true
+  keep_viz: false
+  max_epochs: 200
+  seed: null
+  use_wandb: false
+  save_ckpt: true
+  ckpt_dir: models
+  run_name: courtship.centroid
+  resume_ckpt_path: null
+  wandb:
+    entity: null
+    project: project_name
+    name: run_name
+    save_viz_imgs_wandb: false
+    wandb_mode: ''
+    api_key: ''
+    prv_runid: null
+    group: null
+  optimizer_name: Adam
+  optimizer:
+    lr: 0.0001
+    amsgrad: false
+  lr_scheduler:
+    step_lr: null
+    reduce_lr_on_plateau:
+      threshold: 1.0e-06
+      threshold_mode: rel
+      cooldown: 3
+      patience: 5
+      factor: 0.5
+      min_lr: 1.0e-08
+  early_stopping:
+    min_delta: 1.0e-08
+    patience: 10
+    stop_training_on_plateau: true
+  online_hard_keypoint_mining:
+    online_mining: false
+    hard_to_easy_ratio: 2.0
+    min_hard_keypoints: 2
+    max_hard_keypoints: null
+    loss_scale: 5.0
+  zmq:
+    publish_port: null
+    controller_port: null
+    controller_polling_timeout: 10
+name: ''
+description: ''
+sleap_nn_version: 0.0.1
+filename: ''
+
+2025-09-23 22:51:31 | INFO | sleap_nn.train:run_training:27 | Started training at: 2025-09-23 22:51:31.617057
+2025-09-23 22:51:31 | INFO | sleap_nn.training.model_trainer:_setup_train_val_labels:216 | Creating train-val split...
+2025-09-23 22:51:31 | INFO | sleap_nn.training.model_trainer:_setup_train_val_labels:261 | # Train Labeled frames: 134
+2025-09-23 22:51:31 | INFO | sleap_nn.training.model_trainer:_setup_train_val_labels:262 | # Val Labeled frames: 14
+2025-09-23 22:51:31 | INFO | sleap_nn.training.model_trainer:setup_config:512 | Setting up config...
+2025-09-23 22:51:32 | INFO | sleap_nn.training.model_trainer:_verify_model_input_channels:417 | Updating backbone in_channels to 3 based on the input image channels.
+2025-09-23 22:51:32 | INFO | sleap_nn.training.model_trainer:train:849 | Setting up for training...
+2025-09-23 22:51:32 | INFO | sleap_nn.training.model_trainer:_setup_model_ckpt_dir:575 | Setting up model ckpt dir: `models/courtship.centroid`...
+2025-09-23 22:51:32 | INFO | sleap_nn.training.model_trainer:train:864 | Setting up visualization train and val datasets...
+2025-09-23 22:51:32 | INFO | sleap_nn.training.model_trainer:train:868 | Setting up Trainer...
+2025-09-23 22:51:32 | INFO | sleap_nn.training.model_trainer:_setup_loggers_callbacks:647 | Setting up callbacks and loggers...
+2025-09-23 22:51:32 | INFO | sleap_nn.training.model_trainer:train:897 | Trainer devices: auto
+GPU available: True (mps), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+2025-09-23 22:51:32 | INFO | sleap_nn.training.model_trainer:train:950 | Training on 1 device(s)
+2025-09-23 22:51:32 | INFO | sleap_nn.training.model_trainer:train:951 | Training on mps:0 accelerator
+2025-09-23 22:51:32 | INFO | sleap_nn.training.model_trainer:train:955 | Setting up lightning module for centroid model...
+2025-09-23 22:51:32 | INFO | sleap_nn.training.model_trainer:train:959 | Backbone model: UNet(
+  (encoders): ModuleList(
+    (0): Encoder(
+      (encoder_stack): ModuleList(
+        (0): SimpleConvBlock(
+          (blocks): Sequential(
+            (stack0_enc0_conv0): Conv2d(3, 16, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc0_act0_relu): ReLU()
+            (stack0_enc0_conv1): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc0_act1_relu): ReLU()
+          )
+        )
+        (1): SimpleConvBlock(
+          (blocks): Sequential(
+            (stack0_enc1_pool): MaxPool2dWithSamePadding(kernel_size=2, stride=2, padding=same, dilation=1, ceil_mode=False)
+            (stack0_enc1_conv0): Conv2d(16, 32, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc1_act0_relu): ReLU()
+            (stack0_enc1_conv1): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc1_act1_relu): ReLU()
+          )
+        )
+        (2): SimpleConvBlock(
+          (blocks): Sequential(
+            (stack0_enc2_pool): MaxPool2dWithSamePadding(kernel_size=2, stride=2, padding=same, dilation=1, ceil_mode=False)
+            (stack0_enc2_conv0): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc2_act0_relu): ReLU()
+            (stack0_enc2_conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc2_act1_relu): ReLU()
+          )
+        )
+        (3): SimpleConvBlock(
+          (blocks): Sequential(
+            (stack0_enc3_pool): MaxPool2dWithSamePadding(kernel_size=2, stride=2, padding=same, dilation=1, ceil_mode=False)
+            (stack0_enc3_conv0): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc3_act0_relu): ReLU()
+            (stack0_enc3_conv1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc3_act1_relu): ReLU()
+          )
+        )
+        (4): Sequential(
+          (stack0_enc4_last_pool): MaxPool2dWithSamePadding(kernel_size=2, stride=2, padding=same, dilation=1, ceil_mode=False)
+        )
+      )
+    )
+  )
+  (decoders): ModuleList(
+    (0): Decoder(
+      (decoder_stack): ModuleList(
+        (0): SimpleUpsamplingBlock(
+          (blocks): Sequential(
+            (stack0_dec0_s16_to_s8_interp_bilinear): Upsample(scale_factor=2.0, mode='bilinear')
+            (stack0_dec0_s16_to_s8_refine_conv0): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec0_s16_to_s8_refine_conv0_act_relu): ReLU()
+            (stack0_dec0_s16_to_s8_refine_conv1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec0_s16_to_s8_refine_conv1_act_relu): ReLU()
+          )
+        )
+        (1): SimpleUpsamplingBlock(
+          (blocks): Sequential(
+            (stack0_dec1_s8_to_s4_interp_bilinear): Upsample(scale_factor=2.0, mode='bilinear')
+            (stack0_dec1_s8_to_s4_refine_conv0): Conv2d(192, 64, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec1_s8_to_s4_refine_conv0_act_relu): ReLU()
+            (stack0_dec1_s8_to_s4_refine_conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec1_s8_to_s4_refine_conv1_act_relu): ReLU()
+          )
+        )
+        (2): SimpleUpsamplingBlock(
+          (blocks): Sequential(
+            (stack0_dec2_s4_to_s2_interp_bilinear): Upsample(scale_factor=2.0, mode='bilinear')
+            (stack0_dec2_s4_to_s2_refine_conv0): Conv2d(96, 32, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec2_s4_to_s2_refine_conv0_act_relu): ReLU()
+            (stack0_dec2_s4_to_s2_refine_conv1): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec2_s4_to_s2_refine_conv1_act_relu): ReLU()
+          )
+        )
+      )
+    )
+  )
+  (middle_blocks): ModuleList(
+    (0): SimpleConvBlock(
+      (blocks): Sequential(
+        (stack0_enc5_middle_expand_conv0): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=same)
+        (stack0_enc5_middle_expand_act0_relu): ReLU()
+      )
+    )
+    (1): SimpleConvBlock(
+      (blocks): Sequential(
+        (stack0_enc6_middle_contract_conv0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=same)
+        (stack0_enc6_middle_contract_act0_relu): ReLU()
+      )
+    )
+  )
+)
+2025-09-23 22:51:32 | INFO | sleap_nn.training.model_trainer:train:960 | Head model: ModuleList(
+  (0): Sequential(
+    (CentroidConfmapsHead): Sequential(
+      (0): Conv2d(32, 1, kernel_size=(1, 1), stride=(1, 1), padding=same)
+      (1): Identity()
+    )
+  )
+)
+2025-09-23 22:51:32 | INFO | sleap_nn.training.model_trainer:train:962 | Total model parameters: 1953393
+2025-09-23 22:51:32 | INFO | sleap_nn.training.model_trainer:train:967 | Input image shape: torch.Size([1, 3, 512, 512])
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/torch/utils/data/dataloader.py:684: UserWarning: 'pin_memory' argument is set as true but not supported on MPS now, then device pinned memory won't be used.
+  warnings.warn(warn_msg)
+2025-09-23 22:51:32 | INFO | sleap_nn.training.model_trainer:train:1021 | Finished trainer set up. [0.3s]
+2025-09-23 22:51:32 | INFO | sleap_nn.training.model_trainer:train:1024 | Starting training loop...
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/callbacks/model_checkpoint.py:751: Checkpoint directory /Users/divyasesh/Desktop/talmolab/sleap-core-docs/docs/notebooks/models/courtship.centroid exists and is not empty.
+
+  | Name               | Type         | Params | Mode 
+------------------------------------------------------------
+0 | model              | Model        | 2.0 M  | train
+1 | centroid_inf_layer | CentroidCrop | 0      | train
+------------------------------------------------------------
+2.0 M     Trainable params
+0         Non-trainable params
+2.0 M     Total params
+7.814     Total estimated model params size (MB)
+73        Modules in train mode
+0         Modules in eval mode
+Sanity Checking: |                                        | 0/? [00:00&lt;?, ?it/s]/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:433: The 'val_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=7` in the `DataLoader` to improve performance.
+Sanity Checking DataLoader 0:   0%|                       | 0/2 [00:00&lt;?, ?it/s]/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('learning_rate', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('val_loss', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+Sanity Checking DataLoader 0: 100%|███████████████| 2/2 [00:00&lt;00:00,  2.16it/s]/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('val_time', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:433: The 'train_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=7` in the `DataLoader` to improve performance.
+Epoch 0:   0%|                                          | 0/200 [00:00&lt;?, ?it/s]/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('train_loss', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+Epoch 0: 100%|███████| 200/200 [01:48&lt;00:00,  1.84it/s, train_loss_step=8.05e-5]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 19.03it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  8.28it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:00&lt;00:00,  4.03it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  3.48it/s]
+Epoch 0: 100%|█| 200/200 [01:51&lt;00:00,  1.79it/s, train_loss_step=8.05e-5, learn/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('train_time', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+Epoch 1: 100%|█| 200/200 [01:52&lt;00:00,  1.78it/s, train_loss_step=4.32e-5, learn
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 19.13it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  8.52it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:00&lt;00:00,  4.86it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  3.92it/s]
+Epoch 2: 100%|█| 200/200 [02:00&lt;00:00,  1.66it/s, train_loss_step=5.64e-5, learn
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 15.93it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  6.18it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:01&lt;00:00,  2.81it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  2.55it/s]
+Epoch 3: 100%|█| 200/200 [02:14&lt;00:00,  1.49it/s, train_loss_step=5.27e-5, learn
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 17.49it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  6.56it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:00&lt;00:00,  3.59it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  2.95it/s]
+Epoch 4: 100%|█| 200/200 [02:24&lt;00:00,  1.39it/s, train_loss_step=3.65e-5, learn
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 18.54it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  7.41it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:00&lt;00:00,  3.45it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  3.10it/s]
+Epoch 5: 100%|█| 200/200 [02:39&lt;00:00,  1.25it/s, train_loss_step=3.99e-5, learn
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:01,  2.85it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  2.58it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:01&lt;00:00,  2.16it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:02&lt;00:00,  1.99it/s]
+Epoch 6: 100%|█| 200/200 [02:17&lt;00:00,  1.46it/s, train_loss_step=1.21e-5, learn
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 17.55it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  6.96it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:00&lt;00:00,  3.90it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  3.25it/s]
+Epoch 7: 100%|█| 200/200 [02:40&lt;00:00,  1.25it/s, train_loss_step=1.24e-5, learn
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 13.14it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  4.79it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:01&lt;00:00,  2.22it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:02&lt;00:00,  1.66it/s]
+Epoch 8: 100%|█| 200/200 [02:44&lt;00:00,  1.22it/s, train_loss_step=1.4e-5, learni
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 12.82it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  5.41it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:00&lt;00:00,  3.38it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  2.84it/s]
+Epoch 9: 100%|█| 200/200 [02:45&lt;00:00,  1.21it/s, train_loss_step=1.51e-5, learn
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 14.43it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  6.28it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:00&lt;00:00,  3.66it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  3.13it/s]
+Epoch 10: 100%|█| 200/200 [02:31&lt;00:00,  1.32it/s, train_loss_step=7.77e-6, lear
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 14.05it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  5.19it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:00&lt;00:00,  3.29it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  2.83it/s]
+Epoch 11: 100%|█| 200/200 [02:21&lt;00:00,  1.41it/s, train_loss_step=8.04e-6, lear
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 18.16it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  6.91it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:00&lt;00:00,  3.63it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  2.85it/s]
+Epoch 12: 100%|█| 200/200 [02:52&lt;00:00,  1.16it/s, train_loss_step=6.16e-6, lear
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 14.08it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  4.81it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:00&lt;00:00,  3.09it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  2.65it/s]
+Epoch 13: 100%|█| 200/200 [02:57&lt;00:00,  1.13it/s, train_loss_step=5.98e-6, lear
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 12.53it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  4.64it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:01&lt;00:00,  2.51it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  2.22it/s]
+Epoch 14: 100%|█| 200/200 [03:15&lt;00:00,  1.02it/s, train_loss_step=7.85e-6, lear
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00,  4.86it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  3.18it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:01&lt;00:00,  2.39it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  2.09it/s]
+Epoch 15: 100%|█| 200/200 [03:29&lt;00:00,  0.96it/s, train_loss_step=3.18e-6, lear
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 14.51it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  5.21it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:00&lt;00:00,  3.10it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  2.56it/s]
+Epoch 16: 100%|█| 200/200 [03:00&lt;00:00,  1.11it/s, train_loss_step=2.3e-6, learn
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 11.24it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  4.70it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:01&lt;00:00,  2.80it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  2.35it/s]
+Epoch 17: 100%|█| 200/200 [03:12&lt;00:00,  1.04it/s, train_loss_step=3.18e-6, lear
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00,  9.95it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  2.95it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:01&lt;00:00,  2.26it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:02&lt;00:00,  1.95it/s]
+Epoch 18: 100%|█| 200/200 [03:32&lt;00:00,  0.94it/s, train_loss_step=2.43e-6, lear
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00,  7.00it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  2.31it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:01&lt;00:00,  1.52it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:03&lt;00:00,  1.18it/s]
+Epoch 19: 100%|█| 200/200 [03:18&lt;00:00,  1.01it/s, train_loss_step=2.23e-6, lear
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 14.64it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  5.20it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:00&lt;00:00,  3.16it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  2.63it/s]
+Epoch 20: 100%|█| 200/200 [03:36&lt;00:00,  0.92it/s, train_loss_step=2.11e-6, lear
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00,  4.77it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  2.97it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:01&lt;00:00,  1.83it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:02&lt;00:00,  1.39it/s]
+Epoch 21: 100%|█| 200/200 [04:07&lt;00:00,  0.81it/s, train_loss_step=3.97e-6, lear
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/4 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  25%|█████               | 1/4 [00:00&lt;00:00, 14.72it/s]
+Validation DataLoader 0:  50%|██████████          | 2/4 [00:00&lt;00:00,  5.08it/s]
+Validation DataLoader 0:  75%|███████████████     | 3/4 [00:01&lt;00:00,  2.50it/s]
+Validation DataLoader 0: 100%|████████████████████| 4/4 [00:01&lt;00:00,  2.18it/s]
+Epoch 22:   1%| | 2/200 [00:01&lt;03:15,  1.01it/s, train_loss_step=1.23e-6, learni^C
+2025-09-23 23:54:24 | INFO | sleap_nn.training.model_trainer:train:1037 | Finished training loop. [62.9 min]
+2025-09-23 23:54:24 | INFO | sleap_nn.training.model_trainer:train:1064 | Deleting viz folder at models/courtship.centroid/viz...
 </pre>
 </div>
 </div>
@@ -2854,10 +3002,10 @@ INFO:sleap.nn.evals:OKS mAP: 0.870526
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [26]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-4">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-5">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -2867,9 +3015,9 @@ INFO:sleap.nn.evals:OKS mAP: 0.870526
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="err">!</span><span class="n">sleap</span><span class="o">-</span><span class="n">train</span> <span class="n">baseline_medium_rf</span><span class="o">.</span><span class="n">topdown</span><span class="o">.</span><span class="n">json</span> <span class="s2">"dataset/drosophila-melanogaster-courtship/courtship_labels.slp"</span> <span class="o">--</span><span class="n">run_name</span> <span class="s2">"courtship.topdown_confmaps"</span> <span class="o">--</span><span class="n">video</span><span class="o">-</span><span class="n">paths</span> <span class="s2">"dataset/drosophila-melanogaster-courtship/20190128_113421.mp4"</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="err">!</span><span class="n">sleap</span><span class="o">-</span><span class="n">nn</span> <span class="n">train</span> <span class="o">--</span><span class="n">config</span><span class="o">-</span><span class="n">name</span> <span class="n">baseline</span><span class="o">.</span><span class="n">centered_instance</span> <span class="o">--</span><span class="n">config</span><span class="o">-</span><span class="nb">dir</span> <span class="o">.</span>  <span class="s2">"data_config.train_labels_path=[dataset/drosophila-melanogaster-courtship/courtship_labels.slp]"</span> <span class="n">trainer_config</span><span class="o">.</span><span class="n">ckpt_dir</span><span class="o">=</span><span class="s2">"models"</span>  <span class="n">trainer_config</span><span class="o">.</span><span class="n">run_name</span><span class="o">=</span><span class="s2">"courtship.topdown_confmaps"</span> <span class="n">trainer_config</span><span class="o">.</span><span class="n">max_epochs</span><span class="o">=</span><span class="mi">200</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-4">!sleap-train baseline_medium_rf.topdown.json "dataset/drosophila-melanogaster-courtship/courtship_labels.slp" --run_name "courtship.topdown_confmaps" --video-paths "dataset/drosophila-melanogaster-courtship/20190128_113421.mp4"</div>
+<div class="clipboard-copy-txt" id="cell-5">!sleap-nn train --config-name baseline.centered_instance --config-dir .  "data_config.train_labels_path=[dataset/drosophila-melanogaster-courtship/courtship_labels.slp]" trainer_config.ckpt_dir="models"  trainer_config.run_name="courtship.topdown_confmaps" trainer_config.max_epochs=200</div>
 </div>
 </div>
 </div>
@@ -2881,349 +3029,470 @@ INFO:sleap.nn.evals:OKS mAP: 0.870526
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>INFO:sleap.nn.training:Versions:
-SLEAP: 1.3.2
-TensorFlow: 2.7.0
-Numpy: 1.21.5
-Python: 3.7.12
-OS: Linux-5.15.0-78-generic-x86_64-with-debian-bookworm-sid
-INFO:sleap.nn.training:Training labels file: dataset/drosophila-melanogaster-courtship/courtship_labels.slp
-INFO:sleap.nn.training:Training profile: /home/talmolab/sleap-estimates-animal-poses/pull-requests/sleap/sleap/training_profiles/baseline_medium_rf.topdown.json
-INFO:sleap.nn.training:
-INFO:sleap.nn.training:Arguments:
-INFO:sleap.nn.training:{
-    "training_job_path": "baseline_medium_rf.topdown.json",
-    "labels_path": "dataset/drosophila-melanogaster-courtship/courtship_labels.slp",
-    "video_paths": [
-        "dataset/drosophila-melanogaster-courtship/20190128_113421.mp4"
-    ],
-    "val_labels": null,
-    "test_labels": null,
-    "base_checkpoint": null,
-    "tensorboard": false,
-    "save_viz": false,
-    "zmq": false,
-    "run_name": "courtship.topdown_confmaps",
-    "prefix": "",
-    "suffix": "",
-    "cpu": false,
-    "first_gpu": false,
-    "last_gpu": false,
-    "gpu": "auto"
-}
-INFO:sleap.nn.training:
-INFO:sleap.nn.training:Training job:
-INFO:sleap.nn.training:{
-    "data": {
-        "labels": {
-            "training_labels": null,
-            "validation_labels": null,
-            "validation_fraction": 0.1,
-            "test_labels": null,
-            "split_by_inds": false,
-            "training_inds": null,
-            "validation_inds": null,
-            "test_inds": null,
-            "search_path_hints": [],
-            "skeletons": []
-        },
-        "preprocessing": {
-            "ensure_rgb": false,
-            "ensure_grayscale": false,
-            "imagenet_mode": null,
-            "input_scaling": 1.0,
-            "pad_to_stride": null,
-            "resize_and_pad_to_target": true,
-            "target_height": null,
-            "target_width": null
-        },
-        "instance_cropping": {
-            "center_on_part": null,
-            "crop_size": null,
-            "crop_size_detection_padding": 16
-        }
-    },
-    "model": {
-        "backbone": {
-            "leap": null,
-            "unet": {
-                "stem_stride": null,
-                "max_stride": 16,
-                "output_stride": 4,
-                "filters": 24,
-                "filters_rate": 2.0,
-                "middle_block": true,
-                "up_interpolate": true,
-                "stacks": 1
-            },
-            "hourglass": null,
-            "resnet": null,
-            "pretrained_encoder": null
-        },
-        "heads": {
-            "single_instance": null,
-            "centroid": null,
-            "centered_instance": {
-                "anchor_part": null,
-                "part_names": null,
-                "sigma": 2.5,
-                "output_stride": 4,
-                "loss_weight": 1.0,
-                "offset_refinement": false
-            },
-            "multi_instance": null,
-            "multi_class_bottomup": null,
-            "multi_class_topdown": null
-        },
-        "base_checkpoint": null
-    },
-    "optimization": {
-        "preload_data": true,
-        "augmentation_config": {
-            "rotate": true,
-            "rotation_min_angle": -15.0,
-            "rotation_max_angle": 15.0,
-            "translate": false,
-            "translate_min": -5,
-            "translate_max": 5,
-            "scale": false,
-            "scale_min": 0.9,
-            "scale_max": 1.1,
-            "uniform_noise": false,
-            "uniform_noise_min_val": 0.0,
-            "uniform_noise_max_val": 10.0,
-            "gaussian_noise": false,
-            "gaussian_noise_mean": 5.0,
-            "gaussian_noise_stddev": 1.0,
-            "contrast": false,
-            "contrast_min_gamma": 0.5,
-            "contrast_max_gamma": 2.0,
-            "brightness": false,
-            "brightness_min_val": 0.0,
-            "brightness_max_val": 10.0,
-            "random_crop": false,
-            "random_crop_height": 256,
-            "random_crop_width": 256,
-            "random_flip": false,
-            "flip_horizontal": true
-        },
-        "online_shuffling": true,
-        "shuffle_buffer_size": 128,
-        "prefetch": true,
-        "batch_size": 4,
-        "batches_per_epoch": null,
-        "min_batches_per_epoch": 200,
-        "val_batches_per_epoch": null,
-        "min_val_batches_per_epoch": 10,
-        "epochs": 200,
-        "optimizer": "adam",
-        "initial_learning_rate": 0.0001,
-        "learning_rate_schedule": {
-            "reduce_on_plateau": true,
-            "reduction_factor": 0.5,
-            "plateau_min_delta": 1e-08,
-            "plateau_patience": 5,
-            "plateau_cooldown": 3,
-            "min_learning_rate": 1e-08
-        },
-        "hard_keypoint_mining": {
-            "online_mining": false,
-            "hard_to_easy_ratio": 2.0,
-            "min_hard_keypoints": 2,
-            "max_hard_keypoints": null,
-            "loss_scale": 5.0
-        },
-        "early_stopping": {
-            "stop_training_on_plateau": true,
-            "plateau_min_delta": 1e-08,
-            "plateau_patience": 10
-        }
-    },
-    "outputs": {
-        "save_outputs": true,
-        "run_name": "courtship.topdown_confmaps",
-        "run_name_prefix": "",
-        "run_name_suffix": null,
-        "runs_folder": "models",
-        "tags": [],
-        "save_visualizations": true,
-        "keep_viz_images": true,
-        "zip_outputs": false,
-        "log_to_csv": true,
-        "checkpointing": {
-            "initial_model": false,
-            "best_model": true,
-            "every_epoch": false,
-            "latest_model": false,
-            "final_model": false
-        },
-        "tensorboard": {
-            "write_logs": false,
-            "loss_frequency": "epoch",
-            "architecture_graph": true,
-            "profile_graph": false,
-            "visualizations": true
-        },
-        "zmq": {
-            "subscribe_to_controller": false,
-            "controller_address": "tcp://127.0.0.1:9000",
-            "controller_polling_timeout": 10,
-            "publish_updates": false,
-            "publish_address": "tcp://127.0.0.1:9001"
-        }
-    },
-    "name": "",
-    "description": "",
-    "sleap_version": "1.3.2",
-    "filename": "/home/talmolab/sleap-estimates-animal-poses/pull-requests/sleap/sleap/training_profiles/baseline_medium_rf.topdown.json"
-}
-INFO:sleap.nn.training:
-2023-09-01 13:39:43.324520: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:39:43.329181: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:39:43.329961: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-INFO:sleap.nn.training:Auto-selected GPU 0 with 23056 MiB of free memory.
-INFO:sleap.nn.training:Using GPU 0 for acceleration.
-INFO:sleap.nn.training:Disabled GPU memory pre-allocation.
-INFO:sleap.nn.training:System:
-GPUs: 1/1 available
-  Device: /physical_device:GPU:0
-         Available: True
-        Initalized: False
-     Memory growth: True
-INFO:sleap.nn.training:
-INFO:sleap.nn.training:Initializing trainer...
-INFO:sleap.nn.training:Loading training labels from: dataset/drosophila-melanogaster-courtship/courtship_labels.slp
-INFO:sleap.nn.training:Creating training and validation splits from validation fraction: 0.1
-INFO:sleap.nn.training:  Splits: Training = 134 / Validation = 15.
-INFO:sleap.nn.training:Setting up for training...
-INFO:sleap.nn.training:Setting up pipeline builders...
-INFO:sleap.nn.training:Setting up model...
-INFO:sleap.nn.training:Building test pipeline...
-2023-09-01 13:39:44.254912: I tensorflow/core/platform/cpu_feature_guard.cc:151] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F FMA
-To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2023-09-01 13:39:44.255468: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:39:44.256291: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:39:44.257158: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:39:44.546117: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:39:44.546866: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:39:44.547533: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:39:44.548184: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1525] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 21151 MB memory:  -&gt; device: 0, name: NVIDIA RTX A5000, pci bus id: 0000:01:00.0, compute capability: 8.6
-INFO:sleap.nn.training:Loaded test example. [1.684s]
-INFO:sleap.nn.training:  Input shape: (144, 144, 3)
-INFO:sleap.nn.training:Created Keras model.
-INFO:sleap.nn.training:  Backbone: UNet(stacks=1, filters=24, filters_rate=2.0, kernel_size=3, stem_kernel_size=7, convs_per_block=2, stem_blocks=0, down_blocks=4, middle_block=True, up_blocks=2, up_interpolate=True, block_contraction=False)
-INFO:sleap.nn.training:  Max stride: 16
-INFO:sleap.nn.training:  Parameters: 4,311,877
-INFO:sleap.nn.training:  Heads: 
-INFO:sleap.nn.training:    [0] = CenteredInstanceConfmapsHead(part_names=['head', 'thorax', 'abdomen', 'wingL', 'wingR', 'forelegL4', 'forelegR4', 'midlegL4', 'midlegR4', 'hindlegL4', 'hindlegR4', 'eyeL', 'eyeR'], anchor_part=None, sigma=2.5, output_stride=4, loss_weight=1.0)
-INFO:sleap.nn.training:  Outputs: 
-INFO:sleap.nn.training:    [0] = KerasTensor(type_spec=TensorSpec(shape=(None, 36, 36, 13), dtype=tf.float32, name=None), name='CenteredInstanceConfmapsHead/BiasAdd:0', description="created by layer 'CenteredInstanceConfmapsHead'")
-INFO:sleap.nn.training:Training from scratch
-INFO:sleap.nn.training:Setting up data pipelines...
-INFO:sleap.nn.training:Training set: n = 134
-INFO:sleap.nn.training:Validation set: n = 15
-INFO:sleap.nn.training:Setting up optimization...
-INFO:sleap.nn.training:  Learning rate schedule: LearningRateScheduleConfig(reduce_on_plateau=True, reduction_factor=0.5, plateau_min_delta=1e-08, plateau_patience=5, plateau_cooldown=3, min_learning_rate=1e-08)
-INFO:sleap.nn.training:  Early stopping: EarlyStoppingConfig(stop_training_on_plateau=True, plateau_min_delta=1e-08, plateau_patience=10)
-INFO:sleap.nn.training:Setting up outputs...
-INFO:sleap.nn.training:Created run path: models/courtship.topdown_confmaps
-INFO:sleap.nn.training:Setting up visualization...
-INFO:sleap.nn.training:Finished trainer set up. [3.2s]
-INFO:sleap.nn.training:Creating tf.data.Datasets for training data generation...
-INFO:sleap.nn.training:Finished creating training datasets. [5.9s]
-INFO:sleap.nn.training:Starting training loop...
-Epoch 1/200
-2023-09-01 13:39:54.940083: I tensorflow/stream_executor/cuda/cuda_dnn.cc:366] Loaded cuDNN version 8201
-2023-09-01 13:40:00.337645: I tensorflow/stream_executor/cuda/cuda_blas.cc:1774] TensorFloat-32 will be used for the matrix multiplication. This will only be logged once.
-200/200 - 8s - loss: 0.0108 - head: 0.0073 - thorax: 0.0067 - abdomen: 0.0111 - wingL: 0.0125 - wingR: 0.0126 - forelegL4: 0.0111 - forelegR4: 0.0108 - midlegL4: 0.0127 - midlegR4: 0.0128 - hindlegL4: 0.0131 - hindlegR4: 0.0131 - eyeL: 0.0082 - eyeR: 0.0083 - val_loss: 0.0087 - val_head: 0.0033 - val_thorax: 0.0039 - val_abdomen: 0.0089 - val_wingL: 0.0105 - val_wingR: 0.0106 - val_forelegL4: 0.0091 - val_forelegR4: 0.0091 - val_midlegL4: 0.0123 - val_midlegR4: 0.0116 - val_hindlegL4: 0.0128 - val_hindlegR4: 0.0116 - val_eyeL: 0.0045 - val_eyeR: 0.0045 - lr: 1.0000e-04 - 8s/epoch - 38ms/step
-Epoch 2/200
-200/200 - 4s - loss: 0.0064 - head: 0.0019 - thorax: 0.0029 - abdomen: 0.0057 - wingL: 0.0061 - wingR: 0.0073 - forelegL4: 0.0075 - forelegR4: 0.0078 - midlegL4: 0.0092 - midlegR4: 0.0092 - hindlegL4: 0.0099 - hindlegR4: 0.0102 - eyeL: 0.0025 - eyeR: 0.0025 - val_loss: 0.0061 - val_head: 0.0015 - val_thorax: 0.0024 - val_abdomen: 0.0049 - val_wingL: 0.0056 - val_wingR: 0.0078 - val_forelegL4: 0.0079 - val_forelegR4: 0.0067 - val_midlegL4: 0.0086 - val_midlegR4: 0.0089 - val_hindlegL4: 0.0093 - val_hindlegR4: 0.0081 - val_eyeL: 0.0037 - val_eyeR: 0.0032 - lr: 1.0000e-04 - 4s/epoch - 19ms/step
-Epoch 3/200
-200/200 - 3s - loss: 0.0048 - head: 8.9048e-04 - thorax: 0.0019 - abdomen: 0.0036 - wingL: 0.0041 - wingR: 0.0051 - forelegL4: 0.0063 - forelegR4: 0.0066 - midlegL4: 0.0076 - midlegR4: 0.0076 - hindlegL4: 0.0076 - hindlegR4: 0.0080 - eyeL: 0.0015 - eyeR: 0.0015 - val_loss: 0.0058 - val_head: 0.0014 - val_thorax: 0.0021 - val_abdomen: 0.0044 - val_wingL: 0.0051 - val_wingR: 0.0070 - val_forelegL4: 0.0072 - val_forelegR4: 0.0063 - val_midlegL4: 0.0088 - val_midlegR4: 0.0085 - val_hindlegL4: 0.0097 - val_hindlegR4: 0.0079 - val_eyeL: 0.0038 - val_eyeR: 0.0032 - lr: 1.0000e-04 - 3s/epoch - 16ms/step
-Epoch 4/200
-200/200 - 3s - loss: 0.0041 - head: 7.6417e-04 - thorax: 0.0015 - abdomen: 0.0028 - wingL: 0.0035 - wingR: 0.0041 - forelegL4: 0.0058 - forelegR4: 0.0060 - midlegL4: 0.0066 - midlegR4: 0.0064 - hindlegL4: 0.0066 - hindlegR4: 0.0070 - eyeL: 0.0013 - eyeR: 0.0012 - val_loss: 0.0048 - val_head: 7.6555e-04 - val_thorax: 0.0013 - val_abdomen: 0.0034 - val_wingL: 0.0042 - val_wingR: 0.0065 - val_forelegL4: 0.0063 - val_forelegR4: 0.0064 - val_midlegL4: 0.0069 - val_midlegR4: 0.0071 - val_hindlegL4: 0.0080 - val_hindlegR4: 0.0062 - val_eyeL: 0.0028 - val_eyeR: 0.0026 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 5/200
-200/200 - 3s - loss: 0.0034 - head: 6.1233e-04 - thorax: 0.0012 - abdomen: 0.0023 - wingL: 0.0028 - wingR: 0.0032 - forelegL4: 0.0052 - forelegR4: 0.0054 - midlegL4: 0.0052 - midlegR4: 0.0051 - hindlegL4: 0.0057 - hindlegR4: 0.0058 - eyeL: 0.0011 - eyeR: 0.0011 - val_loss: 0.0044 - val_head: 9.3809e-04 - val_thorax: 0.0012 - val_abdomen: 0.0027 - val_wingL: 0.0032 - val_wingR: 0.0048 - val_forelegL4: 0.0062 - val_forelegR4: 0.0053 - val_midlegL4: 0.0068 - val_midlegR4: 0.0063 - val_hindlegL4: 0.0067 - val_hindlegR4: 0.0065 - val_eyeL: 0.0035 - val_eyeR: 0.0032 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 6/200
-200/200 - 3s - loss: 0.0028 - head: 5.5957e-04 - thorax: 9.3519e-04 - abdomen: 0.0019 - wingL: 0.0023 - wingR: 0.0025 - forelegL4: 0.0045 - forelegR4: 0.0045 - midlegL4: 0.0040 - midlegR4: 0.0040 - hindlegL4: 0.0047 - hindlegR4: 0.0048 - eyeL: 0.0010 - eyeR: 9.7287e-04 - val_loss: 0.0038 - val_head: 7.6837e-04 - val_thorax: 9.9723e-04 - val_abdomen: 0.0027 - val_wingL: 0.0025 - val_wingR: 0.0046 - val_forelegL4: 0.0058 - val_forelegR4: 0.0049 - val_midlegL4: 0.0054 - val_midlegR4: 0.0058 - val_hindlegL4: 0.0057 - val_hindlegR4: 0.0065 - val_eyeL: 0.0023 - val_eyeR: 0.0022 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 7/200
-200/200 - 3s - loss: 0.0024 - head: 4.7941e-04 - thorax: 7.5772e-04 - abdomen: 0.0017 - wingL: 0.0020 - wingR: 0.0022 - forelegL4: 0.0039 - forelegR4: 0.0041 - midlegL4: 0.0033 - midlegR4: 0.0033 - hindlegL4: 0.0039 - hindlegR4: 0.0040 - eyeL: 9.3055e-04 - eyeR: 8.9191e-04 - val_loss: 0.0036 - val_head: 6.1078e-04 - val_thorax: 0.0010 - val_abdomen: 0.0023 - val_wingL: 0.0025 - val_wingR: 0.0039 - val_forelegL4: 0.0053 - val_forelegR4: 0.0058 - val_midlegL4: 0.0049 - val_midlegR4: 0.0056 - val_hindlegL4: 0.0054 - val_hindlegR4: 0.0049 - val_eyeL: 0.0026 - val_eyeR: 0.0024 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 8/200
-200/200 - 3s - loss: 0.0020 - head: 4.4425e-04 - thorax: 6.8283e-04 - abdomen: 0.0014 - wingL: 0.0015 - wingR: 0.0017 - forelegL4: 0.0035 - forelegR4: 0.0035 - midlegL4: 0.0027 - midlegR4: 0.0026 - hindlegL4: 0.0033 - hindlegR4: 0.0033 - eyeL: 7.7111e-04 - eyeR: 7.2022e-04 - val_loss: 0.0035 - val_head: 7.1555e-04 - val_thorax: 9.1508e-04 - val_abdomen: 0.0022 - val_wingL: 0.0023 - val_wingR: 0.0033 - val_forelegL4: 0.0054 - val_forelegR4: 0.0049 - val_midlegL4: 0.0049 - val_midlegR4: 0.0052 - val_hindlegL4: 0.0052 - val_hindlegR4: 0.0051 - val_eyeL: 0.0025 - val_eyeR: 0.0025 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 9/200
-200/200 - 3s - loss: 0.0017 - head: 3.8990e-04 - thorax: 5.4963e-04 - abdomen: 0.0012 - wingL: 0.0012 - wingR: 0.0014 - forelegL4: 0.0030 - forelegR4: 0.0031 - midlegL4: 0.0022 - midlegR4: 0.0022 - hindlegL4: 0.0027 - hindlegR4: 0.0027 - eyeL: 6.9041e-04 - eyeR: 6.7679e-04 - val_loss: 0.0034 - val_head: 5.6666e-04 - val_thorax: 7.9156e-04 - val_abdomen: 0.0023 - val_wingL: 0.0020 - val_wingR: 0.0041 - val_forelegL4: 0.0043 - val_forelegR4: 0.0048 - val_midlegL4: 0.0041 - val_midlegR4: 0.0051 - val_hindlegL4: 0.0053 - val_hindlegR4: 0.0052 - val_eyeL: 0.0024 - val_eyeR: 0.0026 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 10/200
-200/200 - 3s - loss: 0.0015 - head: 3.6281e-04 - thorax: 5.2471e-04 - abdomen: 0.0010 - wingL: 0.0011 - wingR: 0.0012 - forelegL4: 0.0027 - forelegR4: 0.0028 - midlegL4: 0.0019 - midlegR4: 0.0019 - hindlegL4: 0.0023 - hindlegR4: 0.0024 - eyeL: 7.0986e-04 - eyeR: 6.9581e-04 - val_loss: 0.0024 - val_head: 4.8376e-04 - val_thorax: 6.2502e-04 - val_abdomen: 0.0016 - val_wingL: 0.0014 - val_wingR: 0.0027 - val_forelegL4: 0.0035 - val_forelegR4: 0.0033 - val_midlegL4: 0.0028 - val_midlegR4: 0.0041 - val_hindlegL4: 0.0036 - val_hindlegR4: 0.0038 - val_eyeL: 0.0015 - val_eyeR: 0.0016 - lr: 1.0000e-04 - 3s/epoch - 16ms/step
-Epoch 11/200
-200/200 - 3s - loss: 0.0013 - head: 3.1183e-04 - thorax: 4.7891e-04 - abdomen: 9.4567e-04 - wingL: 9.6811e-04 - wingR: 0.0011 - forelegL4: 0.0023 - forelegR4: 0.0025 - midlegL4: 0.0016 - midlegR4: 0.0016 - hindlegL4: 0.0020 - hindlegR4: 0.0021 - eyeL: 5.7635e-04 - eyeR: 5.3648e-04 - val_loss: 0.0028 - val_head: 5.2940e-04 - val_thorax: 6.6554e-04 - val_abdomen: 0.0020 - val_wingL: 0.0013 - val_wingR: 0.0024 - val_forelegL4: 0.0041 - val_forelegR4: 0.0041 - val_midlegL4: 0.0034 - val_midlegR4: 0.0042 - val_hindlegL4: 0.0047 - val_hindlegR4: 0.0040 - val_eyeL: 0.0025 - val_eyeR: 0.0022 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 12/200
-200/200 - 3s - loss: 0.0011 - head: 2.8863e-04 - thorax: 4.2604e-04 - abdomen: 8.0488e-04 - wingL: 8.1238e-04 - wingR: 8.5798e-04 - forelegL4: 0.0021 - forelegR4: 0.0021 - midlegL4: 0.0014 - midlegR4: 0.0014 - hindlegL4: 0.0017 - hindlegR4: 0.0018 - eyeL: 5.1007e-04 - eyeR: 4.5654e-04 - val_loss: 0.0031 - val_head: 8.1802e-04 - val_thorax: 7.9789e-04 - val_abdomen: 0.0018 - val_wingL: 0.0014 - val_wingR: 0.0028 - val_forelegL4: 0.0040 - val_forelegR4: 0.0048 - val_midlegL4: 0.0057 - val_midlegR4: 0.0037 - val_hindlegL4: 0.0053 - val_hindlegR4: 0.0050 - val_eyeL: 0.0020 - val_eyeR: 0.0018 - lr: 1.0000e-04 - 3s/epoch - 14ms/step
-Epoch 13/200
-200/200 - 3s - loss: 0.0010 - head: 2.8818e-04 - thorax: 4.1018e-04 - abdomen: 7.8027e-04 - wingL: 7.8017e-04 - wingR: 8.4529e-04 - forelegL4: 0.0019 - forelegR4: 0.0019 - midlegL4: 0.0013 - midlegR4: 0.0013 - hindlegL4: 0.0015 - hindlegR4: 0.0016 - eyeL: 4.6272e-04 - eyeR: 4.3265e-04 - val_loss: 0.0026 - val_head: 3.5806e-04 - val_thorax: 6.6352e-04 - val_abdomen: 0.0017 - val_wingL: 0.0015 - val_wingR: 0.0037 - val_forelegL4: 0.0036 - val_forelegR4: 0.0042 - val_midlegL4: 0.0034 - val_midlegR4: 0.0032 - val_hindlegL4: 0.0041 - val_hindlegR4: 0.0047 - val_eyeL: 0.0013 - val_eyeR: 0.0013 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 14/200
-200/200 - 3s - loss: 9.4029e-04 - head: 2.8339e-04 - thorax: 3.6739e-04 - abdomen: 7.0118e-04 - wingL: 7.4831e-04 - wingR: 7.1158e-04 - forelegL4: 0.0017 - forelegR4: 0.0017 - midlegL4: 0.0012 - midlegR4: 0.0011 - hindlegL4: 0.0014 - hindlegR4: 0.0015 - eyeL: 4.2793e-04 - eyeR: 4.1400e-04 - val_loss: 0.0024 - val_head: 3.4292e-04 - val_thorax: 7.1119e-04 - val_abdomen: 0.0014 - val_wingL: 0.0013 - val_wingR: 0.0028 - val_forelegL4: 0.0030 - val_forelegR4: 0.0043 - val_midlegL4: 0.0031 - val_midlegR4: 0.0030 - val_hindlegL4: 0.0039 - val_hindlegR4: 0.0038 - val_eyeL: 0.0017 - val_eyeR: 0.0015 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 15/200
-200/200 - 3s - loss: 7.8295e-04 - head: 2.3028e-04 - thorax: 3.3006e-04 - abdomen: 5.9391e-04 - wingL: 5.8825e-04 - wingR: 6.0989e-04 - forelegL4: 0.0015 - forelegR4: 0.0015 - midlegL4: 9.6945e-04 - midlegR4: 9.3611e-04 - hindlegL4: 0.0011 - hindlegR4: 0.0012 - eyeL: 3.4493e-04 - eyeR: 3.1164e-04 - val_loss: 0.0019 - val_head: 4.4152e-04 - val_thorax: 5.4500e-04 - val_abdomen: 0.0013 - val_wingL: 0.0012 - val_wingR: 0.0026 - val_forelegL4: 0.0024 - val_forelegR4: 0.0037 - val_midlegL4: 0.0024 - val_midlegR4: 0.0024 - val_hindlegL4: 0.0030 - val_hindlegR4: 0.0030 - val_eyeL: 0.0011 - val_eyeR: 0.0011 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 16/200
-200/200 - 3s - loss: 7.3208e-04 - head: 2.3573e-04 - thorax: 3.0631e-04 - abdomen: 5.5007e-04 - wingL: 5.3431e-04 - wingR: 5.9773e-04 - forelegL4: 0.0013 - forelegR4: 0.0014 - midlegL4: 9.1004e-04 - midlegR4: 8.7803e-04 - hindlegL4: 0.0010 - hindlegR4: 0.0011 - eyeL: 3.3279e-04 - eyeR: 2.9841e-04 - val_loss: 0.0023 - val_head: 3.5381e-04 - val_thorax: 7.0128e-04 - val_abdomen: 0.0015 - val_wingL: 0.0013 - val_wingR: 0.0022 - val_forelegL4: 0.0031 - val_forelegR4: 0.0041 - val_midlegL4: 0.0033 - val_midlegR4: 0.0028 - val_hindlegL4: 0.0036 - val_hindlegR4: 0.0033 - val_eyeL: 0.0017 - val_eyeR: 0.0014 - lr: 1.0000e-04 - 3s/epoch - 14ms/step
-Epoch 17/200
-200/200 - 3s - loss: 6.3161e-04 - head: 2.0100e-04 - thorax: 2.8088e-04 - abdomen: 4.9153e-04 - wingL: 4.7586e-04 - wingR: 4.9866e-04 - forelegL4: 0.0011 - forelegR4: 0.0012 - midlegL4: 7.6100e-04 - midlegR4: 8.0266e-04 - hindlegL4: 8.9697e-04 - hindlegR4: 8.9149e-04 - eyeL: 2.8189e-04 - eyeR: 2.7208e-04 - val_loss: 0.0018 - val_head: 2.8070e-04 - val_thorax: 5.1903e-04 - val_abdomen: 0.0011 - val_wingL: 9.8509e-04 - val_wingR: 0.0025 - val_forelegL4: 0.0022 - val_forelegR4: 0.0026 - val_midlegL4: 0.0025 - val_midlegR4: 0.0021 - val_hindlegL4: 0.0031 - val_hindlegR4: 0.0031 - val_eyeL: 0.0011 - val_eyeR: 9.7838e-04 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 18/200
-200/200 - 3s - loss: 5.7844e-04 - head: 1.9896e-04 - thorax: 2.9112e-04 - abdomen: 4.7495e-04 - wingL: 4.5591e-04 - wingR: 4.5877e-04 - forelegL4: 0.0011 - forelegR4: 0.0012 - midlegL4: 6.9042e-04 - midlegR4: 6.6195e-04 - hindlegL4: 7.9452e-04 - hindlegR4: 7.6819e-04 - eyeL: 2.5989e-04 - eyeR: 2.4763e-04 - val_loss: 0.0018 - val_head: 3.1925e-04 - val_thorax: 6.0394e-04 - val_abdomen: 0.0012 - val_wingL: 9.0835e-04 - val_wingR: 0.0019 - val_forelegL4: 0.0022 - val_forelegR4: 0.0029 - val_midlegL4: 0.0026 - val_midlegR4: 0.0024 - val_hindlegL4: 0.0033 - val_hindlegR4: 0.0022 - val_eyeL: 0.0015 - val_eyeR: 0.0011 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 19/200
-200/200 - 3s - loss: 5.1323e-04 - head: 1.8346e-04 - thorax: 2.5475e-04 - abdomen: 4.2159e-04 - wingL: 4.3027e-04 - wingR: 3.9814e-04 - forelegL4: 9.5814e-04 - forelegR4: 9.9765e-04 - midlegL4: 5.9968e-04 - midlegR4: 5.8423e-04 - hindlegL4: 6.7869e-04 - hindlegR4: 6.9121e-04 - eyeL: 2.4343e-04 - eyeR: 2.3077e-04 - val_loss: 0.0021 - val_head: 3.3346e-04 - val_thorax: 5.9007e-04 - val_abdomen: 0.0014 - val_wingL: 0.0013 - val_wingR: 0.0031 - val_forelegL4: 0.0026 - val_forelegR4: 0.0036 - val_midlegL4: 0.0029 - val_midlegR4: 0.0021 - val_hindlegL4: 0.0037 - val_hindlegR4: 0.0036 - val_eyeL: 0.0011 - val_eyeR: 9.4254e-04 - lr: 1.0000e-04 - 3s/epoch - 14ms/step
-Epoch 20/200
-200/200 - 3s - loss: 4.7991e-04 - head: 1.7328e-04 - thorax: 2.2397e-04 - abdomen: 4.2417e-04 - wingL: 3.9313e-04 - wingR: 3.9871e-04 - forelegL4: 8.8547e-04 - forelegR4: 8.9704e-04 - midlegL4: 5.3515e-04 - midlegR4: 5.8294e-04 - hindlegL4: 6.5212e-04 - hindlegR4: 6.2828e-04 - eyeL: 2.2438e-04 - eyeR: 2.2012e-04 - val_loss: 0.0014 - val_head: 2.7034e-04 - val_thorax: 4.7978e-04 - val_abdomen: 9.7903e-04 - val_wingL: 8.6477e-04 - val_wingR: 0.0020 - val_forelegL4: 0.0018 - val_forelegR4: 0.0024 - val_midlegL4: 0.0019 - val_midlegR4: 0.0018 - val_hindlegL4: 0.0024 - val_hindlegR4: 0.0022 - val_eyeL: 9.9423e-04 - val_eyeR: 8.4541e-04 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 21/200
-200/200 - 3s - loss: 4.4100e-04 - head: 1.6076e-04 - thorax: 2.4080e-04 - abdomen: 3.8343e-04 - wingL: 3.6759e-04 - wingR: 3.7489e-04 - forelegL4: 8.1060e-04 - forelegR4: 8.1600e-04 - midlegL4: 4.7288e-04 - midlegR4: 5.2695e-04 - hindlegL4: 5.6401e-04 - hindlegR4: 6.3519e-04 - eyeL: 1.9033e-04 - eyeR: 1.8954e-04 - val_loss: 0.0018 - val_head: 2.5764e-04 - val_thorax: 5.8718e-04 - val_abdomen: 0.0011 - val_wingL: 9.6939e-04 - val_wingR: 0.0019 - val_forelegL4: 0.0022 - val_forelegR4: 0.0026 - val_midlegL4: 0.0025 - val_midlegR4: 0.0026 - val_hindlegL4: 0.0032 - val_hindlegR4: 0.0028 - val_eyeL: 0.0014 - val_eyeR: 0.0011 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 22/200
-200/200 - 3s - loss: 3.7738e-04 - head: 1.4725e-04 - thorax: 2.0905e-04 - abdomen: 3.2447e-04 - wingL: 3.2224e-04 - wingR: 3.0585e-04 - forelegL4: 6.2169e-04 - forelegR4: 6.7379e-04 - midlegL4: 4.5061e-04 - midlegR4: 4.3931e-04 - hindlegL4: 5.1129e-04 - hindlegR4: 5.2449e-04 - eyeL: 1.9372e-04 - eyeR: 1.8213e-04 - val_loss: 0.0015 - val_head: 2.2947e-04 - val_thorax: 5.4640e-04 - val_abdomen: 9.8293e-04 - val_wingL: 8.6663e-04 - val_wingR: 0.0013 - val_forelegL4: 0.0018 - val_forelegR4: 0.0027 - val_midlegL4: 0.0021 - val_midlegR4: 0.0019 - val_hindlegL4: 0.0027 - val_hindlegR4: 0.0022 - val_eyeL: 0.0013 - val_eyeR: 0.0010 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 23/200
-200/200 - 3s - loss: 3.6084e-04 - head: 1.4440e-04 - thorax: 2.0277e-04 - abdomen: 3.0561e-04 - wingL: 3.0192e-04 - wingR: 2.8845e-04 - forelegL4: 6.3221e-04 - forelegR4: 6.7722e-04 - midlegL4: 3.9143e-04 - midlegR4: 4.3545e-04 - hindlegL4: 5.1985e-04 - hindlegR4: 4.5058e-04 - eyeL: 1.7636e-04 - eyeR: 1.6468e-04 - val_loss: 0.0015 - val_head: 2.9639e-04 - val_thorax: 4.6412e-04 - val_abdomen: 0.0011 - val_wingL: 9.0466e-04 - val_wingR: 0.0021 - val_forelegL4: 0.0015 - val_forelegR4: 0.0025 - val_midlegL4: 0.0018 - val_midlegR4: 0.0016 - val_hindlegL4: 0.0029 - val_hindlegR4: 0.0022 - val_eyeL: 8.7357e-04 - val_eyeR: 7.0067e-04 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 24/200
-200/200 - 3s - loss: 3.4886e-04 - head: 1.4382e-04 - thorax: 1.9157e-04 - abdomen: 3.2551e-04 - wingL: 3.0634e-04 - wingR: 3.0727e-04 - forelegL4: 6.3863e-04 - forelegR4: 6.0904e-04 - midlegL4: 3.5949e-04 - midlegR4: 4.1201e-04 - hindlegL4: 4.2893e-04 - hindlegR4: 4.8121e-04 - eyeL: 1.6669e-04 - eyeR: 1.6464e-04 - val_loss: 0.0022 - val_head: 3.2159e-04 - val_thorax: 7.2743e-04 - val_abdomen: 0.0014 - val_wingL: 0.0011 - val_wingR: 0.0027 - val_forelegL4: 0.0025 - val_forelegR4: 0.0037 - val_midlegL4: 0.0033 - val_midlegR4: 0.0020 - val_hindlegL4: 0.0043 - val_hindlegR4: 0.0031 - val_eyeL: 0.0017 - val_eyeR: 0.0012 - lr: 1.0000e-04 - 3s/epoch - 14ms/step
-Epoch 25/200
+<pre>2025-09-23 23:54:35 | INFO | sleap_nn.cli:train:98 | Input config:
+2025-09-23 23:54:35 | INFO | sleap_nn.cli:train:99 | 
+data_config:
+  train_labels_path:
+  - dataset/drosophila-melanogaster-courtship/courtship_labels.slp
+  val_labels_path: null
+  validation_fraction: 0.1
+  test_file_path: null
+  provider: LabelsReader
+  user_instances_only: true
+  data_pipeline_fw: torch_dataset
+  cache_img_path: null
+  use_existing_imgs: false
+  delete_cache_imgs_after_training: true
+  preprocessing:
+    ensure_rgb: false
+    ensure_grayscale: false
+    max_height: null
+    max_width: null
+    scale: 1.0
+    crop_size: null
+    min_crop_size: 100
+  use_augmentations_train: true
+  augmentation_config:
+    intensity:
+      uniform_noise_min: 0.0
+      uniform_noise_max: 1.0
+      uniform_noise_p: 0.0
+      gaussian_noise_mean: 5.0
+      gaussian_noise_std: 1.0
+      gaussian_noise_p: 0.0
+      contrast_min: 0.9
+      contrast_max: 1.1
+      contrast_p: 0.0
+      brightness_min: 0.9
+      brightness_max: 1.1
+      brightness_p: 0.0
+    geometric:
+      rotation_min: -15.0
+      rotation_max: 15.0
+      scale_min: 1.0
+      scale_max: 1.0
+      translate_width: 0.0
+      translate_height: 0.0
+      affine_p: 1.0
+      erase_scale_min: 0.0001
+      erase_scale_max: 0.01
+      erase_ratio_min: 1.0
+      erase_ratio_max: 1.0
+      erase_p: 0.0
+      mixup_lambda_min: 0.01
+      mixup_lambda_max: 0.05
+      mixup_p: 0.0
+  skeletons: null
+model_config:
+  init_weights: xavier
+  pretrained_backbone_weights: null
+  pretrained_head_weights: null
+  backbone_config:
+    unet:
+      in_channels: 1
+      kernel_size: 3
+      filters: 16
+      filters_rate: 1.5
+      max_stride: 8
+      stem_stride: null
+      middle_block: true
+      up_interpolate: true
+      stacks: 1
+      convs_per_block: 2
+      output_stride: 2
+    convnext: null
+    swint: null
+  head_configs:
+    single_instance: null
+    centroid: null
+    centered_instance:
+      confmaps:
+        sigma: 1.5
+        output_stride: 2
+        anchor_part: null
+        part_names: null
+    bottomup: null
+  total_params: null
+trainer_config:
+  train_data_loader:
+    batch_size: 4
+    shuffle: true
+    num_workers: 0
+  val_data_loader:
+    batch_size: 4
+    shuffle: false
+    num_workers: 0
+  model_ckpt:
+    save_top_k: 1
+    save_last: false
+  trainer_devices: null
+  trainer_device_indices: null
+  trainer_accelerator: auto
+  profiler: null
+  trainer_strategy: auto
+  enable_progress_bar: true
+  min_train_steps_per_epoch: 200
+  train_steps_per_epoch: null
+  visualize_preds_during_training: true
+  keep_viz: false
+  max_epochs: 200
+  seed: null
+  use_wandb: false
+  save_ckpt: true
+  ckpt_dir: models
+  run_name: courtship.topdown_confmaps
+  resume_ckpt_path: null
+  optimizer_name: Adam
+  optimizer:
+    lr: 0.0001
+    amsgrad: false
+  lr_scheduler:
+    step_lr: null
+    reduce_lr_on_plateau:
+      threshold: 1.0e-06
+      threshold_mode: rel
+      cooldown: 3
+      patience: 5
+      factor: 0.5
+      min_lr: 1.0e-08
+  early_stopping:
+    min_delta: 1.0e-08
+    patience: 10
+    stop_training_on_plateau: true
+  online_hard_keypoint_mining:
+    online_mining: false
+    hard_to_easy_ratio: 2.0
+    min_hard_keypoints: 2
+    max_hard_keypoints: null
+    loss_scale: 5.0
+  zmq:
+    publish_port: null
+    controller_port: null
+    controller_polling_timeout: 10
+name: ''
+description: ''
+sleap_nn_version: 0.0.1
+filename: ''
 
-Epoch 00025: ReduceLROnPlateau reducing learning rate to 4.999999873689376e-05.
-200/200 - 3s - loss: 3.0444e-04 - head: 1.2563e-04 - thorax: 1.7247e-04 - abdomen: 2.6934e-04 - wingL: 2.5754e-04 - wingR: 2.4728e-04 - forelegL4: 5.8390e-04 - forelegR4: 5.3959e-04 - midlegL4: 3.3003e-04 - midlegR4: 3.6432e-04 - hindlegL4: 4.0270e-04 - hindlegR4: 3.5518e-04 - eyeL: 1.5609e-04 - eyeR: 1.5365e-04 - val_loss: 0.0017 - val_head: 2.5420e-04 - val_thorax: 5.5809e-04 - val_abdomen: 0.0011 - val_wingL: 9.6708e-04 - val_wingR: 0.0022 - val_forelegL4: 0.0018 - val_forelegR4: 0.0033 - val_midlegL4: 0.0025 - val_midlegR4: 0.0017 - val_hindlegL4: 0.0031 - val_hindlegR4: 0.0031 - val_eyeL: 9.8718e-04 - val_eyeR: 8.0263e-04 - lr: 1.0000e-04 - 3s/epoch - 15ms/step
-Epoch 26/200
-200/200 - 3s - loss: 2.3368e-04 - head: 1.1149e-04 - thorax: 1.5177e-04 - abdomen: 2.1763e-04 - wingL: 2.2159e-04 - wingR: 1.9396e-04 - forelegL4: 3.8234e-04 - forelegR4: 3.8248e-04 - midlegL4: 2.7555e-04 - midlegR4: 2.8653e-04 - hindlegL4: 2.7842e-04 - hindlegR4: 2.8074e-04 - eyeL: 1.3157e-04 - eyeR: 1.2374e-04 - val_loss: 0.0017 - val_head: 2.1815e-04 - val_thorax: 5.0063e-04 - val_abdomen: 0.0011 - val_wingL: 8.2248e-04 - val_wingR: 0.0020 - val_forelegL4: 0.0019 - val_forelegR4: 0.0035 - val_midlegL4: 0.0022 - val_midlegR4: 0.0016 - val_hindlegL4: 0.0031 - val_hindlegR4: 0.0022 - val_eyeL: 0.0013 - val_eyeR: 9.8071e-04 - lr: 5.0000e-05 - 3s/epoch - 14ms/step
-Epoch 27/200
-200/200 - 3s - loss: 2.0711e-04 - head: 9.7513e-05 - thorax: 1.4018e-04 - abdomen: 2.0210e-04 - wingL: 1.8693e-04 - wingR: 1.7399e-04 - forelegL4: 3.1753e-04 - forelegR4: 3.7613e-04 - midlegL4: 2.2838e-04 - midlegR4: 2.4643e-04 - hindlegL4: 2.4471e-04 - hindlegR4: 2.4706e-04 - eyeL: 1.1696e-04 - eyeR: 1.1452e-04 - val_loss: 0.0011 - val_head: 1.7855e-04 - val_thorax: 3.7885e-04 - val_abdomen: 7.0074e-04 - val_wingL: 6.4821e-04 - val_wingR: 0.0012 - val_forelegL4: 0.0012 - val_forelegR4: 0.0017 - val_midlegL4: 0.0014 - val_midlegR4: 0.0013 - val_hindlegL4: 0.0019 - val_hindlegR4: 0.0018 - val_eyeL: 8.8941e-04 - val_eyeR: 7.0606e-04 - lr: 5.0000e-05 - 3s/epoch - 15ms/step
-Epoch 28/200
-200/200 - 3s - loss: 1.9539e-04 - head: 9.4716e-05 - thorax: 1.3617e-04 - abdomen: 1.8547e-04 - wingL: 1.8173e-04 - wingR: 1.6716e-04 - forelegL4: 3.2783e-04 - forelegR4: 3.1060e-04 - midlegL4: 2.2172e-04 - midlegR4: 2.2648e-04 - hindlegL4: 2.3846e-04 - hindlegR4: 2.2823e-04 - eyeL: 1.1204e-04 - eyeR: 1.0944e-04 - val_loss: 0.0012 - val_head: 1.9505e-04 - val_thorax: 3.8105e-04 - val_abdomen: 7.7888e-04 - val_wingL: 6.8985e-04 - val_wingR: 0.0016 - val_forelegL4: 0.0015 - val_forelegR4: 0.0020 - val_midlegL4: 0.0017 - val_midlegR4: 0.0011 - val_hindlegL4: 0.0022 - val_hindlegR4: 0.0019 - val_eyeL: 9.1223e-04 - val_eyeR: 7.0778e-04 - lr: 5.0000e-05 - 3s/epoch - 15ms/step
-Epoch 29/200
-200/200 - 3s - loss: 1.8262e-04 - head: 9.2364e-05 - thorax: 1.3126e-04 - abdomen: 1.7625e-04 - wingL: 1.7494e-04 - wingR: 1.5998e-04 - forelegL4: 3.0159e-04 - forelegR4: 2.9470e-04 - midlegL4: 1.9773e-04 - midlegR4: 2.0446e-04 - hindlegL4: 2.0576e-04 - hindlegR4: 2.1560e-04 - eyeL: 1.1218e-04 - eyeR: 1.0720e-04 - val_loss: 0.0015 - val_head: 2.2535e-04 - val_thorax: 4.8031e-04 - val_abdomen: 9.5428e-04 - val_wingL: 7.7468e-04 - val_wingR: 0.0016 - val_forelegL4: 0.0017 - val_forelegR4: 0.0025 - val_midlegL4: 0.0021 - val_midlegR4: 0.0018 - val_hindlegL4: 0.0029 - val_hindlegR4: 0.0019 - val_eyeL: 0.0013 - val_eyeR: 9.6936e-04 - lr: 5.0000e-05 - 3s/epoch - 15ms/step
-Epoch 30/200
-200/200 - 3s - loss: 1.7461e-04 - head: 8.9617e-05 - thorax: 1.2428e-04 - abdomen: 1.7234e-04 - wingL: 1.6780e-04 - wingR: 1.5580e-04 - forelegL4: 2.7324e-04 - forelegR4: 2.8042e-04 - midlegL4: 1.9090e-04 - midlegR4: 2.0420e-04 - hindlegL4: 1.9914e-04 - hindlegR4: 2.0318e-04 - eyeL: 1.0518e-04 - eyeR: 1.0386e-04 - val_loss: 0.0015 - val_head: 1.9058e-04 - val_thorax: 4.9603e-04 - val_abdomen: 0.0011 - val_wingL: 9.7566e-04 - val_wingR: 0.0018 - val_forelegL4: 0.0016 - val_forelegR4: 0.0028 - val_midlegL4: 0.0022 - val_midlegR4: 0.0015 - val_hindlegL4: 0.0028 - val_hindlegR4: 0.0028 - val_eyeL: 9.9699e-04 - val_eyeR: 8.3721e-04 - lr: 5.0000e-05 - 3s/epoch - 15ms/step
-Epoch 31/200
-200/200 - 3s - loss: 1.7064e-04 - head: 8.7373e-05 - thorax: 1.2365e-04 - abdomen: 1.6765e-04 - wingL: 1.5656e-04 - wingR: 1.4505e-04 - forelegL4: 2.7352e-04 - forelegR4: 2.6274e-04 - midlegL4: 1.9639e-04 - midlegR4: 1.9628e-04 - hindlegL4: 2.0323e-04 - hindlegR4: 1.9917e-04 - eyeL: 1.0639e-04 - eyeR: 1.0032e-04 - val_loss: 0.0011 - val_head: 1.7938e-04 - val_thorax: 3.6727e-04 - val_abdomen: 7.7820e-04 - val_wingL: 6.4437e-04 - val_wingR: 0.0014 - val_forelegL4: 0.0014 - val_forelegR4: 0.0020 - val_midlegL4: 0.0016 - val_midlegR4: 0.0010 - val_hindlegL4: 0.0021 - val_hindlegR4: 0.0016 - val_eyeL: 8.0607e-04 - val_eyeR: 6.6172e-04 - lr: 5.0000e-05 - 3s/epoch - 16ms/step
-Epoch 32/200
+2025-09-23 23:54:35 | INFO | sleap_nn.train:run_training:27 | Started training at: 2025-09-23 23:54:35.542013
+2025-09-23 23:54:35 | INFO | sleap_nn.training.model_trainer:_setup_train_val_labels:216 | Creating train-val split...
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:_setup_train_val_labels:261 | # Train Labeled frames: 134
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:_setup_train_val_labels:262 | # Val Labeled frames: 14
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:setup_config:512 | Setting up config...
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:_verify_model_input_channels:417 | Updating backbone in_channels to 3 based on the input image channels.
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:train:849 | Setting up for training...
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:_setup_model_ckpt_dir:575 | Setting up model ckpt dir: `models/courtship.topdown_confmaps`...
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:train:864 | Setting up visualization train and val datasets...
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:train:868 | Setting up Trainer...
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:_setup_loggers_callbacks:647 | Setting up callbacks and loggers...
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:train:897 | Trainer devices: auto
+GPU available: True (mps), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:train:950 | Training on 1 device(s)
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:train:951 | Training on mps:0 accelerator
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:train:955 | Setting up lightning module for centered_instance model...
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:train:959 | Backbone model: UNet(
+  (encoders): ModuleList(
+    (0): Encoder(
+      (encoder_stack): ModuleList(
+        (0): SimpleConvBlock(
+          (blocks): Sequential(
+            (stack0_enc0_conv0): Conv2d(3, 16, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc0_act0_relu): ReLU()
+            (stack0_enc0_conv1): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc0_act1_relu): ReLU()
+          )
+        )
+        (1): SimpleConvBlock(
+          (blocks): Sequential(
+            (stack0_enc1_pool): MaxPool2dWithSamePadding(kernel_size=2, stride=2, padding=same, dilation=1, ceil_mode=False)
+            (stack0_enc1_conv0): Conv2d(16, 24, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc1_act0_relu): ReLU()
+            (stack0_enc1_conv1): Conv2d(24, 24, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc1_act1_relu): ReLU()
+          )
+        )
+        (2): SimpleConvBlock(
+          (blocks): Sequential(
+            (stack0_enc2_pool): MaxPool2dWithSamePadding(kernel_size=2, stride=2, padding=same, dilation=1, ceil_mode=False)
+            (stack0_enc2_conv0): Conv2d(24, 36, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc2_act0_relu): ReLU()
+            (stack0_enc2_conv1): Conv2d(36, 36, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc2_act1_relu): ReLU()
+          )
+        )
+        (3): Sequential(
+          (stack0_enc3_last_pool): MaxPool2dWithSamePadding(kernel_size=2, stride=2, padding=same, dilation=1, ceil_mode=False)
+        )
+      )
+    )
+  )
+  (decoders): ModuleList(
+    (0): Decoder(
+      (decoder_stack): ModuleList(
+        (0): SimpleUpsamplingBlock(
+          (blocks): Sequential(
+            (stack0_dec0_s8_to_s4_interp_bilinear): Upsample(scale_factor=2.0, mode='bilinear')
+            (stack0_dec0_s8_to_s4_refine_conv0): Conv2d(90, 36, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec0_s8_to_s4_refine_conv0_act_relu): ReLU()
+            (stack0_dec0_s8_to_s4_refine_conv1): Conv2d(36, 36, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec0_s8_to_s4_refine_conv1_act_relu): ReLU()
+          )
+        )
+        (1): SimpleUpsamplingBlock(
+          (blocks): Sequential(
+            (stack0_dec1_s4_to_s2_interp_bilinear): Upsample(scale_factor=2.0, mode='bilinear')
+            (stack0_dec1_s4_to_s2_refine_conv0): Conv2d(60, 24, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec1_s4_to_s2_refine_conv0_act_relu): ReLU()
+            (stack0_dec1_s4_to_s2_refine_conv1): Conv2d(24, 24, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec1_s4_to_s2_refine_conv1_act_relu): ReLU()
+          )
+        )
+      )
+    )
+  )
+  (middle_blocks): ModuleList(
+    (0): SimpleConvBlock(
+      (blocks): Sequential(
+        (stack0_enc4_middle_expand_conv0): Conv2d(36, 54, kernel_size=(3, 3), stride=(1, 1), padding=same)
+        (stack0_enc4_middle_expand_act0_relu): ReLU()
+      )
+    )
+    (1): SimpleConvBlock(
+      (blocks): Sequential(
+        (stack0_enc5_middle_contract_conv0): Conv2d(54, 54, kernel_size=(3, 3), stride=(1, 1), padding=same)
+        (stack0_enc5_middle_contract_act0_relu): ReLU()
+      )
+    )
+  )
+)
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:train:960 | Head model: ModuleList(
+  (0): Sequential(
+    (CenteredInstanceConfmapsHead): Sequential(
+      (0): Conv2d(24, 13, kernel_size=(1, 1), stride=(1, 1), padding=same)
+      (1): Identity()
+    )
+  )
+)
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:train:962 | Total model parameters: 134229
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:train:967 | Input image shape: torch.Size([1, 3, 128, 128])
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/torch/utils/data/dataloader.py:684: UserWarning: 'pin_memory' argument is set as true but not supported on MPS now, then device pinned memory won't be used.
+  warnings.warn(warn_msg)
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:train:1021 | Finished trainer set up. [0.2s]
+2025-09-23 23:54:36 | INFO | sleap_nn.training.model_trainer:train:1024 | Starting training loop...
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/callbacks/model_checkpoint.py:751: Checkpoint directory /Users/divyasesh/Desktop/talmolab/sleap-core-docs/docs/notebooks/models/courtship.topdown_confmaps exists and is not empty.
 
-Epoch 00032: ReduceLROnPlateau reducing learning rate to 2.499999936844688e-05.
-200/200 - 4s - loss: 1.6547e-04 - head: 8.6407e-05 - thorax: 1.1578e-04 - abdomen: 1.6160e-04 - wingL: 1.5752e-04 - wingR: 1.4326e-04 - forelegL4: 2.5855e-04 - forelegR4: 2.8317e-04 - midlegL4: 1.7880e-04 - midlegR4: 1.8021e-04 - hindlegL4: 1.9743e-04 - hindlegR4: 1.8831e-04 - eyeL: 1.0074e-04 - eyeR: 9.9381e-05 - val_loss: 0.0012 - val_head: 1.9257e-04 - val_thorax: 3.7361e-04 - val_abdomen: 7.0451e-04 - val_wingL: 7.8240e-04 - val_wingR: 0.0015 - val_forelegL4: 0.0014 - val_forelegR4: 0.0020 - val_midlegL4: 0.0016 - val_midlegR4: 0.0011 - val_hindlegL4: 0.0020 - val_hindlegR4: 0.0019 - val_eyeL: 8.9328e-04 - val_eyeR: 7.3886e-04 - lr: 5.0000e-05 - 4s/epoch - 18ms/step
-Epoch 33/200
-200/200 - 3s - loss: 1.4767e-04 - head: 8.0575e-05 - thorax: 1.1097e-04 - abdomen: 1.4927e-04 - wingL: 1.4112e-04 - wingR: 1.3113e-04 - forelegL4: 2.1913e-04 - forelegR4: 2.1998e-04 - midlegL4: 1.6045e-04 - midlegR4: 1.6535e-04 - hindlegL4: 1.8091e-04 - hindlegR4: 1.7343e-04 - eyeL: 9.5387e-05 - eyeR: 9.2035e-05 - val_loss: 0.0014 - val_head: 1.9046e-04 - val_thorax: 4.6921e-04 - val_abdomen: 9.4087e-04 - val_wingL: 7.5647e-04 - val_wingR: 0.0015 - val_forelegL4: 0.0015 - val_forelegR4: 0.0025 - val_midlegL4: 0.0020 - val_midlegR4: 0.0015 - val_hindlegL4: 0.0026 - val_hindlegR4: 0.0021 - val_eyeL: 0.0013 - val_eyeR: 0.0010 - lr: 2.5000e-05 - 3s/epoch - 16ms/step
-Epoch 34/200
-200/200 - 3s - loss: 1.4506e-04 - head: 7.9790e-05 - thorax: 1.0771e-04 - abdomen: 1.5052e-04 - wingL: 1.4143e-04 - wingR: 1.2485e-04 - forelegL4: 2.2486e-04 - forelegR4: 2.1619e-04 - midlegL4: 1.6584e-04 - midlegR4: 1.6250e-04 - hindlegL4: 1.6521e-04 - hindlegR4: 1.6717e-04 - eyeL: 9.1550e-05 - eyeR: 8.8112e-05 - val_loss: 0.0013 - val_head: 1.8689e-04 - val_thorax: 3.7203e-04 - val_abdomen: 9.3770e-04 - val_wingL: 7.0190e-04 - val_wingR: 0.0019 - val_forelegL4: 0.0015 - val_forelegR4: 0.0023 - val_midlegL4: 0.0016 - val_midlegR4: 0.0012 - val_hindlegL4: 0.0025 - val_hindlegR4: 0.0022 - val_eyeL: 8.0213e-04 - val_eyeR: 6.5036e-04 - lr: 2.5000e-05 - 3s/epoch - 15ms/step
-Epoch 35/200
-200/200 - 3s - loss: 1.3911e-04 - head: 7.9674e-05 - thorax: 1.0668e-04 - abdomen: 1.4330e-04 - wingL: 1.3906e-04 - wingR: 1.2752e-04 - forelegL4: 1.9657e-04 - forelegR4: 1.9577e-04 - midlegL4: 1.5228e-04 - midlegR4: 1.5642e-04 - hindlegL4: 1.6610e-04 - hindlegR4: 1.6394e-04 - eyeL: 9.1523e-05 - eyeR: 8.9620e-05 - val_loss: 0.0013 - val_head: 1.7511e-04 - val_thorax: 4.2162e-04 - val_abdomen: 9.5009e-04 - val_wingL: 6.7908e-04 - val_wingR: 0.0013 - val_forelegL4: 0.0015 - val_forelegR4: 0.0023 - val_midlegL4: 0.0018 - val_midlegR4: 0.0014 - val_hindlegL4: 0.0027 - val_hindlegR4: 0.0019 - val_eyeL: 0.0012 - val_eyeR: 9.8818e-04 - lr: 2.5000e-05 - 3s/epoch - 16ms/step
-Epoch 36/200
-200/200 - 3s - loss: 1.3697e-04 - head: 7.5207e-05 - thorax: 1.0507e-04 - abdomen: 1.3913e-04 - wingL: 1.3497e-04 - wingR: 1.2511e-04 - forelegL4: 1.9152e-04 - forelegR4: 2.0264e-04 - midlegL4: 1.5207e-04 - midlegR4: 1.5519e-04 - hindlegL4: 1.6368e-04 - hindlegR4: 1.5869e-04 - eyeL: 9.0233e-05 - eyeR: 8.7055e-05 - val_loss: 0.0013 - val_head: 1.8066e-04 - val_thorax: 4.6591e-04 - val_abdomen: 9.9582e-04 - val_wingL: 7.2600e-04 - val_wingR: 0.0012 - val_forelegL4: 0.0015 - val_forelegR4: 0.0022 - val_midlegL4: 0.0019 - val_midlegR4: 0.0015 - val_hindlegL4: 0.0028 - val_hindlegR4: 0.0018 - val_eyeL: 0.0012 - val_eyeR: 9.6224e-04 - lr: 2.5000e-05 - 3s/epoch - 15ms/step
-Epoch 37/200
-200/200 - 3s - loss: 1.3638e-04 - head: 7.6822e-05 - thorax: 1.0531e-04 - abdomen: 1.4107e-04 - wingL: 1.4047e-04 - wingR: 1.2177e-04 - forelegL4: 1.9564e-04 - forelegR4: 1.7970e-04 - midlegL4: 1.5364e-04 - midlegR4: 1.5089e-04 - hindlegL4: 1.6647e-04 - hindlegR4: 1.6322e-04 - eyeL: 9.0198e-05 - eyeR: 8.7722e-05 - val_loss: 0.0017 - val_head: 2.3218e-04 - val_thorax: 5.3881e-04 - val_abdomen: 0.0011 - val_wingL: 0.0010 - val_wingR: 0.0019 - val_forelegL4: 0.0021 - val_forelegR4: 0.0028 - val_midlegL4: 0.0025 - val_midlegR4: 0.0016 - val_hindlegL4: 0.0033 - val_hindlegR4: 0.0029 - val_eyeL: 0.0015 - val_eyeR: 0.0012 - lr: 2.5000e-05 - 3s/epoch - 16ms/step
-Epoch 00037: early stopping
-INFO:sleap.nn.training:Finished training loop. [2.0 min]
-INFO:sleap.nn.training:Deleting visualization directory: models/courtship.topdown_confmaps/viz
-INFO:sleap.nn.training:Saving evaluation metrics to model folder...
-Predicting... <span style="color: rgb(114,156,31)">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-magenta-fg">100%</span> ETA: <span class="ansi-cyan-fg">0:00:00</span> <span class="ansi-red-fg">39.3 FPS</span>31m48.8 FPS31m49.5 FPSFPS
-INFO:sleap.nn.evals:Saved predictions: models/courtship.topdown_confmaps/labels_pr.train.slp
-INFO:sleap.nn.evals:Saved metrics: models/courtship.topdown_confmaps/metrics.train.npz
-INFO:sleap.nn.evals:OKS mAP: 0.899237
-Predicting... <span style="color: rgb(114,156,31)">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-magenta-fg">100%</span> ETA: <span class="ansi-cyan-fg">0:00:00</span> <span class="ansi-red-fg">14.2 FPS</span>0:00:01 <span class="ansi-red-fg">270.2 FPS</span>m
-INFO:sleap.nn.evals:Saved predictions: models/courtship.topdown_confmaps/labels_pr.val.slp
-INFO:sleap.nn.evals:Saved metrics: models/courtship.topdown_confmaps/metrics.val.npz
-INFO:sleap.nn.evals:OKS mAP: 0.691378
+  | Name                     | Type              | Params | Mode 
+-----------------------------------------------------------------------
+0 | model                    | Model             | 134 K  | train
+1 | instance_peaks_inf_layer | FindInstancePeaks | 0      | train
+-----------------------------------------------------------------------
+134 K     Trainable params
+0         Non-trainable params
+134 K     Total params
+0.537     Total estimated model params size (MB)
+59        Modules in train mode
+0         Modules in eval mode
+Sanity Checking: |                                        | 0/? [00:00&lt;?, ?it/s]/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:433: The 'val_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=7` in the `DataLoader` to improve performance.
+Sanity Checking DataLoader 0:   0%|                       | 0/2 [00:00&lt;?, ?it/s]/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('learning_rate', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('val_loss', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+Sanity Checking DataLoader 0: 100%|███████████████| 2/2 [00:01&lt;00:00,  1.63it/s]/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('val_time', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:433: The 'train_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=7` in the `DataLoader` to improve performance.
+Epoch 0:   0%|                                          | 0/200 [00:00&lt;?, ?it/s]/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('head', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('thorax', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('abdomen', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('wingL', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('wingR', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('forelegL4', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('forelegR4', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('midlegL4', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('midlegR4', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('hindlegL4', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('hindlegR4', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('eyeL', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('eyeR', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('train_loss', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+Epoch 0: 100%|█| 200/200 [00:59&lt;00:00,  3.38it/s, head_step=0.00135, thorax_step
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/7 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  14%|██▋                | 1/7 [00:00&lt;00:00, 106.43it/s]
+Validation DataLoader 0:  29%|█████▋              | 2/7 [00:00&lt;00:00, 14.77it/s]
+Validation DataLoader 0:  43%|████████▌           | 3/7 [00:00&lt;00:00, 11.54it/s]
+Validation DataLoader 0:  57%|███████████▍        | 4/7 [00:00&lt;00:00,  9.82it/s]
+Validation DataLoader 0:  71%|██████████████▎     | 5/7 [00:00&lt;00:00,  9.21it/s]
+Validation DataLoader 0:  86%|█████████████████▏  | 6/7 [00:00&lt;00:00,  7.34it/s]
+Validation DataLoader 0: 100%|████████████████████| 7/7 [00:00&lt;00:00,  7.45it/s]
+Epoch 0: 100%|█| 200/200 [01:01&lt;00:00,  3.23it/s, head_step=0.00135, thorax_step/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('train_time', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+Epoch 1: 100%|█| 200/200 [01:01&lt;00:00,  3.24it/s, head_step=0.00111, thorax_step
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/7 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  14%|██▋                | 1/7 [00:00&lt;00:00, 157.25it/s]
+Validation DataLoader 0:  29%|█████▋              | 2/7 [00:00&lt;00:00, 11.20it/s]
+Validation DataLoader 0:  43%|████████▌           | 3/7 [00:00&lt;00:00,  9.41it/s]
+Validation DataLoader 0:  57%|███████████▍        | 4/7 [00:00&lt;00:00,  8.66it/s]
+Validation DataLoader 0:  71%|██████████████▎     | 5/7 [00:00&lt;00:00,  8.20it/s]
+Validation DataLoader 0:  86%|█████████████████▏  | 6/7 [00:00&lt;00:00,  7.92it/s]
+Validation DataLoader 0: 100%|████████████████████| 7/7 [00:00&lt;00:00,  7.84it/s]
+Epoch 2: 100%|█| 200/200 [00:56&lt;00:00,  3.51it/s, head_step=0.000842, thorax_ste
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/7 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  14%|██▋                | 1/7 [00:00&lt;00:00, 182.59it/s]
+Validation DataLoader 0:  29%|█████▋              | 2/7 [00:00&lt;00:00, 14.30it/s]
+Validation DataLoader 0:  43%|████████▌           | 3/7 [00:00&lt;00:00, 10.90it/s]
+Validation DataLoader 0:  57%|███████████▍        | 4/7 [00:00&lt;00:00,  9.31it/s]
+Validation DataLoader 0:  71%|██████████████▎     | 5/7 [00:00&lt;00:00,  8.85it/s]
+Validation DataLoader 0:  86%|█████████████████▏  | 6/7 [00:00&lt;00:00,  8.64it/s]
+Validation DataLoader 0: 100%|████████████████████| 7/7 [00:00&lt;00:00,  7.28it/s]
+Epoch 3: 100%|█| 200/200 [00:52&lt;00:00,  3.78it/s, head_step=0.000714, thorax_ste
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/7 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  14%|██▋                | 1/7 [00:00&lt;00:00, 147.27it/s]
+Validation DataLoader 0:  29%|█████▋              | 2/7 [00:00&lt;00:00, 15.94it/s]
+Validation DataLoader 0:  43%|████████▌           | 3/7 [00:00&lt;00:00, 12.41it/s]
+Validation DataLoader 0:  57%|███████████▍        | 4/7 [00:00&lt;00:00, 11.09it/s]
+Validation DataLoader 0:  71%|██████████████▎     | 5/7 [00:00&lt;00:00, 10.46it/s]
+Validation DataLoader 0:  86%|█████████████████▏  | 6/7 [00:00&lt;00:00, 10.09it/s]
+Validation DataLoader 0: 100%|████████████████████| 7/7 [00:00&lt;00:00,  9.84it/s]
+Epoch 4: 100%|█| 200/200 [00:54&lt;00:00,  3.66it/s, head_step=0.000639, thorax_ste
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/7 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  14%|██▋                | 1/7 [00:00&lt;00:00, 144.95it/s]
+Validation DataLoader 0:  29%|█████▋              | 2/7 [00:00&lt;00:00, 15.66it/s]
+Validation DataLoader 0:  43%|████████▌           | 3/7 [00:00&lt;00:00, 11.83it/s]
+Validation DataLoader 0:  57%|███████████▍        | 4/7 [00:00&lt;00:00, 10.18it/s]
+Validation DataLoader 0:  71%|██████████████▎     | 5/7 [00:00&lt;00:00,  9.67it/s]
+Validation DataLoader 0:  86%|█████████████████▏  | 6/7 [00:00&lt;00:00,  9.33it/s]
+Validation DataLoader 0: 100%|████████████████████| 7/7 [00:00&lt;00:00,  7.71it/s]
+Epoch 5: 100%|█| 200/200 [00:59&lt;00:00,  3.35it/s, head_step=0.000662, thorax_ste
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/7 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  14%|██▋                | 1/7 [00:00&lt;00:00, 171.70it/s]
+Validation DataLoader 0:  29%|█████▋              | 2/7 [00:00&lt;00:00,  6.83it/s]
+Validation DataLoader 0:  43%|████████▌           | 3/7 [00:00&lt;00:00,  7.05it/s]
+Validation DataLoader 0:  57%|███████████▍        | 4/7 [00:00&lt;00:00,  7.06it/s]
+Validation DataLoader 0:  71%|██████████████▎     | 5/7 [00:00&lt;00:00,  6.90it/s]
+Validation DataLoader 0:  86%|█████████████████▏  | 6/7 [00:00&lt;00:00,  6.99it/s]
+Validation DataLoader 0: 100%|████████████████████| 7/7 [00:00&lt;00:00,  7.05it/s]
+Epoch 6: 100%|█| 200/200 [01:02&lt;00:00,  3.21it/s, head_step=0.000567, thorax_ste
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/7 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  14%|██▋                | 1/7 [00:00&lt;00:00, 107.61it/s]
+Validation DataLoader 0:  29%|█████▋              | 2/7 [00:00&lt;00:00, 15.53it/s]
+Validation DataLoader 0:  43%|████████▌           | 3/7 [00:00&lt;00:00, 12.08it/s]
+Validation DataLoader 0:  57%|███████████▍        | 4/7 [00:00&lt;00:00, 10.98it/s]
+Validation DataLoader 0:  71%|██████████████▎     | 5/7 [00:00&lt;00:00, 10.32it/s]
+Validation DataLoader 0:  86%|█████████████████▏  | 6/7 [00:00&lt;00:00,  7.89it/s]
+Validation DataLoader 0: 100%|████████████████████| 7/7 [00:00&lt;00:00,  7.98it/s]
+Epoch 7: 100%|█| 200/200 [00:58&lt;00:00,  3.43it/s, head_step=0.000665, thorax_ste
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/7 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  14%|██▋                | 1/7 [00:00&lt;00:00, 158.74it/s]
+Validation DataLoader 0:  29%|█████▋              | 2/7 [00:00&lt;00:00, 16.64it/s]
+Validation DataLoader 0:  43%|████████▌           | 3/7 [00:00&lt;00:00, 12.65it/s]
+Validation DataLoader 0:  57%|███████████▍        | 4/7 [00:00&lt;00:00, 11.25it/s]
+Validation DataLoader 0:  71%|██████████████▎     | 5/7 [00:00&lt;00:00, 10.64it/s]
+Validation DataLoader 0:  86%|█████████████████▏  | 6/7 [00:00&lt;00:00, 10.18it/s]
+Validation DataLoader 0: 100%|████████████████████| 7/7 [00:00&lt;00:00,  9.93it/s]
+Epoch 8: 100%|█| 200/200 [00:59&lt;00:00,  3.35it/s, head_step=0.000428, thorax_ste
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/7 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  14%|██▋                | 1/7 [00:00&lt;00:00, 148.59it/s]
+Validation DataLoader 0:  29%|█████▋              | 2/7 [00:00&lt;00:00, 13.72it/s]
+Validation DataLoader 0:  43%|████████▌           | 3/7 [00:00&lt;00:00, 10.08it/s]
+Validation DataLoader 0:  57%|███████████▍        | 4/7 [00:00&lt;00:00,  8.64it/s]
+Validation DataLoader 0:  71%|██████████████▎     | 5/7 [00:01&lt;00:00,  4.16it/s]
+Validation DataLoader 0:  86%|█████████████████▏  | 6/7 [00:01&lt;00:00,  4.45it/s]
+Validation DataLoader 0: 100%|████████████████████| 7/7 [00:01&lt;00:00,  4.73it/s]
+Epoch 9: 100%|█| 200/200 [01:06&lt;00:00,  3.01it/s, head_step=0.00031, thorax_step
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/7 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  14%|██▋                | 1/7 [00:00&lt;00:00, 133.32it/s]
+Validation DataLoader 0:  29%|█████▋              | 2/7 [00:00&lt;00:00, 13.18it/s]
+Validation DataLoader 0:  43%|████████▌           | 3/7 [00:00&lt;00:00, 10.45it/s]
+Validation DataLoader 0:  57%|███████████▍        | 4/7 [00:00&lt;00:00,  9.36it/s]
+Validation DataLoader 0:  71%|██████████████▎     | 5/7 [00:00&lt;00:00,  8.84it/s]
+Validation DataLoader 0:  86%|█████████████████▏  | 6/7 [00:00&lt;00:00,  8.51it/s]
+Validation DataLoader 0: 100%|████████████████████| 7/7 [00:00&lt;00:00,  8.32it/s]
+Epoch 10: 100%|█| 200/200 [00:55&lt;00:00,  3.59it/s, head_step=0.000533, thorax_st
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/7 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  14%|██▋                | 1/7 [00:00&lt;00:00, 114.06it/s]
+Validation DataLoader 0:  29%|█████▋              | 2/7 [00:00&lt;00:00, 14.91it/s]
+Validation DataLoader 0:  43%|████████▌           | 3/7 [00:00&lt;00:00, 12.01it/s]
+Validation DataLoader 0:  57%|███████████▍        | 4/7 [00:00&lt;00:00, 10.68it/s]
+Validation DataLoader 0:  71%|██████████████▎     | 5/7 [00:00&lt;00:00,  9.66it/s]
+Validation DataLoader 0:  86%|█████████████████▏  | 6/7 [00:00&lt;00:00,  9.43it/s]
+Validation DataLoader 0: 100%|████████████████████| 7/7 [00:00&lt;00:00,  9.24it/s]
+Epoch 11: 100%|█| 200/200 [00:57&lt;00:00,  3.50it/s, head_step=0.000352, thorax_st
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/7 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  14%|██▋                | 1/7 [00:00&lt;00:00, 148.13it/s]
+Validation DataLoader 0:  29%|█████▋              | 2/7 [00:00&lt;00:00, 14.29it/s]
+Validation DataLoader 0:  43%|████████▌           | 3/7 [00:00&lt;00:00, 11.61it/s]
+Validation DataLoader 0:  57%|███████████▍        | 4/7 [00:00&lt;00:00, 10.41it/s]
+Validation DataLoader 0:  71%|██████████████▎     | 5/7 [00:00&lt;00:00,  9.79it/s]
+Validation DataLoader 0:  86%|█████████████████▏  | 6/7 [00:00&lt;00:00,  9.37it/s]
+Validation DataLoader 0: 100%|████████████████████| 7/7 [00:00&lt;00:00,  9.17it/s]
+Epoch 12: 100%|█| 200/200 [01:05&lt;00:00,  3.05it/s, head_step=0.00033, thorax_ste
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/7 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  14%|██▊                 | 1/7 [00:00&lt;00:00, 98.69it/s]
+Validation DataLoader 0:  29%|█████▋              | 2/7 [00:00&lt;00:00, 10.41it/s]
+Validation DataLoader 0:  43%|████████▌           | 3/7 [00:00&lt;00:00,  8.83it/s]
+Validation DataLoader 0:  57%|███████████▍        | 4/7 [00:00&lt;00:00,  7.80it/s]
+Validation DataLoader 0:  71%|██████████████▎     | 5/7 [00:00&lt;00:00,  7.62it/s]
+Validation DataLoader 0:  86%|█████████████████▏  | 6/7 [00:00&lt;00:00,  7.45it/s]
+Validation DataLoader 0: 100%|████████████████████| 7/7 [00:00&lt;00:00,  7.42it/s]
+Epoch 13: 100%|█| 200/200 [01:10&lt;00:00,  2.84it/s, head_step=0.000241, thorax_st
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/7 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  14%|██▊                 | 1/7 [00:00&lt;00:00, 79.46it/s]
+Validation DataLoader 0:  29%|█████▋              | 2/7 [00:00&lt;00:00, 11.84it/s]
+Validation DataLoader 0:  43%|████████▌           | 3/7 [00:00&lt;00:00,  9.09it/s]
+Validation DataLoader 0:  57%|███████████▍        | 4/7 [00:00&lt;00:00,  8.09it/s]
+Validation DataLoader 0:  71%|██████████████▎     | 5/7 [00:00&lt;00:00,  7.38it/s]
+Validation DataLoader 0:  86%|█████████████████▏  | 6/7 [00:00&lt;00:00,  7.24it/s]
+Validation DataLoader 0: 100%|████████████████████| 7/7 [00:00&lt;00:00,  7.08it/s]
+Epoch 14: 100%|█| 200/200 [01:04&lt;00:00,  3.09it/s, head_step=0.000332, thorax_st
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/7 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  14%|██▋                | 1/7 [00:00&lt;00:00, 114.03it/s]
+Validation DataLoader 0:  29%|█████▋              | 2/7 [00:00&lt;00:00, 14.10it/s]
+Validation DataLoader 0:  43%|████████▌           | 3/7 [00:00&lt;00:00, 10.68it/s]
+Validation DataLoader 0:  57%|███████████▍        | 4/7 [00:00&lt;00:00,  9.78it/s]
+Validation DataLoader 0:  71%|██████████████▎     | 5/7 [00:00&lt;00:00,  9.38it/s]
+Validation DataLoader 0:  86%|█████████████████▏  | 6/7 [00:00&lt;00:00,  9.10it/s]
+Validation DataLoader 0: 100%|████████████████████| 7/7 [00:00&lt;00:00,  8.87it/s]
+Epoch 15: 100%|█| 200/200 [01:04&lt;00:00,  3.11it/s, head_step=0.000249, thorax_st
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation: |                                             | 0/? [00:00&lt;?, ?it/s]
+Validation DataLoader 0:   0%|                            | 0/7 [00:00&lt;?, ?it/s]
+Validation DataLoader 0:  14%|██▋                | 1/7 [00:00&lt;00:00, 125.96it/s]
+Validation DataLoader 0:  29%|█████▋              | 2/7 [00:00&lt;00:00, 13.11it/s]
+Validation DataLoader 0:  43%|████████▌           | 3/7 [00:00&lt;00:00,  9.92it/s]
+Validation DataLoader 0:  57%|███████████▍        | 4/7 [00:00&lt;00:00,  8.76it/s]
+Validation DataLoader 0:  71%|██████████████▎     | 5/7 [00:00&lt;00:00,  8.16it/s]
+Validation DataLoader 0:  86%|█████████████████▏  | 6/7 [00:00&lt;00:00,  7.40it/s]
+Validation DataLoader 0: 100%|████████████████████| 7/7 [00:00&lt;00:00,  7.29it/s]
+Epoch 16:   6%| | 11/200 [00:03&lt;01:03,  2.97it/s, head_step=0.000618, thorax_ste^C
+2025-09-24 00:11:14 | INFO | sleap_nn.training.model_trainer:train:1037 | Finished training loop. [16.6 min]
+2025-09-24 00:11:14 | INFO | sleap_nn.training.model_trainer:train:1064 | Deleting viz folder at models/courtship.topdown_confmaps/viz...
 </pre>
 </div>
 </div>
@@ -3247,10 +3516,10 @@ INFO:sleap.nn.evals:OKS mAP: 0.691378
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [27]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-5">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-6">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -3262,7 +3531,7 @@ INFO:sleap.nn.evals:OKS mAP: 0.691378
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="err">!</span><span class="n">tree</span> <span class="n">models</span><span class="o">/</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5">!tree models/</div>
+<div class="clipboard-copy-txt" id="cell-6">!tree models/</div>
 </div>
 </div>
 </div>
@@ -3276,29 +3545,21 @@ INFO:sleap.nn.evals:OKS mAP: 0.691378
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre><span class="ansi-blue-intense-fg ansi-bold">models/</span>
 ├── <span class="ansi-blue-intense-fg ansi-bold">courtship.centroid</span>
-│   ├── best_model.h5
-│   ├── initial_config.json
-│   ├── labels_gt.train.slp
-│   ├── labels_gt.val.slp
-│   ├── labels_pr.train.slp
-│   ├── labels_pr.val.slp
-│   ├── metrics.train.npz
-│   ├── metrics.val.npz
-│   ├── training_config.json
+│   ├── best.ckpt
+│   ├── initial_config.yaml
+│   ├── labels_train_gt_0.slp
+│   ├── labels_val_gt_0.slp
+│   ├── training_config.yaml
 │   └── training_log.csv
 └── <span class="ansi-blue-intense-fg ansi-bold">courtship.topdown_confmaps</span>
-    ├── best_model.h5
-    ├── initial_config.json
-    ├── labels_gt.train.slp
-    ├── labels_gt.val.slp
-    ├── labels_pr.train.slp
-    ├── labels_pr.val.slp
-    ├── metrics.train.npz
-    ├── metrics.val.npz
-    ├── training_config.json
+    ├── best.ckpt
+    ├── initial_config.yaml
+    ├── labels_train_gt_0.slp
+    ├── labels_val_gt_0.slp
+    ├── training_config.yaml
     └── training_log.csv
 
-2 directories, 20 files
+3 directories, 12 files
 </pre>
 </div>
 </div>
@@ -3322,10 +3583,10 @@ INFO:sleap.nn.evals:OKS mAP: 0.691378
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [28]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-6">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-7">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -3335,9 +3596,9 @@ INFO:sleap.nn.evals:OKS mAP: 0.691378
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="err">!</span><span class="n">sleap</span><span class="o">-</span><span class="n">track</span> <span class="s2">"dataset/drosophila-melanogaster-courtship/20190128_113421.mp4"</span> <span class="o">--</span><span class="n">frames</span> <span class="mi">0</span><span class="o">-</span><span class="mi">100</span> <span class="o">-</span><span class="n">m</span> <span class="s2">"models/courtship.centroid"</span> <span class="o">-</span><span class="n">m</span> <span class="s2">"models/courtship.topdown_confmaps"</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="err">!</span><span class="n">sleap</span><span class="o">-</span><span class="n">nn</span> <span class="n">track</span> <span class="o">-</span><span class="n">i</span> <span class="s2">"dataset/drosophila-melanogaster-courtship/20190128_113421.mp4"</span> <span class="o">--</span><span class="n">frames</span> <span class="mi">0</span><span class="o">-</span><span class="mi">100</span> <span class="o">-</span><span class="n">m</span> <span class="s2">"models/courtship.centroid"</span> <span class="o">-</span><span class="n">m</span> <span class="s2">"models/courtship.topdown_confmaps"</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6">!sleap-track "dataset/drosophila-melanogaster-courtship/20190128_113421.mp4" --frames 0-100 -m "models/courtship.centroid" -m "models/courtship.topdown_confmaps"</div>
+<div class="clipboard-copy-txt" id="cell-7">!sleap-nn track -i "dataset/drosophila-melanogaster-courtship/20190128_113421.mp4" --frames 0-100 -m "models/courtship.centroid" -m "models/courtship.topdown_confmaps"</div>
 </div>
 </div>
 </div>
@@ -3349,105 +3610,14 @@ INFO:sleap.nn.evals:OKS mAP: 0.691378
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Started inference at: 2023-09-01 13:42:03.066840
-Args:
-<span class="ansi-bold">{</span>
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'data_path'</span>: <span class="ansi-green-fg">'dataset/drosophila-melanogaster-courtship/20190128_113421.mp4'</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'models'</span>: <span class="ansi-bold">[</span>
-<span class="ansi-green-fg">│   │   </span><span class="ansi-green-fg">'models/courtship.centroid'</span>,
-<span class="ansi-green-fg">│   │   </span><span class="ansi-green-fg">'models/courtship.topdown_confmaps'</span>
-<span class="ansi-green-fg">│   </span><span class="ansi-bold">]</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'frames'</span>: <span class="ansi-green-fg">'0-100'</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'only_labeled_frames'</span>: <span class="ansi-red-intense-fg">False</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'only_suggested_frames'</span>: <span class="ansi-red-intense-fg">False</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'output'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'no_empty_frames'</span>: <span class="ansi-red-intense-fg">False</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'verbosity'</span>: <span class="ansi-green-fg">'rich'</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'video.dataset'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'video.input_format'</span>: <span class="ansi-green-fg">'channels_last'</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'video.index'</span>: <span class="ansi-green-fg">''</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'cpu'</span>: <span class="ansi-red-intense-fg">False</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'first_gpu'</span>: <span class="ansi-red-intense-fg">False</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'last_gpu'</span>: <span class="ansi-red-intense-fg">False</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'gpu'</span>: <span class="ansi-green-fg">'auto'</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'max_edge_length_ratio'</span>: <span class="ansi-cyan-intense-fg ansi-bold">0.25</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'dist_penalty_weight'</span>: <span class="ansi-cyan-intense-fg ansi-bold">1.0</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'batch_size'</span>: <span class="ansi-cyan-intense-fg ansi-bold">4</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'open_in_gui'</span>: <span class="ansi-red-intense-fg">False</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'peak_threshold'</span>: <span class="ansi-cyan-intense-fg ansi-bold">0.2</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'max_instances'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.tracker'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.target_instance_count'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.pre_cull_to_target'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.pre_cull_iou_threshold'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.post_connect_single_breaks'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.clean_instance_count'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.clean_iou_threshold'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.similarity'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.match'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.robust'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.track_window'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.min_new_track_points'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.min_match_points'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.img_scale'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.of_window_size'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.of_max_levels'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.save_shifted_instances'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.kf_node_indices'</span>: <span class="ansi-magenta-fg">None</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'tracking.kf_init_frame_count'</span>: <span class="ansi-magenta-fg">None</span>
-<span class="ansi-bold">}</span>
-
-2023-09-01 13:42:03.098811: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:42:03.103255: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:42:03.103982: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-INFO:sleap.nn.inference:Auto-selected GPU 0 with 23050 MiB of free memory.
-Versions:
-SLEAP: 1.3.2
-TensorFlow: 2.7.0
-Numpy: 1.21.5
-Python: 3.7.12
-OS: Linux-5.15.0-78-generic-x86_64-with-debian-bookworm-sid
-
-System:
-GPUs: 1/1 available
-  Device: /physical_device:GPU:0
-         Available: True
-        Initalized: False
-     Memory growth: True
-
-Video: dataset/drosophila-melanogaster-courtship/20190128_113421.mp4
-2023-09-01 13:42:03.157392: I tensorflow/core/platform/cpu_feature_guard.cc:151] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F FMA
-To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2023-09-01 13:42:03.158019: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:42:03.158864: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:42:03.159656: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:42:03.455402: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:42:03.456138: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:42:03.456803: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 13:42:03.457464: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1525] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 21145 MB memory:  -&gt; device: 0, name: NVIDIA RTX A5000, pci bus id: 0000:01:00.0, compute capability: 8.6
-Predicting... <span style="color: rgb(58,58,58)">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-magenta-fg">  0%</span> ETA: <span class="ansi-cyan-fg">-:--:--</span> <span class="ansi-red-fg">?</span>2023-09-01 13:42:07.038687: I tensorflow/stream_executor/cuda/cuda_dnn.cc:366] Loaded cuDNN version 8201
-Predicting... <span style="color: rgb(114,156,31)">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-magenta-fg">100%</span> ETA: <span class="ansi-cyan-fg">0:00:00</span> <span class="ansi-red-fg">51.9 FPS</span>[0m <span class="ansi-red-fg">126.4 FPS</span> FPSFPS
-Finished inference at: 2023-09-01 13:42:10.842469
-Total runtime: 7.775644779205322 secs
-Predicted frames: 101/101
-Provenance:
-<span class="ansi-bold">{</span>
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'model_paths'</span>: <span class="ansi-bold">[</span>
-<span class="ansi-green-fg">│   │   </span><span class="ansi-green-fg">'models/courtship.centroid/training_config.json'</span>,
-<span class="ansi-green-fg">│   │   </span><span class="ansi-green-fg">'models/courtship.topdown_confmaps/training_config.json'</span>
-<span class="ansi-green-fg">│   </span><span class="ansi-bold">]</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'predictor'</span>: <span class="ansi-green-fg">'TopDownPredictor'</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'sleap_version'</span>: <span class="ansi-green-fg">'1.3.2'</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'platform'</span>: <span class="ansi-green-fg">'Linux-5.15.0-78-generic-x86_64-with-debian-bookworm-sid'</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'command'</span>: <span class="ansi-green-fg">'/home/talmolab/micromamba/envs/s0/bin/sleap-track dataset/drosophila-melanogaster-courtship/20190128_113421.mp4 --frames 0-100 -m models/courtship.centroid -m models/courtship.topdown_confmaps'</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'data_path'</span>: <span class="ansi-green-fg">'dataset/drosophila-melanogaster-courtship/20190128_113421.mp4'</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'output_path'</span>: <span class="ansi-green-fg">'dataset/drosophila-melanogaster-courtship/20190128_113421.mp4.predictions.slp'</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'total_elapsed'</span>: <span class="ansi-cyan-intense-fg ansi-bold">7.775644779205322</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'start_timestamp'</span>: <span class="ansi-green-fg">'2023-09-01 13:42:03.066840'</span>,
-<span class="ansi-green-fg">│   </span><span class="ansi-green-fg">'finish_timestamp'</span>: <span class="ansi-green-fg">'2023-09-01 13:42:10.842469'</span>
-<span class="ansi-bold">}</span>
-
-Saved output: dataset/drosophila-melanogaster-courtship/20190128_113421.mp4.predictions.slp
+<pre>2025-09-24 00:12:47 | INFO | sleap_nn.predict:run_inference:319 | Started inference at: 2025-09-24 00:12:47.871203
+2025-09-24 00:12:47 | INFO | sleap_nn.predict:run_inference:330 | Integral refinement is not supported with MPS device. Using CPU.
+2025-09-24 00:12:47 | INFO | sleap_nn.predict:run_inference:335 | Using device: cpu
+Predicting... <span class="ansi-black-intense-fg">━━━━━━━━━━━━━━━</span> <span class="ansi-magenta-fg">100%</span> <span class="ansi-green-fg">101/101</span> ETA: <span class="ansi-cyan-fg">0:00:00</span> Elapsed: <span class="ansi-yellow-fg">0:00:17</span> <span class="ansi-red-fg">6.0 FPS</span>0 FPS7 FPS
+2025-09-24 00:13:05 | INFO | sleap_nn.predict:run_inference:453 | Finished inference at: 2025-09-24 00:13:05.531684
+2025-09-24 00:13:05 | INFO | sleap_nn.predict:run_inference:454 | Total runtime: 17.660489082336426 secs
+2025-09-24 00:13:05 | INFO | sleap_nn.predict:run_inference:465 | Predictions output path: dataset/drosophila-melanogaster-courtship/20190128_113421.predictions.slp
+2025-09-24 00:13:05 | INFO | sleap_nn.predict:run_inference:466 | Saved file at: 2025-09-24 00:13:05.594857
 </pre>
 </div>
 </div>
@@ -3471,10 +3641,10 @@ Saved output: dataset/drosophila-melanogaster-courtship/20190128_113421.mp4.pred
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [29]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-7">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-8">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -3486,7 +3656,7 @@ Saved output: dataset/drosophila-melanogaster-courtship/20190128_113421.mp4.pred
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="err">!</span><span class="n">tree</span> <span class="n">dataset</span><span class="o">/</span><span class="n">drosophila</span><span class="o">-</span><span class="n">melanogaster</span><span class="o">-</span><span class="n">courtship</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-7">!tree dataset/drosophila-melanogaster-courtship</div>
+<div class="clipboard-copy-txt" id="cell-8">!tree dataset/drosophila-melanogaster-courtship</div>
 </div>
 </div>
 </div>
@@ -3501,83 +3671,11 @@ Saved output: dataset/drosophila-melanogaster-courtship/20190128_113421.mp4.pred
 <pre><span class="ansi-blue-intense-fg ansi-bold">dataset/drosophila-melanogaster-courtship</span>
 ├── <span class="ansi-green-intense-fg ansi-bold">20190128_113421.mp4</span>
 ├── 20190128_113421.mp4.predictions.slp
+├── 20190128_113421.predictions.slp
 ├── <span class="ansi-green-intense-fg ansi-bold">courtship_labels.slp</span>
 └── <span class="ansi-magenta-intense-fg ansi-bold">example.jpg</span>
 
-0 directories, 4 files
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>You can inspect your predictions file using <code>sleap-inspect</code>:</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [30]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-8">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="err">!</span><span class="n">sleap</span><span class="o">-</span><span class="n">inspect</span> <span class="n">dataset</span><span class="o">/</span><span class="n">drosophila</span><span class="o">-</span><span class="n">melanogaster</span><span class="o">-</span><span class="n">courtship</span><span class="o">/</span><span class="mf">20190128_113421.</span><span class="n">mp4</span><span class="o">.</span><span class="n">predictions</span><span class="o">.</span><span class="n">slp</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-8">!sleap-inspect dataset/drosophila-melanogaster-courtship/20190128_113421.mp4.predictions.slp</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Labeled frames: 101
-Tracks: 0
-Video files:
-  dataset/drosophila-melanogaster-courtship/20190128_113421.mp4
-    labeled frames: 101
-    labeled frames from 0 to 100
-    user labeled frames: 0
-    tracks: 1
-    max instances in frame: 2
-Total user labeled frames: 0
-
-Provenance:
-  model_paths: ['models/courtship.centroid/training_config.json', 'models/courtship.topdown_confmaps/training_config.json']
-  predictor: TopDownPredictor
-  sleap_version: 1.3.2
-  platform: Linux-5.15.0-78-generic-x86_64-with-debian-bookworm-sid
-  command: /home/talmolab/micromamba/envs/s0/bin/sleap-track dataset/drosophila-melanogaster-courtship/20190128_113421.mp4 --frames 0-100 -m models/courtship.centroid -m models/courtship.topdown_confmaps
-  data_path: dataset/drosophila-melanogaster-courtship/20190128_113421.mp4
-  output_path: dataset/drosophila-melanogaster-courtship/20190128_113421.mp4.predictions.slp
-  total_elapsed: 7.775644779205322
-  start_timestamp: 2023-09-01 13:42:03.066840
-  finish_timestamp: 2023-09-01 13:42:10.842469
-  args: {'data_path': 'dataset/drosophila-melanogaster-courtship/20190128_113421.mp4', 'models': ['models/courtship.centroid', 'models/courtship.topdown_confmaps'], 'frames': '0-100', 'only_labeled_frames': False, 'only_suggested_frames': False, 'output': None, 'no_empty_frames': False, 'verbosity': 'rich', 'video.dataset': None, 'video.input_format': 'channels_last', 'video.index': '', 'cpu': False, 'first_gpu': False, 'last_gpu': False, 'gpu': 'auto', 'max_edge_length_ratio': 0.25, 'dist_penalty_weight': 1.0, 'batch_size': 4, 'open_in_gui': False, 'peak_threshold': 0.2, 'max_instances': None, 'tracking.tracker': None, 'tracking.target_instance_count': None, 'tracking.pre_cull_to_target': None, 'tracking.pre_cull_iou_threshold': None, 'tracking.post_connect_single_breaks': None, 'tracking.clean_instance_count': None, 'tracking.clean_iou_threshold': None, 'tracking.similarity': None, 'tracking.match': None, 'tracking.robust': None, 'tracking.track_window': None, 'tracking.min_new_track_points': None, 'tracking.min_match_points': None, 'tracking.img_scale': None, 'tracking.of_window_size': None, 'tracking.of_max_levels': None, 'tracking.save_shifted_instances': None, 'tracking.kf_node_indices': None, 'tracking.kf_init_frame_count': None}
+1 directory, 5 files
 </pre>
 </div>
 </div>

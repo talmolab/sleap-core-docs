@@ -615,8 +615,6 @@
       
         
       
-        
-      
     
     
     
@@ -859,29 +857,6 @@
   
   <span class="md-ellipsis">
     Running SLEAP remotely
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../using-bonsai-with-sleap/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Using Bonsai with SLEAP
     
   </span>
   
@@ -1821,22 +1796,14 @@
 <p>If you use the “<strong>simple</strong>” tracker then the frames chosen are the instances from prior frames. If you use “<strong>flow</strong>” as the tracking method then SLEAP takes instances from the prior frames and uses optical flow (<a href="https://arxiv.org/abs/1804.06208">Xiao et al., 2018</a>) to shift the points in the instances, and then uses these shifted points as the candidate instances.</p>
 <p>There are currently three methods for matching instances in frame N against these candidates, each encoded by a cost function:</p>
 <ul>
-<li>“<strong>centroid</strong>” measures similarity by the distance between the instance centroids</li>
+<li>“<strong>centroid</strong>” measures similarity by the euclidean distance between the instance centroids</li>
 <li>“<strong>iou</strong>” measures similarity by the intersection/overlap of the instance bounding boxes</li>
-<li>“<strong>instance</strong>” measures similarity by looking at the distances between corresponding nodes in the instances, normalized by the number of valid nodes in the candidate instance.</li>
-<li>“<strong>normalized_instance</strong>” measures similarity by looking at the distances between corresponding nodes in the instances, normalized by the number of valid nodes in the candidate instance and the keypoints normalized by the image size.</li>
 <li>“<strong>object_keypoint</strong>” measures similarity by measuring the distance between each keypoints from a reference instance and a query instance, takes the exp(-d**2), sum for all the keypoints and divide by the number of visible keypoints in the reference instance.</li>
 </ul>
 <p>Once SLEAP has measured the similarity between all the candidates and the instances in frame N, you need to choose a way to pair them up. You can do this either by picking the best match, and the picking the best remaining match for each remaining instance in turn—this is “<strong>greedy</strong>” matching—or you can find the way of matching identities which minimizes the total cost (or: maximizes the total similarity)—this is “<strong>Hungarian</strong>” matching.</p>
-<p>Finally, you have an optional second-pass method which “cleans” the resulting identities with <strong>"Cull to Target Instance Count"</strong>. To use this method, you specify a target number of tracks by setting the <strong>"Target Number of Instances Per Frame"</strong> (i.e., how many animals there are in your video). SLEAP then goes frame by frame and removes (or culls) instances over this target number. To cull to a target number of instances per frame, navigate to the Inference Pipeline via Predict &gt;&gt; Inference, then:</p>
-<ol>
-<li>Specify the <strong>Tracker (cross-frame identity) Method</strong></li>
-<li>Uncheck the <strong>No target</strong> </li>
-<li>Specify the <strong>Target Number of Instances Per Frame</strong></li>
-<li>Check the <strong>Cull to Target Instance Count</strong> </li>
-</ol>
+<p>If you know the expected number of instances in your project, you can set the <strong>maximum number of tracks</strong>. This ensures that no new tracks will be created once this limit is reached, helping to prevent spurious or extra identities from being assigned during tracking.</p>
 <p><img alt="set-instance-count" src="../../assets/images/set-instance-count.jpg" /></p>
-<p>Once you have the desired number of instances in every frame, SLEAP connects identities with a simple heuristic: if exactly one track identity was dropped from frame N and exactly one new track identity was added in frame N+1, it matches up the dropped and the new tracks.</p>
+<p>Once you have the desired number of instances in every frame, SLEAP connects identities with a simple heuristic: if exactly one track identity was dropped from frame N and exactly one new track identity was added in frame N+1, it matches up the dropped and the new tracks. You could enable this by checking the <code>Connect Single Track Breaks</code> checkbox in the GUI.</p>
 <h2 id="more-training-data">More training data?<a class="headerlink" href="#more-training-data" title="Permanent link">&para;</a></h2>
 <p>Often your models will fail to predict <em>all</em> of the instances on <em>all</em> of the frames. Even if you're happy enough with the result since you can interpolate missing data, it's possible that the missing instances will cause problems when we try to determine track identities across frames, so if your tracking results are poor, you may wish to <a href="../importing-predictions-for-labeling/">Importing predictions for labeling</a>.</p>
 <h2 id="color-palettes">Color palettes<a class="headerlink" href="#color-palettes" title="Permanent link">&para;</a></h2>

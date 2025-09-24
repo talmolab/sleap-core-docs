@@ -615,8 +615,6 @@
       
         
       
-        
-      
     
     
     
@@ -823,29 +821,6 @@
   
   <span class="md-ellipsis">
     Running SLEAP remotely
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../using-bonsai-with-sleap/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Using Bonsai with SLEAP
     
   </span>
   
@@ -1740,32 +1715,32 @@
 
   <h1>Creating a custom training profile</h1>
 
-<p><em>Case: You've created a project with training data on one computer, and you want to use a different computer for training models with custom hyperparameters.</em></p>
+<p><em>Case: You've created a project with training data and you want to train models with custom hyperparameters.</em></p>
 <p>Hyperparameters include the model architecture, learning rate, and data augmentation settings. While model <strong>parameters</strong> are learned from your data during training, <strong>hyperparameters</strong> are not learned from your data—they have to be set before training since they control the training process.</p>
 <p>This guide will explain how to create a custom training profile but doesn't cover how to decide what the hyperparameters should be. For more information about the hyperparameters, see our guide to <a href="../../learnings/configuring-models/">Configuring models</a>.</p>
-<p>Training profiles are JSON files. The JSON format is fairly easy to read (and edit) with a text-editor and you can use the default "baseline" profiles as a starting point for creating your own training profiles. For example, take a look at the <a href="https://github.com/talmolab/sleap/blob/main/sleap/training_profiles/baseline_medium_rf.bottomup.json">baseline bottom-up profile</a> or our <a href="https://github.com/talmolab/sleap/blob/main/sleap/training_profiles">other baseline profiles</a>.</p>
-<p>But if this sounds intimidating, you don't have to edit the JSON file by hand! You can use the same GUI that's used for training on a local machine to export custom training profiles.</p>
+<p>Training profiles are YAML files. The YAML format is fairly easy to read (and edit) with a text-editor and you can use the default "baseline" profiles as a starting point for creating your own training profiles. For example, take a look at the <a href="https://github.com/talmolab/sleap/blob/main/sleap/training_profiles/baseline_medium_rf.bottomup.json">baseline bottom-up profile</a> or our <a href="https://github.com/talmolab/sleap/blob/main/sleap/training_profiles">other baseline profiles</a>.</p>
+<p>But if this sounds intimidating, you don't have to edit the YAML file by hand! You can use the same GUI that's used for training on a local machine to export custom training profiles.</p>
 <p>If it isn't open already, run SLEAP and open the SLEAP project with your training dataset. Then select the "<strong>Run Training...</strong>" command in the "<strong>Predict</strong>" menu. You'll see the training GUI which lets you configure the pipeline type and the hyperparameters for each model:</p>
-<p><img alt="Training Dialog" src="../../assets/images/training-dialog.jpg" /></p>
+<p><img alt="Training Dialog" src="../../assets/images/training_dialog.png" /></p>
 <p>First pick the desired pipeline (i.e., top-down, bottom-up, or single animal). For each model in the pipeline, you'll then see a "<strong>Model Configuration</strong>" tab—in the image above with the top-down pipeline, there's one tab for configuring the centroid model and one for the centered instance model. Other pipelines will only have one model to configure.</p>
 <p>You can click on each model configuration tab to configure the hyperparameters for training that model:</p>
-<p><img alt="Training Model Dialog" src="../../assets/images/training-model-dialog.jpg" /></p>
+<p><img alt="Training Model Dialog" src="../../assets/images/training-model-dialog.png" /></p>
 <p>For advice about what you might want to customize with this dialog, see our guide to <a href="../../learnings/configuring-models/">Configuring models</a>.</p>
 <p>Once you've configured each of your models, click the "<strong>Save configuration files...</strong>" button at the bottom of the dialog. You'll be prompted for where to save the files. It's a good idea to create a new folder which will contain the files since there will be multiple files exported.</p>
 <p>Wherever you selected to save your files, you'll now have a custom training profile(s) with the settings you selected in the dialog. The filename of the training profile(s) will be:</p>
 <ul>
-<li><code>multi_instance.json</code> for a bottom-up pipeline,</li>
-<li><code>centroid.json</code> and <code>centered_instance.json</code> for a top-down pipeline, and</li>
-<li><code>single_instance.json</code> for a single animal pipeline.</li>
+<li><code>bottomup.yaml</code> for a bottom-up pipeline,</li>
+<li><code>centroid.yaml</code> and <code>centered_instance.yaml</code> for a top-down pipeline, and</li>
+<li><code>single_instance.yaml</code> for a single animal pipeline.</li>
 </ul>
 <p>(There will also be a <code>train-script.sh</code> file with the command-line command you could use to train your dataset using these training profiles, and possibly an <code>inference-script.sh</code> file if you selected frames for inference after training.)</p>
 <p>If you're running training on a remote machine (including Colab), export your training job package into the remote machine. Then call:</p>
-<div class="highlight"><pre><span></span><code>sleap-train<span class="w"> </span>path/to/custom/profile.json<span class="w"> </span>path/to/dataset.pkg.slp
+<div class="highlight"><pre><span></span><code>sleap-nn<span class="w"> </span>train<span class="w"> </span>--config-name<span class="w"> </span>profile.yaml<span class="w"> </span>--config-dir<span class="w"> </span>/path/to/yaml<span class="w"> </span><span class="s2">&quot;data_config.train_labels_path=[path/to/dataset.pkg.slp]&quot;</span>
 </code></pre></div>
-<p>for each model you want to train (where <code>path/to/custom/profile.json</code> should be replaced with the path to your custom training profile and <code>path/to/dataset.pkg.slp</code> replaced with the path to your training job package). See our guide to <a href="../running-sleap-remotely/">remote training</a> for more details.</p>
+<p>for each model you want to train (where <code>path/to/custom/profile.yaml</code> should be replaced with the path to your custom training profile and <code>path/to/dataset.pkg.slp</code> replaced with the path to your training job package). See our guide to <a href="../running-sleap-remotely/">remote training</a> for more details.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If you exported the training package as a ZIP file, it contains both the <code>.pkg.slp</code> and <code>.json</code> files necessary to train with the configuration you selected in the GUI. Before running the <a href="../../reference/command-line-interfaces/#sleap-train"><code>sleap-train</code></a> command, make sure to unzip this file.</p>
+<p>If you exported the training package as a ZIP file, it contains both the <code>.pkg.slp</code> and <code>.yaml</code> files necessary to train with the configuration you selected in the GUI. Before running the <a href="https://nn.sleap.ai/latest/training/#using-cli"><code>sleap-nn train</code></a> command, make sure to unzip this file.</p>
 </div>
 <h3 id="training-hardware-support">Training Hardware support<a class="headerlink" href="#training-hardware-support" title="Permanent link">&para;</a></h3>
 <p>SLEAP supports training on:</p>

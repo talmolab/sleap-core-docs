@@ -613,8 +613,6 @@
       
         
       
-        
-      
     
     
     
@@ -774,29 +772,6 @@
   
   <span class="md-ellipsis">
     Running SLEAP remotely
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../how-to-guides/using-bonsai-with-sleap/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Using Bonsai with SLEAP
     
   </span>
   
@@ -1096,9 +1071,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-setup-sleap" class="md-nav__link">
+  <a href="#1-setup" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Setup SLEAP
+      1. Setup
     </span>
   </a>
   
@@ -1756,9 +1731,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-setup-sleap" class="md-nav__link">
+  <a href="#1-setup" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Setup SLEAP
+      1. Setup
     </span>
   </a>
   
@@ -2269,8 +2244,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="interactive-and-resumable-training">Interactive and resumable training<a class="anchor-link" href="#interactive-and-resumable-training">¶</a></h1><p>Most of the time, you will be training models through the GUI or using the <a href="../../reference/command-line-interfaces/#sleap-train"><code>sleap-train</code> CLI</a>.</p>
-<p>If you'd like to customize the training process, however, you can use SLEAP's low-level training functionality interactively. This allows you to define scripts that train models according to your own workflow, for example, to <strong>resume training</strong> on an already trained model. Another possible application would be to train a model using <strong>transfer learning</strong>, where a pretrained model can be used to initialize the weights of the new model.</p>
+<h1 id="interactive-and-resumable-training">Interactive and resumable training<a class="anchor-link" href="#interactive-and-resumable-training">¶</a></h1><p>Most of the time, you will be training models through the GUI or using the <a href="https://nn.sleap.ai/training"><code>sleap-nn train</code> CLI</a>.</p>
+<p>If you'd like to customize the training process, however, you can use sleap-nn's low-level training functionality interactively. This allows you to define scripts that train models according to your own workflow, for example, to <strong>resume training</strong> on an already trained model. Another possible application would be to train a model using <strong>transfer learning</strong>, where a pretrained model can be used to initialize the weights of the new model.</p>
 <p>In this notebook we will explore how to set up a training job and train a model for multiple rounds without the GUI or CLI.</p>
 </div>
 </div>
@@ -2282,7 +2257,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="1-setup-sleap">1. Setup SLEAP<a class="anchor-link" href="#1-setup-sleap">¶</a></h2><p>Run this cell first to install SLEAP. If you get a dependency error in subsequent cells, just click <strong>Runtime</strong> → <strong>Restart runtime</strong> to reload the packages.</p>
+<h2 id="1-setup">1. Setup<a class="anchor-link" href="#1-setup">¶</a></h2><p>Run this cell first to install <code>sleap-nn</code>. If you get a dependency error in subsequent cells, just click <strong>Runtime</strong> → <strong>Restart runtime</strong> to reload the packages.</p>
 <p>Don't forget to set <strong>Runtime</strong> → <strong>Change runtime type</strong> → <strong>GPU</strong> as the accelerator.</p>
 </div>
 </div>
@@ -2293,7 +2268,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-1">
@@ -2306,21 +2281,15 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># This should take care of all the dependencies on colab:</span>
-<span class="err">!</span><span class="n">pip</span> <span class="n">uninstall</span> <span class="o">-</span><span class="n">qqq</span> <span class="o">-</span><span class="n">y</span> <span class="n">opencv</span><span class="o">-</span><span class="n">python</span> <span class="n">opencv</span><span class="o">-</span><span class="n">contrib</span><span class="o">-</span><span class="n">python</span>
-<span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">qqq</span> <span class="s2">"sleap[pypi]&gt;=1.3.3"</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">qqq</span> <span class="s2">"sleap-nn[torch-cpu]"</span>
 
-
-<span class="c1"># But to do it locally, we'd recommend the conda package (available on Windows + Linux):</span>
-<span class="c1"># conda create -n sleap -c sleap -c conda-forge -c nvidia sleap</span>
+<span class="c1"># if you have GPU (in colab, enable GPU runtime)</span>
+<span class="c1"># !pip install -qqq "sleap-nn[torch-cuda-128]"</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-1"># This should take care of all the dependencies on colab:
-!pip uninstall -qqq -y opencv-python opencv-contrib-python
-!pip install -qqq "sleap[pypi]&gt;=1.3.3"
+<div class="clipboard-copy-txt" id="cell-1">!pip install -qqq "sleap-nn[torch-cpu]"
 
-
-# But to do it locally, we'd recommend the conda package (available on Windows + Linux):
-# conda create -n sleap -c sleap -c conda-forge -c nvidia sleap</div>
+# if you have GPU (in colab, enable GPU runtime)
+# !pip install -qqq "sleap-nn[torch-cuda-128]"</div>
 </div>
 </div>
 </div>
@@ -2332,9 +2301,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre><span class="ansi-red-fg">ERROR: Cannot uninstall opencv-python 4.6.0, RECORD file not found. Hint: The package was installed by conda.</span><span class="ansi-red-fg">
-</span><span class="ansi-red-fg">ERROR: Cannot uninstall shiboken2 5.15.6, RECORD file not found. You might be able to recover from this via: 'pip install --force-reinstall --no-deps shiboken2==5.15.6'.</span><span class="ansi-red-fg">
-</span></pre>
+<pre>zsh:1: command not found: pip
+</pre>
 </div>
 </div>
 </div>
@@ -2357,7 +2325,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-2">
@@ -2370,13 +2338,13 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sleap</span>
-<span class="n">sleap</span><span class="o">.</span><span class="n">versions</span><span class="p">()</span>
-<span class="n">sleap</span><span class="o">.</span><span class="n">system_summary</span><span class="p">()</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sleap_nn</span>
+
+<span class="n">sleap_nn</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-2">import sleap
-sleap.versions()
-sleap.system_summary()</div>
+<div class="clipboard-copy-txt" id="cell-2">import sleap_nn
+
+sleap_nn.__version__</div>
 </div>
 </div>
 </div>
@@ -2385,20 +2353,10 @@ sleap.system_summary()</div>
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>SLEAP: 1.3.2
-TensorFlow: 2.7.0
-Numpy: 1.21.5
-Python: 3.7.12
-OS: Linux-5.15.0-78-generic-x86_64-with-debian-bookworm-sid
-GPUs: 1/1 available
-  Device: /physical_device:GPU:0
-         Available: True
-        Initalized: False
-     Memory growth: None
-</pre>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[2]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>'0.0.1'</pre>
 </div>
 </div>
 </div>
@@ -2422,7 +2380,7 @@ GPUs: 1/1 available
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-3">
@@ -2455,21 +2413,22 @@ GPUs: 1/1 available
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100  619M  100  619M    0     0  32.9M      0  0:00:18  0:00:18 --:--:-- 34.4M
-total 622M
-drwxrwxr-x  3 talmolab talmolab 4.0K Sep  1 14:23 .
-drwxrwxr-x 10 talmolab talmolab 4.0K Aug 31 15:43 ..
-drwxrwxr-x  2 talmolab talmolab 4.0K Jun 20 10:00 analysis_example
--rw-rw-r--  1 talmolab talmolab 713K Jun 20 10:00 Analysis_examples.ipynb
--rw-rw-r--  1 talmolab talmolab 481K Sep  1 14:02 Data_structures.ipynb
--rw-rw-r--  1 talmolab talmolab 4.1K Jun 20 10:00 index.rst
--rw-rw-r--  1 talmolab talmolab 179K Sep  1 13:58 Interactive_and_realtime_inference.ipynb
--rw-rw-r--  1 talmolab talmolab 120K Sep  1 14:21 Interactive_and_resumable_training.ipynb
--rw-rw-r--  1 talmolab talmolab 620M Sep  1 14:24 labels.pkg.slp
--rw-rw-r--  1 talmolab talmolab 157K Sep  1 14:15 Model_evaluation.ipynb
--rw-rw-r--  1 talmolab talmolab 132K Sep  1 14:18 Post_inference_tracking.ipynb
--rw-rw-r--  1 talmolab talmolab  94K Sep  1 13:44 Training_and_inference_on_an_example_dataset.ipynb
--rw-rw-r--  1 talmolab talmolab  12K Aug 31 11:39 Training_and_inference_using_Google_Drive.ipynb
+100  619M  100  619M    0     0  43.7M      0  0:00:14  0:00:14 --:--:-- 47.0M
+total 1283000
+drwxr-xr-x@ 14 divyasesh  staff   448B Sep 23 17:41 <span class="ansi-blue-fg">.</span>
+drwxr-xr-x@ 15 divyasesh  staff   480B Sep 23 11:43 <span class="ansi-blue-fg">..</span>
+-rw-r--r--@  1 divyasesh  staff   713K Sep 22 10:30 Analysis_examples.ipynb
+-rw-r--r--@  1 divyasesh  staff   462K Sep 22 12:05 Data_structures.ipynb
+-rw-r--r--@  1 divyasesh  staff   175K Sep 22 12:07 Interactive_and_realtime_inference.ipynb
+-rw-r--r--@  1 divyasesh  staff    66K Sep 23 17:41 Interactive_and_resumable_training.ipynb
+-rw-r--r--@  1 divyasesh  staff   159K Sep 23 16:54 Model_evaluation.ipynb
+-rw-r--r--@  1 divyasesh  staff   127K Sep 22 12:06 Post_inference_tracking.ipynb
+-rw-r--r--@  1 divyasesh  staff   471K Sep 19 19:36 SLEAP_Tutorial_at_Cosyne_2024_Using_exported_data.ipynb
+-rw-r--r--@  1 divyasesh  staff    45K Sep 23 17:34 Training_and_inference_on_an_example_dataset.ipynb
+-rw-r--r--@  1 divyasesh  staff    12K Sep 23 12:19 Training_and_inference_using_Google_Drive.ipynb
+-rw-r--r--@  1 divyasesh  staff   619M Sep 23 17:41 labels.pkg.slp
+-rw-r--r--@  1 divyasesh  staff   3.4K Sep 22 11:01 notebooks-overview.md
+-rw-r--r--@  1 divyasesh  staff    16K Sep 19 19:36 sleap_io_idtracker_IDs.ipynb
 </pre>
 </div>
 </div>
@@ -2482,7 +2441,7 @@ drwxrwxr-x  2 talmolab talmolab 4.0K Jun 20 10:00 analysis_example
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-4">
@@ -2510,18 +2469,18 @@ drwxrwxr-x  2 talmolab talmolab 4.0K Jun 20 10:00 analysis_example
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="3-setup-training-job">3. Setup training job<a class="anchor-link" href="#3-setup-training-job">¶</a></h2><p>A SLEAP <code>TrainingJobConfig</code> is a structure that contains all of the hyperparameters needed to train a SLEAP model. This is typically saved out to <code>initial_config.json</code> and <code>training_config.json</code> in the model folder so that training runs can be reproduced if needed, as well as to store metadata necessary for inference.</p>
-<p>Normally, these are generated interactively by the GUI, or manually by editing an existing JSON file in a text editor. Here, we will define a configuration interactively entirely in Python.</p>
+<h2 id="3-setup-training-job">3. Setup training job<a class="anchor-link" href="#3-setup-training-job">¶</a></h2><p>A sleap-nn <code>TrainingJobConfig</code> is a structure that contains all of the hyperparameters needed to train a SLEAP model. This is typically saved out to <code>initial_config.yaml</code> and <code>training_config.yaml</code> in the model folder so that training runs can be reproduced if needed, as well as to store metadata necessary for inference.</p>
+<p>Normally, these are generated interactively by the GUI, or manually by editing an existing YAML file in a text editor. Here, we will define a configuration interactively entirely in Python.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-5">
@@ -2534,61 +2493,87 @@ drwxrwxr-x  2 talmolab talmolab 4.0K Jun 20 10:00 analysis_example
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sleap.nn.config</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sleap_nn.config.training_job_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">TrainingJobConfig</span><span class="p">,</span> <span class="n">verify_training_cfg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sleap_nn.config.model_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">UNetConfig</span><span class="p">,</span> <span class="n">CenteredInstanceConfMapsConfig</span><span class="p">,</span> <span class="n">CenteredInstanceConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sleap_nn.config.data_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">AugmentationConfig</span><span class="p">,</span> <span class="n">GeometricConfig</span>
+
 
 <span class="c1"># Initialize the default training job configuration.</span>
 <span class="n">cfg</span> <span class="o">=</span> <span class="n">TrainingJobConfig</span><span class="p">()</span>
 
 <span class="c1"># Update path to training data we just downloaded.</span>
-<span class="n">cfg</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">labels</span><span class="o">.</span><span class="n">training_labels</span> <span class="o">=</span> <span class="n">TRAINING_SLP_FILE</span>
-<span class="n">cfg</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">labels</span><span class="o">.</span><span class="n">validation_fraction</span> <span class="o">=</span> <span class="mf">0.1</span>
-
-<span class="c1"># Preprocesssing and training parameters.</span>
-<span class="n">cfg</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">instance_cropping</span><span class="o">.</span><span class="n">center_on_part</span> <span class="o">=</span> <span class="s2">"thorax"</span>
-<span class="n">cfg</span><span class="o">.</span><span class="n">optimization</span><span class="o">.</span><span class="n">augmentation_config</span><span class="o">.</span><span class="n">rotate</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="n">cfg</span><span class="o">.</span><span class="n">optimization</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># This is the maximum number of training rounds.</span>
+<span class="n">cfg</span><span class="o">.</span><span class="n">data_config</span><span class="o">.</span><span class="n">train_labels_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">TRAINING_SLP_FILE</span><span class="p">]</span>
+<span class="n">cfg</span><span class="o">.</span><span class="n">data_config</span><span class="o">.</span><span class="n">validation_fraction</span> <span class="o">=</span> <span class="mf">0.1</span>
 
 <span class="c1"># These configures the actual neural network and the model type:</span>
-<span class="n">cfg</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">unet</span> <span class="o">=</span> <span class="n">UNetConfig</span><span class="p">(</span>
+<span class="n">cfg</span><span class="o">.</span><span class="n">model_config</span><span class="o">.</span><span class="n">backbone_config</span><span class="o">.</span><span class="n">unet</span> <span class="o">=</span> <span class="n">UNetConfig</span><span class="p">(</span>
     <span class="n">filters</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
     <span class="n">output_stride</span><span class="o">=</span><span class="mi">4</span>
 <span class="p">)</span>
-<span class="n">cfg</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">heads</span><span class="o">.</span><span class="n">centered_instance</span> <span class="o">=</span> <span class="n">CenteredInstanceConfmapsHeadConfig</span><span class="p">(</span>
-    <span class="n">anchor_part</span><span class="o">=</span><span class="s2">"thorax"</span><span class="p">,</span>
-    <span class="n">sigma</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
-    <span class="n">output_stride</span><span class="o">=</span><span class="mi">4</span>
-<span class="p">)</span>
+<span class="n">centered_head</span> <span class="o">=</span> <span class="n">CenteredInstanceConfig</span><span class="p">(</span><span class="n">confmaps</span><span class="o">=</span><span class="n">CenteredInstanceConfMapsConfig</span><span class="p">(</span><span class="n">anchor_part</span><span class="o">=</span><span class="s2">"thorax"</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">output_stride</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">cfg</span><span class="o">.</span><span class="n">model_config</span><span class="o">.</span><span class="n">head_configs</span><span class="o">.</span><span class="n">centered_instance</span> <span class="o">=</span> <span class="n">centered_head</span>
+
+
+<span class="c1"># Preprocesssing and training parameters.</span>
+<span class="n">cfg</span><span class="o">.</span><span class="n">data_config</span><span class="o">.</span><span class="n">augmentation_config</span> <span class="o">=</span> <span class="n">AugmentationConfig</span><span class="p">(</span><span class="n">geometric</span><span class="o">=</span><span class="n">GeometricConfig</span><span class="p">(</span><span class="n">affine_p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">))</span>
+<span class="n">cfg</span><span class="o">.</span><span class="n">trainer_config</span><span class="o">.</span><span class="n">max_epochs</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># This is the maximum number of training rounds.</span>
+<span class="n">cfg</span><span class="o">.</span><span class="n">trainer_config</span><span class="o">.</span><span class="n">train_data_loader</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">cfg</span><span class="o">.</span><span class="n">trainer_config</span><span class="o">.</span><span class="n">val_data_loader</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">4</span>
 
 <span class="c1"># Setup how we want to save the trained model.</span>
-<span class="n">cfg</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">run_name</span> <span class="o">=</span> <span class="s2">"baseline_model.topdown"</span>
+<span class="n">cfg</span><span class="o">.</span><span class="n">trainer_config</span><span class="o">.</span><span class="n">save_ckpt</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">cfg</span><span class="o">.</span><span class="n">trainer_config</span><span class="o">.</span><span class="n">run_name</span> <span class="o">=</span> <span class="s2">"baseline_model.topdown_centered_instance"</span>
+
+<span class="c1"># verify config structure</span>
+<span class="n">cfg</span> <span class="o">=</span> <span class="n">verify_training_cfg</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+<span class="n">cfg</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5">from sleap.nn.config import *
+<div class="clipboard-copy-txt" id="cell-5">from sleap_nn.config.training_job_config import TrainingJobConfig, verify_training_cfg
+from sleap_nn.config.model_config import UNetConfig, CenteredInstanceConfMapsConfig, CenteredInstanceConfig
+from sleap_nn.config.data_config import AugmentationConfig, GeometricConfig
+
 
 # Initialize the default training job configuration.
 cfg = TrainingJobConfig()
 
 # Update path to training data we just downloaded.
-cfg.data.labels.training_labels = TRAINING_SLP_FILE
-cfg.data.labels.validation_fraction = 0.1
-
-# Preprocesssing and training parameters.
-cfg.data.instance_cropping.center_on_part = "thorax"
-cfg.optimization.augmentation_config.rotate = True
-cfg.optimization.epochs = 10  # This is the maximum number of training rounds.
+cfg.data_config.train_labels_path = [TRAINING_SLP_FILE]
+cfg.data_config.validation_fraction = 0.1
 
 # These configures the actual neural network and the model type:
-cfg.model.backbone.unet = UNetConfig(
+cfg.model_config.backbone_config.unet = UNetConfig(
     filters=16,
     output_stride=4
 )
-cfg.model.heads.centered_instance = CenteredInstanceConfmapsHeadConfig(
-    anchor_part="thorax",
-    sigma=1.5,
-    output_stride=4
-)
+centered_head = CenteredInstanceConfig(confmaps=CenteredInstanceConfMapsConfig(anchor_part="thorax", sigma=1.5, output_stride=4))
+cfg.model_config.head_configs.centered_instance = centered_head
+
+
+# Preprocesssing and training parameters.
+cfg.data_config.augmentation_config = AugmentationConfig(geometric=GeometricConfig(affine_p=1.0))
+cfg.trainer_config.max_epochs = 5  # This is the maximum number of training rounds.
+cfg.trainer_config.train_data_loader.batch_size = 4
+cfg.trainer_config.val_data_loader.batch_size = 4
 
 # Setup how we want to save the trained model.
-cfg.outputs.run_name = "baseline_model.topdown"</div>
+cfg.trainer_config.save_ckpt = True
+cfg.trainer_config.run_name = "baseline_model.topdown_centered_instance"
+
+# verify config structure
+cfg = verify_training_cfg(cfg)
+cfg</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>{'data_config': {'train_labels_path': ['labels.pkg.slp'], 'val_labels_path': None, 'validation_fraction': 0.1, 'test_file_path': None, 'provider': 'LabelsReader', 'user_instances_only': True, 'data_pipeline_fw': 'torch_dataset', 'cache_img_path': None, 'use_existing_imgs': False, 'delete_cache_imgs_after_training': True, 'preprocessing': {'ensure_rgb': False, 'ensure_grayscale': False, 'max_height': None, 'max_width': None, 'scale': 1.0, 'crop_size': None, 'min_crop_size': 100}, 'use_augmentations_train': False, 'augmentation_config': {'intensity': None, 'geometric': {'rotation_min': -15.0, 'rotation_max': 15.0, 'scale_min': 0.9, 'scale_max': 1.1, 'translate_width': 0.0, 'translate_height': 0.0, 'affine_p': 1.0, 'erase_scale_min': 0.0001, 'erase_scale_max': 0.01, 'erase_ratio_min': 1.0, 'erase_ratio_max': 1.0, 'erase_p': 0.0, 'mixup_lambda_min': 0.01, 'mixup_lambda_max': 0.05, 'mixup_p': 0.0}}, 'skeletons': None}, 'model_config': {'init_weights': 'default', 'pretrained_backbone_weights': None, 'pretrained_head_weights': None, 'backbone_config': {'unet': {'in_channels': 1, 'kernel_size': 3, 'filters': 16, 'filters_rate': 1.5, 'max_stride': 16, 'stem_stride': None, 'middle_block': True, 'up_interpolate': True, 'stacks': 1, 'convs_per_block': 2, 'output_stride': 4}, 'convnext': None, 'swint': None}, 'head_configs': {'single_instance': None, 'centroid': None, 'centered_instance': {'confmaps': {'part_names': None, 'anchor_part': 'thorax', 'sigma': 1.5, 'output_stride': 4, 'loss_weight': 1.0}}, 'bottomup': None, 'multi_class_bottomup': None, 'multi_class_topdown': None}, 'total_params': None}, 'trainer_config': {'train_data_loader': {'batch_size': 4, 'shuffle': False, 'num_workers': 0}, 'val_data_loader': {'batch_size': 4, 'shuffle': False, 'num_workers': 0}, 'model_ckpt': {'save_top_k': 1, 'save_last': None}, 'trainer_devices': None, 'trainer_device_indices': None, 'trainer_accelerator': 'auto', 'profiler': None, 'trainer_strategy': 'auto', 'enable_progress_bar': True, 'min_train_steps_per_epoch': 200, 'train_steps_per_epoch': None, 'visualize_preds_during_training': False, 'keep_viz': False, 'max_epochs': 5, 'seed': None, 'use_wandb': False, 'save_ckpt': True, 'ckpt_dir': '.', 'run_name': 'baseline_model.topdown_centered_instance', 'resume_ckpt_path': None, 'wandb': {'entity': None, 'project': None, 'name': None, 'save_viz_imgs_wandb': False, 'api_key': None, 'wandb_mode': None, 'prv_runid': None, 'group': None, 'current_run_id': None}, 'optimizer_name': 'Adam', 'optimizer': {'lr': 0.001, 'amsgrad': False}, 'lr_scheduler': None, 'early_stopping': {'min_delta': 0.0, 'patience': 1, 'stop_training_on_plateau': False}, 'online_hard_keypoint_mining': {'online_mining': False, 'hard_to_easy_ratio': 2.0, 'min_hard_keypoints': 2, 'max_hard_keypoints': None, 'loss_scale': 5.0}, 'zmq': {'controller_port': None, 'controller_polling_timeout': 10, 'publish_port': None}}, 'name': '', 'description': '', 'sleap_nn_version': '0.0.1', 'filename': ''}</pre>
 </div>
 </div>
 </div>
@@ -2601,8 +2586,9 @@ cfg.outputs.run_name = "baseline_model.topdown"</div>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Existing configs can also be loaded from a <code>.json</code> file with:</p>
-<div class="highlight"><pre><span></span><span class="n">cfg</span> <span class="o">=</span> <span class="n">sleap</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s2">"training_config.json"</span><span class="p">)</span>
+<p>Existing configs can also be loaded from a <code>.yaml</code> file with:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">omegaconf</span><span class="w"> </span><span class="kn">import</span> <span class="n">OmegaConf</span>
+<span class="n">cfg</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"training_config.yaml"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2624,7 +2610,7 @@ cfg.outputs.run_name = "baseline_model.topdown"</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-6">
@@ -2637,9 +2623,13 @@ cfg.outputs.run_name = "baseline_model.topdown"</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">trainer</span> <span class="o">=</span> <span class="n">sleap</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">Trainer</span><span class="o">.</span><span class="n">from_config</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sleap_nn.training.model_trainer</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelTrainer</span>
+
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">ModelTrainer</span><span class="o">.</span><span class="n">get_model_trainer_from_config</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6">trainer = sleap.nn.training.Trainer.from_config(cfg)</div>
+<div class="clipboard-copy-txt" id="cell-6">from sleap_nn.training.model_trainer import ModelTrainer
+
+trainer = ModelTrainer.get_model_trainer_from_config(cfg)</div>
 </div>
 </div>
 </div>
@@ -2651,9 +2641,10 @@ cfg.outputs.run_name = "baseline_model.topdown"</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>INFO:sleap.nn.training:Loading training labels from: labels.pkg.slp
-INFO:sleap.nn.training:Creating training and validation splits from validation fraction: 0.1
-INFO:sleap.nn.training:  Splits: Training = 1440 / Validation = 160.
+<pre>2025-09-23 17:41:56 | INFO | sleap_nn.training.model_trainer:_setup_train_val_labels:216 | Creating train-val split...
+2025-09-23 17:41:57 | INFO | sleap_nn.training.model_trainer:_setup_train_val_labels:261 | # Train Labeled frames: 1440
+2025-09-23 17:41:57 | INFO | sleap_nn.training.model_trainer:_setup_train_val_labels:262 | # Val Labeled frames: 160
+2025-09-23 17:41:57 | INFO | sleap_nn.training.model_trainer:setup_config:512 | Setting up config...
 </pre>
 </div>
 </div>
@@ -2677,7 +2668,7 @@ INFO:sleap.nn.training:  Splits: Training = 1440 / Validation = 160.
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-7">
@@ -2703,149 +2694,229 @@ INFO:sleap.nn.training:  Splits: Training = 1440 / Validation = 160.
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>INFO:sleap.nn.training:Setting up for training...
-INFO:sleap.nn.training:Setting up pipeline builders...
-INFO:sleap.nn.training:Setting up model...
-INFO:sleap.nn.training:Building test pipeline...
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>GPU available: True (mps), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/torch/utils/data/dataloader.py:684: UserWarning: 'pin_memory' argument is set as true but not supported on MPS now, then device pinned memory won't be used.
+  warnings.warn(warn_msg)
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/callbacks/model_checkpoint.py:751: Checkpoint directory /Users/divyasesh/Desktop/talmolab/sleap-core-docs/docs/notebooks/baseline_model.topdown_centered_instance exists and is not empty.
+
+  | Name                     | Type              | Params | Mode 
+-----------------------------------------------------------------------
+0 | model                    | Model             | 306 K  | train
+1 | instance_peaks_inf_layer | FindInstancePeaks | 0      | train
+-----------------------------------------------------------------------
+306 K     Trainable params
+0         Non-trainable params
+306 K     Total params
+1.226     Total estimated model params size (MB)
+66        Modules in train mode
+0         Modules in eval mode
 </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>2025-09-23 17:41:58 | INFO | sleap_nn.training.model_trainer:train:849 | Setting up for training...
+2025-09-23 17:41:58 | INFO | sleap_nn.training.model_trainer:_setup_model_ckpt_dir:575 | Setting up model ckpt dir: `baseline_model.topdown_centered_instance`...
+2025-09-23 17:41:58 | INFO | sleap_nn.training.model_trainer:train:868 | Setting up Trainer...
+2025-09-23 17:41:58 | INFO | sleap_nn.training.model_trainer:_setup_loggers_callbacks:647 | Setting up callbacks and loggers...
+2025-09-23 17:41:58 | INFO | sleap_nn.training.model_trainer:train:897 | Trainer devices: auto
+2025-09-23 17:41:58 | INFO | sleap_nn.training.model_trainer:train:950 | Training on 1 device(s)
+2025-09-23 17:41:58 | INFO | sleap_nn.training.model_trainer:train:951 | Training on mps:0 accelerator
+2025-09-23 17:41:58 | INFO | sleap_nn.training.model_trainer:train:955 | Setting up lightning module for centered_instance model...
+2025-09-23 17:41:58 | INFO | sleap_nn.training.model_trainer:train:959 | Backbone model: UNet(
+  (encoders): ModuleList(
+    (0): Encoder(
+      (encoder_stack): ModuleList(
+        (0): SimpleConvBlock(
+          (blocks): Sequential(
+            (stack0_enc0_conv0): Conv2d(1, 16, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc0_act0_relu): ReLU()
+            (stack0_enc0_conv1): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc0_act1_relu): ReLU()
+          )
+        )
+        (1): SimpleConvBlock(
+          (blocks): Sequential(
+            (stack0_enc1_pool): MaxPool2dWithSamePadding(kernel_size=2, stride=2, padding=same, dilation=1, ceil_mode=False)
+            (stack0_enc1_conv0): Conv2d(16, 24, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc1_act0_relu): ReLU()
+            (stack0_enc1_conv1): Conv2d(24, 24, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc1_act1_relu): ReLU()
+          )
+        )
+        (2): SimpleConvBlock(
+          (blocks): Sequential(
+            (stack0_enc2_pool): MaxPool2dWithSamePadding(kernel_size=2, stride=2, padding=same, dilation=1, ceil_mode=False)
+            (stack0_enc2_conv0): Conv2d(24, 36, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc2_act0_relu): ReLU()
+            (stack0_enc2_conv1): Conv2d(36, 36, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc2_act1_relu): ReLU()
+          )
+        )
+        (3): SimpleConvBlock(
+          (blocks): Sequential(
+            (stack0_enc3_pool): MaxPool2dWithSamePadding(kernel_size=2, stride=2, padding=same, dilation=1, ceil_mode=False)
+            (stack0_enc3_conv0): Conv2d(36, 54, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc3_act0_relu): ReLU()
+            (stack0_enc3_conv1): Conv2d(54, 54, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc3_act1_relu): ReLU()
+          )
+        )
+        (4): Sequential(
+          (stack0_enc4_last_pool): MaxPool2dWithSamePadding(kernel_size=2, stride=2, padding=same, dilation=1, ceil_mode=False)
+        )
+      )
+    )
+  )
+  (decoders): ModuleList(
+    (0): Decoder(
+      (decoder_stack): ModuleList(
+        (0): SimpleUpsamplingBlock(
+          (blocks): Sequential(
+            (stack0_dec0_s16_to_s8_interp_bilinear): Upsample(scale_factor=2.0, mode='bilinear')
+            (stack0_dec0_s16_to_s8_refine_conv0): Conv2d(135, 54, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec0_s16_to_s8_refine_conv0_act_relu): ReLU()
+            (stack0_dec0_s16_to_s8_refine_conv1): Conv2d(54, 54, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec0_s16_to_s8_refine_conv1_act_relu): ReLU()
+          )
+        )
+        (1): SimpleUpsamplingBlock(
+          (blocks): Sequential(
+            (stack0_dec1_s8_to_s4_interp_bilinear): Upsample(scale_factor=2.0, mode='bilinear')
+            (stack0_dec1_s8_to_s4_refine_conv0): Conv2d(90, 36, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec1_s8_to_s4_refine_conv0_act_relu): ReLU()
+            (stack0_dec1_s8_to_s4_refine_conv1): Conv2d(36, 36, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec1_s8_to_s4_refine_conv1_act_relu): ReLU()
+          )
+        )
+      )
+    )
+  )
+  (middle_blocks): ModuleList(
+    (0): SimpleConvBlock(
+      (blocks): Sequential(
+        (stack0_enc5_middle_expand_conv0): Conv2d(54, 81, kernel_size=(3, 3), stride=(1, 1), padding=same)
+        (stack0_enc5_middle_expand_act0_relu): ReLU()
+      )
+    )
+    (1): SimpleConvBlock(
+      (blocks): Sequential(
+        (stack0_enc6_middle_contract_conv0): Conv2d(81, 81, kernel_size=(3, 3), stride=(1, 1), padding=same)
+        (stack0_enc6_middle_contract_act0_relu): ReLU()
+      )
+    )
+  )
+)
+2025-09-23 17:41:58 | INFO | sleap_nn.training.model_trainer:train:960 | Head model: ModuleList(
+  (0): Sequential(
+    (CenteredInstanceConfmapsHead): Sequential(
+      (0): Conv2d(36, 13, kernel_size=(1, 1), stride=(1, 1), padding=same)
+      (1): Identity()
+    )
+  )
+)
+2025-09-23 17:41:58 | INFO | sleap_nn.training.model_trainer:train:962 | Total model parameters: 306444
+2025-09-23 17:41:58 | INFO | sleap_nn.training.model_trainer:train:967 | Input image shape: torch.Size([1, 1, 144, 144])
+2025-09-23 17:41:58 | INFO | sleap_nn.training.model_trainer:train:1021 | Finished trainer set up. [0.1s]
+2025-09-23 17:41:58 | INFO | sleap_nn.training.model_trainer:train:1024 | Starting training loop...
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Sanity Checking: |          | 0/? [00:00&lt;?, ?it/s]</pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2023-09-01 14:24:11.775633: I tensorflow/core/platform/cpu_feature_guard.cc:151] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F FMA
-To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2023-09-01 14:24:11.776555: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 14:24:11.777493: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 14:24:11.778196: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 14:24:12.055738: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 14:24:12.056597: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 14:24:12.057389: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:939] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
-2023-09-01 14:24:12.058046: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1525] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 21261 MB memory:  -&gt; device: 0, name: NVIDIA RTX A5000, pci bus id: 0000:01:00.0, compute capability: 8.6
+<pre>/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:433: The 'val_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=7` in the `DataLoader` to improve performance.
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('learning_rate', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('val_loss', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('val_time', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:433: The 'train_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=7` in the `DataLoader` to improve performance.
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>INFO:sleap.nn.training:Loaded test example. [1.799s]
-INFO:sleap.nn.training:  Input shape: (160, 160, 1)
-INFO:sleap.nn.training:Created Keras model.
-INFO:sleap.nn.training:  Backbone: UNet(stacks=1, filters=16, filters_rate=2, kernel_size=3, stem_kernel_size=7, convs_per_block=2, stem_blocks=0, down_blocks=4, middle_block=True, up_blocks=2, up_interpolate=False, block_contraction=False)
-INFO:sleap.nn.training:  Max stride: 16
-INFO:sleap.nn.training:  Parameters: 2,101,501
-INFO:sleap.nn.training:  Heads: 
-INFO:sleap.nn.training:    [0] = CenteredInstanceConfmapsHead(part_names=['head', 'thorax', 'abdomen', 'wingL', 'wingR', 'forelegL4', 'forelegR4', 'midlegL4', 'midlegR4', 'hindlegL4', 'hindlegR4', 'eyeL', 'eyeR'], anchor_part='thorax', sigma=1.5, output_stride=4, loss_weight=1.0)
-INFO:sleap.nn.training:  Outputs: 
-INFO:sleap.nn.training:    [0] = KerasTensor(type_spec=TensorSpec(shape=(None, 40, 40, 13), dtype=tf.float32, name=None), name='CenteredInstanceConfmapsHead/BiasAdd:0', description="created by layer 'CenteredInstanceConfmapsHead'")
-INFO:sleap.nn.training:Training from scratch
-INFO:sleap.nn.training:Setting up data pipelines...
-INFO:sleap.nn.training:Training set: n = 1440
-INFO:sleap.nn.training:Validation set: n = 160
-INFO:sleap.nn.training:Setting up optimization...
-INFO:sleap.nn.training:  Learning rate schedule: LearningRateScheduleConfig(reduce_on_plateau=True, reduction_factor=0.5, plateau_min_delta=1e-06, plateau_patience=5, plateau_cooldown=3, min_learning_rate=1e-08)
-INFO:sleap.nn.training:  Early stopping: EarlyStoppingConfig(stop_training_on_plateau=True, plateau_min_delta=1e-06, plateau_patience=10)
-INFO:sleap.nn.training:Setting up outputs...
-INFO:sleap.nn.training:Created run path: models/baseline_model.topdown
-INFO:sleap.nn.training:Setting up visualization...
-INFO:sleap.nn.training:Finished trainer set up. [3.3s]
-INFO:sleap.nn.training:Creating tf.data.Datasets for training data generation...
-INFO:sleap.nn.training:Finished creating training datasets. [16.2s]
-INFO:sleap.nn.training:Starting training loop...
-Epoch 1/10
-</pre>
+<pre>Training: |          | 0/? [00:00&lt;?, ?it/s]</pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>2023-09-01 14:24:32.586040: I tensorflow/stream_executor/cuda/cuda_dnn.cc:366] Loaded cuDNN version 8201
-2023-09-01 14:24:42.104556: I tensorflow/stream_executor/cuda/cuda_blas.cc:1774] TensorFloat-32 will be used for the matrix multiplication. This will only be logged once.
+<pre>/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('head', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('thorax', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('abdomen', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('wingL', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('wingR', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('forelegL4', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('forelegR4', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('midlegL4', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('midlegR4', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('hindlegL4', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('hindlegR4', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('eyeL', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('eyeR', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('train_loss', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>360/360 - 12s - loss: 0.0037 - head: 0.0030 - thorax: 0.0030 - abdomen: 0.0036 - wingL: 0.0040 - wingR: 0.0040 - forelegL4: 0.0037 - forelegR4: 0.0038 - midlegL4: 0.0041 - midlegR4: 0.0041 - hindlegL4: 0.0039 - hindlegR4: 0.0040 - eyeL: 0.0035 - eyeR: 0.0035 - val_loss: 0.0033 - val_head: 0.0020 - val_thorax: 0.0029 - val_abdomen: 0.0030 - val_wingL: 0.0033 - val_wingR: 0.0034 - val_forelegL4: 0.0037 - val_forelegR4: 0.0036 - val_midlegL4: 0.0039 - val_midlegR4: 0.0039 - val_hindlegL4: 0.0037 - val_hindlegR4: 0.0038 - val_eyeL: 0.0029 - val_eyeR: 0.0027 - lr: 1.0000e-04 - 12s/epoch - 32ms/step
-Epoch 2/10
-360/360 - 7s - loss: 0.0028 - head: 0.0013 - thorax: 0.0018 - abdomen: 0.0026 - wingL: 0.0027 - wingR: 0.0028 - forelegL4: 0.0032 - forelegR4: 0.0033 - midlegL4: 0.0038 - midlegR4: 0.0038 - hindlegL4: 0.0037 - hindlegR4: 0.0038 - eyeL: 0.0015 - eyeR: 0.0015 - val_loss: 0.0025 - val_head: 9.7323e-04 - val_thorax: 0.0011 - val_abdomen: 0.0026 - val_wingL: 0.0024 - val_wingR: 0.0026 - val_forelegL4: 0.0030 - val_forelegR4: 0.0030 - val_midlegL4: 0.0036 - val_midlegR4: 0.0037 - val_hindlegL4: 0.0038 - val_hindlegR4: 0.0037 - val_eyeL: 0.0012 - val_eyeR: 0.0012 - lr: 1.0000e-04 - 7s/epoch - 21ms/step
-Epoch 3/10
-360/360 - 7s - loss: 0.0022 - head: 8.0630e-04 - thorax: 6.7199e-04 - abdomen: 0.0022 - wingL: 0.0020 - wingR: 0.0021 - forelegL4: 0.0027 - forelegR4: 0.0027 - midlegL4: 0.0033 - midlegR4: 0.0035 - hindlegL4: 0.0034 - hindlegR4: 0.0035 - eyeL: 8.7345e-04 - eyeR: 8.4145e-04 - val_loss: 0.0020 - val_head: 8.6439e-04 - val_thorax: 5.9914e-04 - val_abdomen: 0.0020 - val_wingL: 0.0019 - val_wingR: 0.0020 - val_forelegL4: 0.0025 - val_forelegR4: 0.0024 - val_midlegL4: 0.0030 - val_midlegR4: 0.0031 - val_hindlegL4: 0.0030 - val_hindlegR4: 0.0031 - val_eyeL: 8.9466e-04 - val_eyeR: 9.5174e-04 - lr: 1.0000e-04 - 7s/epoch - 20ms/step
-Epoch 4/10
-360/360 - 7s - loss: 0.0018 - head: 6.7854e-04 - thorax: 4.6945e-04 - abdomen: 0.0020 - wingL: 0.0017 - wingR: 0.0018 - forelegL4: 0.0023 - forelegR4: 0.0023 - midlegL4: 0.0026 - midlegR4: 0.0027 - hindlegL4: 0.0028 - hindlegR4: 0.0029 - eyeL: 7.4546e-04 - eyeR: 6.9585e-04 - val_loss: 0.0018 - val_head: 7.7640e-04 - val_thorax: 5.3180e-04 - val_abdomen: 0.0020 - val_wingL: 0.0018 - val_wingR: 0.0018 - val_forelegL4: 0.0022 - val_forelegR4: 0.0022 - val_midlegL4: 0.0024 - val_midlegR4: 0.0025 - val_hindlegL4: 0.0026 - val_hindlegR4: 0.0026 - val_eyeL: 9.2650e-04 - val_eyeR: 9.0064e-04 - lr: 1.0000e-04 - 7s/epoch - 20ms/step
-Epoch 5/10
-360/360 - 7s - loss: 0.0015 - head: 5.8714e-04 - thorax: 4.0531e-04 - abdomen: 0.0017 - wingL: 0.0015 - wingR: 0.0015 - forelegL4: 0.0020 - forelegR4: 0.0019 - midlegL4: 0.0020 - midlegR4: 0.0021 - hindlegL4: 0.0023 - hindlegR4: 0.0024 - eyeL: 6.7827e-04 - eyeR: 6.2254e-04 - val_loss: 0.0015 - val_head: 6.5523e-04 - val_thorax: 4.4019e-04 - val_abdomen: 0.0016 - val_wingL: 0.0016 - val_wingR: 0.0015 - val_forelegL4: 0.0019 - val_forelegR4: 0.0020 - val_midlegL4: 0.0021 - val_midlegR4: 0.0020 - val_hindlegL4: 0.0021 - val_hindlegR4: 0.0021 - val_eyeL: 7.9871e-04 - val_eyeR: 7.8608e-04 - lr: 1.0000e-04 - 7s/epoch - 20ms/step
-Epoch 6/10
-360/360 - 7s - loss: 0.0013 - head: 5.3215e-04 - thorax: 3.5232e-04 - abdomen: 0.0016 - wingL: 0.0014 - wingR: 0.0014 - forelegL4: 0.0017 - forelegR4: 0.0018 - midlegL4: 0.0017 - midlegR4: 0.0018 - hindlegL4: 0.0020 - hindlegR4: 0.0021 - eyeL: 5.9826e-04 - eyeR: 5.6906e-04 - val_loss: 0.0013 - val_head: 5.3776e-04 - val_thorax: 3.7946e-04 - val_abdomen: 0.0014 - val_wingL: 0.0014 - val_wingR: 0.0013 - val_forelegL4: 0.0017 - val_forelegR4: 0.0018 - val_midlegL4: 0.0016 - val_midlegR4: 0.0017 - val_hindlegL4: 0.0017 - val_hindlegR4: 0.0018 - val_eyeL: 6.6378e-04 - val_eyeR: 6.5611e-04 - lr: 1.0000e-04 - 7s/epoch - 19ms/step
-Epoch 7/10
-360/360 - 7s - loss: 0.0012 - head: 4.8557e-04 - thorax: 3.1089e-04 - abdomen: 0.0014 - wingL: 0.0012 - wingR: 0.0012 - forelegL4: 0.0016 - forelegR4: 0.0016 - midlegL4: 0.0015 - midlegR4: 0.0016 - hindlegL4: 0.0018 - hindlegR4: 0.0019 - eyeL: 5.6096e-04 - eyeR: 5.3123e-04 - val_loss: 0.0012 - val_head: 5.2092e-04 - val_thorax: 3.4376e-04 - val_abdomen: 0.0014 - val_wingL: 0.0012 - val_wingR: 0.0012 - val_forelegL4: 0.0015 - val_forelegR4: 0.0017 - val_midlegL4: 0.0015 - val_midlegR4: 0.0015 - val_hindlegL4: 0.0017 - val_hindlegR4: 0.0017 - val_eyeL: 6.4288e-04 - val_eyeR: 6.0581e-04 - lr: 1.0000e-04 - 7s/epoch - 19ms/step
-Epoch 8/10
-360/360 - 7s - loss: 0.0011 - head: 4.3752e-04 - thorax: 2.7513e-04 - abdomen: 0.0013 - wingL: 0.0011 - wingR: 0.0011 - forelegL4: 0.0015 - forelegR4: 0.0015 - midlegL4: 0.0014 - midlegR4: 0.0014 - hindlegL4: 0.0017 - hindlegR4: 0.0017 - eyeL: 5.1807e-04 - eyeR: 4.9554e-04 - val_loss: 0.0011 - val_head: 5.6743e-04 - val_thorax: 3.5883e-04 - val_abdomen: 0.0014 - val_wingL: 0.0012 - val_wingR: 0.0011 - val_forelegL4: 0.0015 - val_forelegR4: 0.0016 - val_midlegL4: 0.0014 - val_midlegR4: 0.0014 - val_hindlegL4: 0.0015 - val_hindlegR4: 0.0015 - val_eyeL: 6.2925e-04 - val_eyeR: 6.5965e-04 - lr: 1.0000e-04 - 7s/epoch - 19ms/step
-Epoch 9/10
-360/360 - 7s - loss: 0.0011 - head: 4.2635e-04 - thorax: 2.4829e-04 - abdomen: 0.0012 - wingL: 0.0010 - wingR: 0.0010 - forelegL4: 0.0015 - forelegR4: 0.0014 - midlegL4: 0.0013 - midlegR4: 0.0013 - hindlegL4: 0.0016 - hindlegR4: 0.0017 - eyeL: 5.0197e-04 - eyeR: 4.8384e-04 - val_loss: 0.0011 - val_head: 4.8699e-04 - val_thorax: 3.5631e-04 - val_abdomen: 0.0013 - val_wingL: 0.0011 - val_wingR: 0.0011 - val_forelegL4: 0.0014 - val_forelegR4: 0.0016 - val_midlegL4: 0.0013 - val_midlegR4: 0.0015 - val_hindlegL4: 0.0014 - val_hindlegR4: 0.0015 - val_eyeL: 6.1692e-04 - val_eyeR: 5.8370e-04 - lr: 1.0000e-04 - 7s/epoch - 19ms/step
-Epoch 10/10
-360/360 - 7s - loss: 9.8454e-04 - head: 3.9611e-04 - thorax: 2.2278e-04 - abdomen: 0.0012 - wingL: 9.4893e-04 - wingR: 9.5555e-04 - forelegL4: 0.0014 - forelegR4: 0.0014 - midlegL4: 0.0012 - midlegR4: 0.0012 - hindlegL4: 0.0015 - hindlegR4: 0.0016 - eyeL: 4.7396e-04 - eyeR: 4.4770e-04 - val_loss: 0.0010 - val_head: 4.9330e-04 - val_thorax: 2.9460e-04 - val_abdomen: 0.0013 - val_wingL: 9.5190e-04 - val_wingR: 9.9289e-04 - val_forelegL4: 0.0014 - val_forelegR4: 0.0015 - val_midlegL4: 0.0012 - val_midlegR4: 0.0012 - val_hindlegL4: 0.0014 - val_hindlegR4: 0.0014 - val_eyeL: 5.5512e-04 - val_eyeR: 5.3737e-04 - lr: 1.0000e-04 - 7s/epoch - 19ms/step
-INFO:sleap.nn.training:Finished training loop. [1.3 min]
-INFO:sleap.nn.training:Deleting visualization directory: models/baseline_model.topdown/viz
-INFO:sleap.nn.training:Saving evaluation metrics to model folder...
+<pre>Validation: |          | 0/? [00:00&lt;?, ?it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/core/module.py:520: You called `self.log('train_time', ..., logger=True)` but have no logger configured. You can enable one by doing `Trainer(logger=ALogger(...))`
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Output()</pre>
+<pre>Validation: |          | 0/? [00:00&lt;?, ?it/s]</pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Validation: |          | 0/? [00:00&lt;?, ?it/s]</pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Validation: |          | 0/? [00:00&lt;?, ?it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Validation: |          | 0/? [00:00&lt;?, ?it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>`Trainer.fit` stopped: `max_epochs=5` reached.
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>INFO:sleap.nn.evals:Saved predictions: models/baseline_model.topdown/labels_pr.train.slp
-INFO:sleap.nn.evals:Saved metrics: models/baseline_model.topdown/metrics.train.npz
-INFO:sleap.nn.evals:OKS mAP: 0.508754
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Output()</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>INFO:sleap.nn.evals:Saved predictions: models/baseline_model.topdown/labels_pr.val.slp
-INFO:sleap.nn.evals:Saved metrics: models/baseline_model.topdown/metrics.val.npz
-INFO:sleap.nn.evals:OKS mAP: 0.477220
+<pre>2025-09-23 17:45:42 | INFO | sleap_nn.training.model_trainer:train:1037 | Finished training loop. [3.7 min]
 </pre>
 </div>
 </div>
@@ -2859,7 +2930,7 @@ INFO:sleap.nn.evals:OKS mAP: 0.477220
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="5-continuing-training">5. Continuing training<a class="anchor-link" href="#5-continuing-training">¶</a></h2><p>If we still have the trainer in memory, we can continue training by simply calling <code>trainer.train()</code> again with a potentially different number of epochs:</p>
+<h2 id="5-continuing-training">5. Continuing training<a class="anchor-link" href="#5-continuing-training">¶</a></h2><p>We can continue training by setting the <code>resume_ckpt_path</code> to the previous ckpt with a potentially different number of epochs:</p>
 </div>
 </div>
 </div>
@@ -2869,7 +2940,7 @@ INFO:sleap.nn.evals:OKS mAP: 0.477220
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-8">
@@ -2882,11 +2953,22 @@ INFO:sleap.nn.evals:OKS mAP: 0.477220
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">trainer</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">optimization</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="mi">3</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="n">cfg</span><span class="o">.</span><span class="n">trainer_config</span><span class="o">.</span><span class="n">max_epochs</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1">#(prv_epochs + extra epochs)</span>
+<span class="n">cfg</span><span class="o">.</span><span class="n">trainer_config</span><span class="o">.</span><span class="n">resume_ckpt_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">trainer_config</span><span class="o">.</span><span class="n">ckpt_dir</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">trainer_config</span><span class="o">.</span><span class="n">run_name</span><span class="si">}</span><span class="s2">"</span> <span class="o">/</span> <span class="s2">"best.ckpt"</span>
+
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">ModelTrainer</span><span class="o">.</span><span class="n">get_model_trainer_from_config</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
 <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-8">trainer.config.optimization.epochs = 3
-trainer.train()</div>
+<div class="clipboard-copy-txt" id="cell-8">from pathlib import Path
+
+cfg.trainer_config.max_epochs = 10 #(prv_epochs + extra epochs)
+cfg.trainer_config.resume_ckpt_path = Path(cfg.trainer_config.ckpt_dir) / f"{cfg.trainer_config.run_name}" / "best.ckpt"
+
+trainer = ModelTrainer.get_model_trainer_from_config(cfg)
+trainer.train()
+</div>
 </div>
 </div>
 </div>
@@ -2898,74 +2980,191 @@ trainer.train()</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>INFO:sleap.nn.training:Creating tf.data.Datasets for training data generation...
-INFO:sleap.nn.training:Finished creating training datasets. [17.1s]
-INFO:sleap.nn.training:Starting training loop...
-Epoch 1/3
-360/360 - 7s - loss: 9.3201e-04 - head: 3.7118e-04 - thorax: 2.0303e-04 - abdomen: 0.0011 - wingL: 8.9319e-04 - wingR: 9.0134e-04 - forelegL4: 0.0013 - forelegR4: 0.0013 - midlegL4: 0.0011 - midlegR4: 0.0011 - hindlegL4: 0.0014 - hindlegR4: 0.0015 - eyeL: 4.4919e-04 - eyeR: 4.2012e-04 - val_loss: 9.4680e-04 - val_head: 3.9131e-04 - val_thorax: 2.4191e-04 - val_abdomen: 0.0010 - val_wingL: 8.9155e-04 - val_wingR: 8.9295e-04 - val_forelegL4: 0.0013 - val_forelegR4: 0.0014 - val_midlegL4: 0.0012 - val_midlegR4: 0.0012 - val_hindlegL4: 0.0013 - val_hindlegR4: 0.0013 - val_eyeL: 5.3658e-04 - val_eyeR: 5.0085e-04 - lr: 1.0000e-04 - 7s/epoch - 20ms/step
-Epoch 2/3
-360/360 - 7s - loss: 8.8906e-04 - head: 3.6015e-04 - thorax: 1.9128e-04 - abdomen: 0.0010 - wingL: 8.5054e-04 - wingR: 8.5352e-04 - forelegL4: 0.0013 - forelegR4: 0.0013 - midlegL4: 0.0010 - midlegR4: 0.0011 - hindlegL4: 0.0014 - hindlegR4: 0.0014 - eyeL: 4.3093e-04 - eyeR: 4.0690e-04 - val_loss: 8.9501e-04 - val_head: 4.1907e-04 - val_thorax: 2.3487e-04 - val_abdomen: 0.0010 - val_wingL: 8.6145e-04 - val_wingR: 8.4151e-04 - val_forelegL4: 0.0013 - val_forelegR4: 0.0014 - val_midlegL4: 0.0010 - val_midlegR4: 0.0011 - val_hindlegL4: 0.0013 - val_hindlegR4: 0.0012 - val_eyeL: 5.2130e-04 - val_eyeR: 4.9293e-04 - lr: 1.0000e-04 - 7s/epoch - 19ms/step
-Epoch 3/3
-360/360 - 7s - loss: 8.5396e-04 - head: 3.4440e-04 - thorax: 1.7180e-04 - abdomen: 9.9867e-04 - wingL: 8.1743e-04 - wingR: 8.2288e-04 - forelegL4: 0.0012 - forelegR4: 0.0012 - midlegL4: 9.7110e-04 - midlegR4: 0.0010 - hindlegL4: 0.0013 - hindlegR4: 0.0014 - eyeL: 4.1497e-04 - eyeR: 3.9294e-04 - val_loss: 8.8076e-04 - val_head: 3.7130e-04 - val_thorax: 2.4712e-04 - val_abdomen: 0.0010 - val_wingL: 8.2889e-04 - val_wingR: 8.5931e-04 - val_forelegL4: 0.0012 - val_forelegR4: 0.0014 - val_midlegL4: 9.9400e-04 - val_midlegR4: 0.0011 - val_hindlegL4: 0.0012 - val_hindlegR4: 0.0012 - val_eyeL: 4.9486e-04 - val_eyeR: 4.6961e-04 - lr: 1.0000e-04 - 7s/epoch - 19ms/step
-INFO:sleap.nn.training:Finished training loop. [0.4 min]
-INFO:sleap.nn.training:Deleting visualization directory: models/baseline_model.topdown/viz
-INFO:sleap.nn.training:Saving evaluation metrics to model folder...
+<pre>2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:_setup_train_val_labels:216 | Creating train-val split...
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:_setup_train_val_labels:261 | # Train Labeled frames: 1440
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:_setup_train_val_labels:262 | # Val Labeled frames: 160
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:setup_config:512 | Setting up config...
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:_setup_ckpt_path:380 | Checkpoint path already exists: baseline_model.topdown_centered_instance... adding suffix to prevent overwriting.
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:train:849 | Setting up for training...
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:_setup_model_ckpt_dir:575 | Setting up model ckpt dir: `baseline_model.topdown_centered_instance-1`...
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>GPU available: True (mps), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/callbacks/model_checkpoint.py:751: Checkpoint directory /Users/divyasesh/Desktop/talmolab/sleap-core-docs/docs/notebooks/baseline_model.topdown_centered_instance-1 exists and is not empty.
+Restoring states from the checkpoint path at baseline_model.topdown_centered_instance/best.ckpt
+/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/lightning/pytorch/callbacks/model_checkpoint.py:445: The dirpath has changed from '/Users/divyasesh/Desktop/talmolab/sleap-core-docs/docs/notebooks/baseline_model.topdown_centered_instance' to '/Users/divyasesh/Desktop/talmolab/sleap-core-docs/docs/notebooks/baseline_model.topdown_centered_instance-1', therefore `best_model_score`, `kth_best_model_path`, `kth_value`, `last_model_path` and `best_k_models` won't be reloaded. Only `best_model_path` will be reloaded.
+
+  | Name                     | Type              | Params | Mode 
+-----------------------------------------------------------------------
+0 | model                    | Model             | 306 K  | train
+1 | instance_peaks_inf_layer | FindInstancePeaks | 0      | train
+-----------------------------------------------------------------------
+306 K     Trainable params
+0         Non-trainable params
+306 K     Total params
+1.226     Total estimated model params size (MB)
+66        Modules in train mode
+0         Modules in eval mode
+Restored all states from the checkpoint at baseline_model.topdown_centered_instance/best.ckpt
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Output()</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">
+<pre>2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:train:868 | Setting up Trainer...
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:_setup_loggers_callbacks:647 | Setting up callbacks and loggers...
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:train:897 | Trainer devices: auto
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:train:950 | Training on 1 device(s)
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:train:951 | Training on mps:0 accelerator
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:train:955 | Setting up lightning module for centered_instance model...
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:train:959 | Backbone model: UNet(
+  (encoders): ModuleList(
+    (0): Encoder(
+      (encoder_stack): ModuleList(
+        (0): SimpleConvBlock(
+          (blocks): Sequential(
+            (stack0_enc0_conv0): Conv2d(1, 16, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc0_act0_relu): ReLU()
+            (stack0_enc0_conv1): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc0_act1_relu): ReLU()
+          )
+        )
+        (1): SimpleConvBlock(
+          (blocks): Sequential(
+            (stack0_enc1_pool): MaxPool2dWithSamePadding(kernel_size=2, stride=2, padding=same, dilation=1, ceil_mode=False)
+            (stack0_enc1_conv0): Conv2d(16, 24, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc1_act0_relu): ReLU()
+            (stack0_enc1_conv1): Conv2d(24, 24, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc1_act1_relu): ReLU()
+          )
+        )
+        (2): SimpleConvBlock(
+          (blocks): Sequential(
+            (stack0_enc2_pool): MaxPool2dWithSamePadding(kernel_size=2, stride=2, padding=same, dilation=1, ceil_mode=False)
+            (stack0_enc2_conv0): Conv2d(24, 36, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc2_act0_relu): ReLU()
+            (stack0_enc2_conv1): Conv2d(36, 36, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc2_act1_relu): ReLU()
+          )
+        )
+        (3): SimpleConvBlock(
+          (blocks): Sequential(
+            (stack0_enc3_pool): MaxPool2dWithSamePadding(kernel_size=2, stride=2, padding=same, dilation=1, ceil_mode=False)
+            (stack0_enc3_conv0): Conv2d(36, 54, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc3_act0_relu): ReLU()
+            (stack0_enc3_conv1): Conv2d(54, 54, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_enc3_act1_relu): ReLU()
+          )
+        )
+        (4): Sequential(
+          (stack0_enc4_last_pool): MaxPool2dWithSamePadding(kernel_size=2, stride=2, padding=same, dilation=1, ceil_mode=False)
+        )
+      )
+    )
+  )
+  (decoders): ModuleList(
+    (0): Decoder(
+      (decoder_stack): ModuleList(
+        (0): SimpleUpsamplingBlock(
+          (blocks): Sequential(
+            (stack0_dec0_s16_to_s8_interp_bilinear): Upsample(scale_factor=2.0, mode='bilinear')
+            (stack0_dec0_s16_to_s8_refine_conv0): Conv2d(135, 54, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec0_s16_to_s8_refine_conv0_act_relu): ReLU()
+            (stack0_dec0_s16_to_s8_refine_conv1): Conv2d(54, 54, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec0_s16_to_s8_refine_conv1_act_relu): ReLU()
+          )
+        )
+        (1): SimpleUpsamplingBlock(
+          (blocks): Sequential(
+            (stack0_dec1_s8_to_s4_interp_bilinear): Upsample(scale_factor=2.0, mode='bilinear')
+            (stack0_dec1_s8_to_s4_refine_conv0): Conv2d(90, 36, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec1_s8_to_s4_refine_conv0_act_relu): ReLU()
+            (stack0_dec1_s8_to_s4_refine_conv1): Conv2d(36, 36, kernel_size=(3, 3), stride=(1, 1), padding=same)
+            (stack0_dec1_s8_to_s4_refine_conv1_act_relu): ReLU()
+          )
+        )
+      )
+    )
+  )
+  (middle_blocks): ModuleList(
+    (0): SimpleConvBlock(
+      (blocks): Sequential(
+        (stack0_enc5_middle_expand_conv0): Conv2d(54, 81, kernel_size=(3, 3), stride=(1, 1), padding=same)
+        (stack0_enc5_middle_expand_act0_relu): ReLU()
+      )
+    )
+    (1): SimpleConvBlock(
+      (blocks): Sequential(
+        (stack0_enc6_middle_contract_conv0): Conv2d(81, 81, kernel_size=(3, 3), stride=(1, 1), padding=same)
+        (stack0_enc6_middle_contract_act0_relu): ReLU()
+      )
+    )
+  )
+)
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:train:960 | Head model: ModuleList(
+  (0): Sequential(
+    (CenteredInstanceConfmapsHead): Sequential(
+      (0): Conv2d(36, 13, kernel_size=(1, 1), stride=(1, 1), padding=same)
+      (1): Identity()
+    )
+  )
+)
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:train:962 | Total model parameters: 306444
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:train:967 | Input image shape: torch.Size([1, 1, 144, 144])
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:train:1021 | Finished trainer set up. [0.4s]
+2025-09-23 17:46:43 | INFO | sleap_nn.training.model_trainer:train:1024 | Starting training loop...
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>INFO:sleap.nn.evals:Saved predictions: models/baseline_model.topdown/labels_pr.train.slp
-INFO:sleap.nn.evals:Saved metrics: models/baseline_model.topdown/metrics.train.npz
-INFO:sleap.nn.evals:OKS mAP: 0.559100
+<pre>Sanity Checking: |          | 0/? [00:00&lt;?, ?it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Training: |          | 0/? [00:00&lt;?, ?it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>
+Detected KeyboardInterrupt, attempting graceful shutdown ...
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Output()</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">
+<pre>2025-09-23 17:47:55 | INFO | sleap_nn.training.model_trainer:train:1037 | Finished training loop. [1.2 min]
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>INFO:sleap.nn.evals:Saved predictions: models/baseline_model.topdown/labels_pr.val.slp
-INFO:sleap.nn.evals:Saved metrics: models/baseline_model.topdown/metrics.val.npz
-INFO:sleap.nn.evals:OKS mAP: 0.529680
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>
+An exception has occurred, use %tb to see the full traceback.
+
+<span class="ansi-red-fg">SystemExit</span><span class="ansi-red-fg">:</span> 1
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>/Users/divyasesh/Desktop/talmolab/sleap-core-docs/.venv/lib/python3.13/site-packages/IPython/core/interactiveshell.py:3707: UserWarning: To exit: use 'exit', 'quit', or Ctrl-D.
+  warn("To exit: use 'exit', 'quit', or Ctrl-D.", stacklevel=1)
 </pre>
 </div>
 </div>
@@ -2991,7 +3190,7 @@ INFO:sleap.nn.evals:OKS mAP: 0.529680
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p>Usually, however, if you're continuing training it's likely because you're starting off from an already trained model.</p>
-<p>In this case, all you need to do to continue training is to create a new <code>Trainer</code> from the existing model configuration and load up the weights before continuing training:</p>
+<p>In this case, all you need to do to continue training is to create a new <code>Trainer</code> from the existing model configuration and provide the previous ckpt paths as below:</p>
 </div>
 </div>
 </div>
