@@ -1728,64 +1728,57 @@
 <h1 id="1-setup">1. Setup<a class="headerlink" href="#1-setup" title="Permanent link">&para;</a></h1>
 <p>SLEAP uses deep neural networks to learn how to predict poses from data. Training these models is <strong>much</strong> faster when using a GPU<sup id="fnref:+"><a class="footnote-ref" href="#fn:+">1</a></sup> for acceleration.</p>
 <p>If you know you have a GPU on your machine or have a <a href="https://support.apple.com/en-us/116943">Mac with Apple Silicon</a>, you can install SLEAP locally and follow along this tutorial.</p>
-<div class="admonition tip">
-<p class="admonition-title">sleap-nn neural-network backend</p>
-<p>The SLEAP GUI can be installed and used independently of the sleap-nn backend for <strong>labeling</strong>. However, for this tutorial it is important that you have sleap-nn installed with the correct <strong>PyTorch and CUDA versions</strong> according to your machine (ex. CPU or GPU).</p>
-<p>To check which PyTorch and CUDA versions you should have installed, see <a href="https://nn.sleap.ai/dev/installation/">here</a>.</p>
-</div>
 <h2 id="install-sleap-locally">Install SLEAP locally<a class="headerlink" href="#install-sleap-locally" title="Permanent link">&para;</a></h2>
 <p><strong>See the <a href="../../installation/">main SLEAP installation instructions</a> for detailed installation instructions.</strong></p>
 <p>If you have either a Linux or Windows laptop with a GPU, or a <a href="https://support.apple.com/en-us/116943">Mac with Apple Silicon</a>, SLEAP will work natively with hardware acceleration.</p>
-<!-- 
-1. Make sure that you have [Miniforge](https://github.com/conda-forge/miniforge) installed.
-
-    You can also use Miniconda or vanilla Anaconda, but we recommend Miniforge since it
-    is *much* faster to resolve dependencies, thus making the installation much faster.
-    If you use Anaconda, replace `mamba` with `conda` in the commands below.
-
-    To install Miniforge:
-
-    === "Windows"
-
-        Open a new [PowerShell terminal](../installation.md/#how-to-open-a-terminal) (does not need to be admin) and enter:
-
-        <div class="highlight"><pre><span></span><code>Invoke-WebRequest<span class="w"> </span>-Uri<span class="w"> </span><span class="s2">&quot;https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Windows-x86_64.exe&quot;</span><span class="w"> </span>-OutFile<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$env</span><span class="s2">:UserProfile/Downloads/Miniforge3-Windows-x86_64.exe&quot;</span><span class="p">;</span><span class="w"> </span>Start-Process<span class="w"> </span>-FilePath<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$env</span><span class="s2">:UserProfile/Downloads/Miniforge3-Windows-x86_64.exe&quot;</span><span class="w"> </span>-ArgumentList<span class="w"> </span><span class="s2">&quot;/InstallationType=JustMe /RegisterPython=1 /S&quot;</span><span class="w"> </span>-Wait<span class="p">;</span><span class="w"> </span>Remove-Item<span class="w"> </span>-Path<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$env</span><span class="s2">:UserProfile/Downloads/Miniforge3-Windows-x86_64.exe&quot;</span>
+<ol>
+<li>
+<p>Make sure that you have <a href="https://github.com/conda-forge/miniforge">Miniforge</a> installed.</p>
+<p>You can also use Miniconda or vanilla Anaconda, but we recommend Miniforge since it
+is <em>much</em> faster to resolve dependencies, thus making the installation much faster.
+If you use Anaconda, replace <code>mamba</code> with <code>conda</code> in the commands below.</p>
+<p>To install Miniforge:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Windows</label><label for="__tabbed_1_2">Linux</label><label for="__tabbed_1_3">Mac (Apple Silicon)</label><label for="__tabbed_1_4">Mac (Intel)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>Open a new <a href="../../installation/#how-to-open-a-terminal">PowerShell terminal</a> (does not need to be admin) and enter:</p>
+<div class="highlight"><pre><span></span><code>Invoke-WebRequest<span class="w"> </span>-Uri<span class="w"> </span><span class="s2">&quot;https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Windows-x86_64.exe&quot;</span><span class="w"> </span>-OutFile<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$env</span><span class="s2">:UserProfile/Downloads/Miniforge3-Windows-x86_64.exe&quot;</span><span class="p">;</span><span class="w"> </span>Start-Process<span class="w"> </span>-FilePath<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$env</span><span class="s2">:UserProfile/Downloads/Miniforge3-Windows-x86_64.exe&quot;</span><span class="w"> </span>-ArgumentList<span class="w"> </span><span class="s2">&quot;/InstallationType=JustMe /RegisterPython=1 /S&quot;</span><span class="w"> </span>-Wait<span class="p">;</span><span class="w"> </span>Remove-Item<span class="w"> </span>-Path<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$env</span><span class="s2">:UserProfile/Downloads/Miniforge3-Windows-x86_64.exe&quot;</span>
 </code></pre></div>
-
-    === "Linux"
-
-        Open a new [terminal](../installation.md/#how-to-open-a-terminal) and enter:
-
-        <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-fsSL<span class="w"> </span>--compressed<span class="w"> </span>https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh<span class="w"> </span>-o<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-Linux-x86_64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-Linux-x86_64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-Linux-x86_64.sh&quot;</span><span class="w"> </span>-b<span class="w"> </span>-p<span class="w"> </span>~/miniforge3<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rm<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-Linux-x86_64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>~/miniforge3/bin/conda<span class="w"> </span>init<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SHELL</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SHELL</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">rc&quot;</span>
+</div>
+<div class="tabbed-block">
+<p>Open a new <a href="../../installation/#how-to-open-a-terminal">terminal</a> and enter:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-fsSL<span class="w"> </span>--compressed<span class="w"> </span>https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh<span class="w"> </span>-o<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-Linux-x86_64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-Linux-x86_64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-Linux-x86_64.sh&quot;</span><span class="w"> </span>-b<span class="w"> </span>-p<span class="w"> </span>~/miniforge3<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rm<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-Linux-x86_64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>~/miniforge3/bin/conda<span class="w"> </span>init<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SHELL</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SHELL</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">rc&quot;</span>
 </code></pre></div>
-
-    === "Mac (Apple Silicon)"
-
-        Open a new [terminal](../installation.md/#how-to-open-a-terminal) and enter:
-
-        <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-fsSL<span class="w"> </span>--compressed<span class="w"> </span>https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-arm64.sh<span class="w"> </span>-o<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-MacOSX-arm64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-MacOSX-arm64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-MacOSX-arm64.sh&quot;</span><span class="w"> </span>-b<span class="w"> </span>-p<span class="w"> </span>~/miniforge3<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rm<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-MacOSX-arm64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>~/miniforge3/bin/conda<span class="w"> </span>init<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SHELL</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SHELL</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">rc&quot;</span>
+</div>
+<div class="tabbed-block">
+<p>Open a new <a href="../../installation/#how-to-open-a-terminal">terminal</a> and enter:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-fsSL<span class="w"> </span>--compressed<span class="w"> </span>https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-arm64.sh<span class="w"> </span>-o<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-MacOSX-arm64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-MacOSX-arm64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-MacOSX-arm64.sh&quot;</span><span class="w"> </span>-b<span class="w"> </span>-p<span class="w"> </span>~/miniforge3<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rm<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-MacOSX-arm64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>~/miniforge3/bin/conda<span class="w"> </span>init<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SHELL</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SHELL</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">rc&quot;</span>
 </code></pre></div>
-
-    === "Mac (Intel)"
-
-        Open a new [terminal](../installation.md/#how-to-open-a-terminal) and enter:
-
-        <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-fsSL<span class="w"> </span>--compressed<span class="w"> </span>https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh<span class="w"> </span>-o<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-MacOSX-x86_64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-MacOSX-x86_64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-MacOSX-x86_64.sh&quot;</span><span class="w"> </span>-b<span class="w"> </span>-p<span class="w"> </span>~/miniforge3<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rm<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-MacOSX-x86_64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>~/miniforge3/bin/conda<span class="w"> </span>init<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SHELL</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SHELL</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">rc&quot;</span>
+</div>
+<div class="tabbed-block">
+<p>Open a new <a href="../../installation/#how-to-open-a-terminal">terminal</a> and enter:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-fsSL<span class="w"> </span>--compressed<span class="w"> </span>https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh<span class="w"> </span>-o<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-MacOSX-x86_64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-MacOSX-x86_64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-MacOSX-x86_64.sh&quot;</span><span class="w"> </span>-b<span class="w"> </span>-p<span class="w"> </span>~/miniforge3<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rm<span class="w"> </span><span class="s2">&quot;~/Downloads/Miniforge3-MacOSX-x86_64.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>~/miniforge3/bin/conda<span class="w"> </span>init<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SHELL</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SHELL</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">rc&quot;</span>
 </code></pre></div>
-
-2. Install SLEAP in a new environment.
-
-    === "Windows/Linux"
-
-        <div class="highlight"><pre><span></span><code>mamba<span class="w"> </span>create<span class="w"> </span>-y<span class="w"> </span>-n<span class="w"> </span>sleap<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>-c<span class="w"> </span>nvidia<span class="w"> </span>-c<span class="w"> </span>sleap<span class="w"> </span>-c<span class="w"> </span>anaconda<span class="w"> </span><span class="nv">sleap</span><span class="o">=</span><span class="m">1</span>.3.3
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Install SLEAP in a new environment.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Windows/Linux</label><label for="__tabbed_2_2">Mac</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>mamba<span class="w"> </span>create<span class="w"> </span>-y<span class="w"> </span>-n<span class="w"> </span>sleap<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>-c<span class="w"> </span>nvidia<span class="w"> </span>-c<span class="w"> </span>sleap<span class="w"> </span>-c<span class="w"> </span>anaconda<span class="w"> </span><span class="nv">sleap</span><span class="o">=</span><span class="m">1</span>.3.3
 </code></pre></div>
-
-    === "Mac"
-
-        ```bash
-        mamba create -y -n sleap -c conda-forge -c anaconda -c sleap sleap=1.3.3
-        ``` -->
-
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>mamba<span class="w"> </span>create<span class="w"> </span>-y<span class="w"> </span>-n<span class="w"> </span>sleap<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>-c<span class="w"> </span>anaconda<span class="w"> </span>-c<span class="w"> </span>sleap<span class="w"> </span><span class="nv">sleap</span><span class="o">=</span><span class="m">1</span>.3.3
+</code></pre></div>
+</div>
+</div>
+</div>
+</li>
+</ol>
 <p><a href="../importing-data/"><em>Next up:</em> Importing data</a></p>
 <div class="footnote">
 <hr />
