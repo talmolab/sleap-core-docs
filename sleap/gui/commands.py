@@ -1567,7 +1567,7 @@ def export_dataset_gui(
         labels,
         filename,
         format="slp",
-        embed=embed_option,
+        embed=embed_option if as_package else False,
         # progress_callback=update_progress if verbose else None, #TODO
     )
 
@@ -1763,8 +1763,9 @@ class ExportLabelsSubset(ExportFullPackage):
 
         # Get subset of labels to export
         labels: Labels = context.state["labels"]
+        frames_in_labels = [(video, frame) for frame in frames]
         labels_subset_unshifted: Labels = labels.extract(
-            inds=(video, frames), copy=True
+            inds=frames_in_labels, copy=True
         )
         return labels_subset_unshifted
 
