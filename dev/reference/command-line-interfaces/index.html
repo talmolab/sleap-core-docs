@@ -2039,6 +2039,10 @@
 
 <h1 id="command-line-interfaces">Command line interfaces<a class="headerlink" href="#command-line-interfaces" title="Permanent link">&para;</a></h1>
 <p>SLEAP provides several types of functionality accessible through a command prompt.</p>
+<div class="admonition tip">
+<p class="admonition-title">If you installed SLEAP with uv</p>
+<p><strong>Remember to include <code>uv run</code> before any CLI command!</strong></p>
+</div>
 <h2 id="gui">GUI<a class="headerlink" href="#gui" title="Permanent link">&para;</a></h2>
 <h3 id="sleap-label"><code>sleap-label</code><a class="headerlink" href="#sleap-label" title="Permanent link">&para;</a></h3>
 <p><code>sleap-label</code> runs the GUI application for labeling and viewing <code>.slp</code> files.</p>
@@ -2068,7 +2072,7 @@ optional arguments:
                    training_job_path [labels_path]
 
 positional arguments:
-  training_job_path     Path to training job profile JSON file.
+  training_job_path     Path to training job profile JSON/YAML file.
   labels_path           Path to labels file to use for training. If specified,
                         overrides the path specified in the training job
                         config.
@@ -2114,7 +2118,7 @@ optional arguments:
 </div>
 <h2 id="inference-and-tracking">Inference and Tracking<a class="headerlink" href="#inference-and-tracking" title="Permanent link">&para;</a></h2>
 <h3 id="sleap-track"><code>sleap-track</code><a class="headerlink" href="#sleap-track" title="Permanent link">&para;</a></h3>
-<p><code>sleap-track</code> is the command-line interface for running inference using models which have already been trained. Use this for running inference on a remote machine such as an HPC cluster or Colab notebook.</p>
+<p><code>sleap-track</code> is the command-line interface for running inference using models which have already been trained. Use this for running inference on a remote machine such as an HPC cluster or Google Colab notebook.</p>
 <p>If you specify how many identities there should be in a frame (i.e., the number of animals) with the <code>--tracking.clean_instance_count</code> argument, then we will use a heuristic method to connect "breaks" in the track identities where we lose one identity and spawn another. This can be used as part of the inference pipeline (if models are specified), as part of the tracking-only pipeline (if the predictions file is specified and no models are specified), or by itself on predictions with pre-tracked identities (if you specify <code>--tracking.tracker none</code>). See <a href="../../how-to-guides/tracking-and-proofreading/"><code>Tracking and proofreading</code></a> for more details on tracking.</p>
 <div class="highlight"><pre><span></span><code>usage: sleap-track [-h] [-m MODELS] [--frames FRAMES] [--only-labeled-frames] [--only-suggested-frames] [-o OUTPUT]
                    [--video.dataset VIDEO.DATASET] [--video.input_format VIDEO.INPUT_FORMAT]
@@ -2290,7 +2294,7 @@ optional arguments:
 <h2 id="rendering">Rendering<a class="headerlink" href="#rendering" title="Permanent link">&para;</a></h2>
 <h3 id="sleap-render"><code>sleap-render</code><a class="headerlink" href="#sleap-render" title="Permanent link">&para;</a></h3>
 <p><code>sleap-render</code> allows you to render videos directly from the CLI. It is used to render video clips with Instances.</p>
-<div class="highlight"><pre><span></span><code>usage: sleap-render [-h] [-o OUTPUT] [-f FPS] [--scale SCALE] [--crop CROP] [--frames FRAMES] [--video-index VIDEO_INDEX] data_path
+<div class="highlight"><pre><span></span><code>usage: sleap-render [-h] [-o OUTPUT] [-f FPS] [--scale SCALE] [--frames FRAMES] [--video-index VIDEO_INDEX] data_path
 
 positional arguments:
   data_path             Path to labels json file
@@ -2305,7 +2309,6 @@ optional arguments:
                         or a range separated by hyphen (e.g. 1-3). (default is entire video)
   -f FPS, --fps FPS     Frames per second for output video (default: 25)
   --scale SCALE         Output image scale (default: 1.0)
-  --crop CROP           Crop size as &lt;width&gt;,&lt;height&gt; (default: None)
   --show_edges SHOW_EDGES
                         Whether to draw lines between nodes (default: 1)
   --edge_is_wedge EDGE_IS_WEDGE
@@ -2317,9 +2320,6 @@ optional arguments:
   --distinctly_color DISTINCTLY_COLOR
                         Specify how to color instances. Options include: &quot;instances&quot;,
                         &quot;edges&quot;, and &quot;nodes&quot; (default: &quot;instances&quot;)
-  --background BACKGROUND
-                        Specify the type of background to be used to save the videos.
-                        Options: original, black, white and grey. (default: &quot;original&quot;)
 </code></pre></div>
 <h2 id="debugging">Debugging<a class="headerlink" href="#debugging" title="Permanent link">&para;</a></h2>
 <h3 id="sleap-diagnostic"><code>sleap-diagnostic</code><a class="headerlink" href="#sleap-diagnostic" title="Permanent link">&para;</a></h3>
