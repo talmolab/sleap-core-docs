@@ -112,7 +112,6 @@ nav:
       - Run training and inference on Colab: how-to-guides/run-training-and-inference-on-colab.md
       - Creating a custom training profile: how-to-guides/creating-a-custom-training-profile.md
       - Running SLEAP remotely: how-to-guides/running-sleap-remotely.md
-      - Using Bonsai with SLEAP: how-to-guides/using-bonsai-with-sleap.md
   - Notebooks:
     - Overview: notebooks/notebooks-overview.md
     - Training and inference on an example dataset: notebooks/Training_and_inference_on_an_example_dataset.ipynb

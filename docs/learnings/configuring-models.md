@@ -13,7 +13,7 @@ Each approach has its advantages, and you may wish to try out both to see which 
 
 You can configure the hyperparameters for training your model in the "Model Configuration" tabs of the Training Dialog:
 
-![Model configuration](../assets/images/model-config.jpg)
+![Model configuration](../assets/images/model-config.png)
 
 Hover over each field to get an explanation. Here are some hyperparameters which are especially worth your attention:
 

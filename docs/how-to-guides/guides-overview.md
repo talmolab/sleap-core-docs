@@ -15,5 +15,7 @@
 
 [Running SLEAP remotely](running-sleap-remotely.md) when you have a project with training data and you want to train on a different machine using a command-line interface.
 
-[Using Bonsai with SLEAP](using-bonsai-with-sleap.md) when you want to analyze the trained SLEAP model to visualize the poses, centroids and identities for further visual analysis.
+!!! note "Bonsai Integration"
+    **Bonsai is not natively supported with the new Torch backend in SLEAP.**  
+    If you want to use Bonsai with legacy SLEAP models, please refer to the [legacy Bonsai guide](http://legacy.sleap.ai/guides/bonsai.html).
 

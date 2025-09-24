@@ -14,24 +14,17 @@ If you use the “**simple**” tracker then the frames chosen are the instances
 
 There are currently three methods for matching instances in frame N against these candidates, each encoded by a cost function:
 
-- “**centroid**” measures similarity by the distance between the instance centroids
+- “**centroid**” measures similarity by the euclidean distance between the instance centroids
 - “**iou**” measures similarity by the intersection/overlap of the instance bounding boxes
-- “**instance**” measures similarity by looking at the distances between corresponding nodes in the instances, normalized by the number of valid nodes in the candidate instance.
-- “**normalized_instance**” measures similarity by looking at the distances between corresponding nodes in the instances, normalized by the number of valid nodes in the candidate instance and the keypoints normalized by the image size.
 - “**object_keypoint**” measures similarity by measuring the distance between each keypoints from a reference instance and a query instance, takes the exp(-d**2), sum for all the keypoints and divide by the number of visible keypoints in the reference instance.
 
 Once SLEAP has measured the similarity between all the candidates and the instances in frame N, you need to choose a way to pair them up. You can do this either by picking the best match, and the picking the best remaining match for each remaining instance in turn—this is “**greedy**” matching—or you can find the way of matching identities which minimizes the total cost (or: maximizes the total similarity)—this is “**Hungarian**” matching.
 
-Finally, you have an optional second-pass method which “cleans” the resulting identities with **"Cull to Target Instance Count"**. To use this method, you specify a target number of tracks by setting the **"Target Number of Instances Per Frame"** (i.e., how many animals there are in your video). SLEAP then goes frame by frame and removes (or culls) instances over this target number. To cull to a target number of instances per frame, navigate to the Inference Pipeline via Predict >> Inference, then:
-
-1. Specify the **Tracker (cross-frame identity) Method**
-2. Uncheck the **No target** 
-3. Specify the **Target Number of Instances Per Frame**
-4. Check the **Cull to Target Instance Count** 
+If you know the expected number of instances in your project, you can set the **maximum number of tracks**. This ensures that no new tracks will be created once this limit is reached, helping to prevent spurious or extra identities from being assigned during tracking.
 
 ![set-instance-count](../assets/images/set-instance-count.jpg)
 
-Once you have the desired number of instances in every frame, SLEAP connects identities with a simple heuristic: if exactly one track identity was dropped from frame N and exactly one new track identity was added in frame N+1, it matches up the dropped and the new tracks.
+Once you have the desired number of instances in every frame, SLEAP connects identities with a simple heuristic: if exactly one track identity was dropped from frame N and exactly one new track identity was added in frame N+1, it matches up the dropped and the new tracks. You could enable this by checking the `Connect Single Track Breaks` checkbox in the GUI.
 
 ## More training data?
 

@@ -41,8 +41,6 @@ SLEAP works with a number of different tools and software in the ecosystem of be
 
 ### Realtime
 
-- <a href="https://bonsai-rx.org/sleap/" target="_blank">Bonsai-Rx  </a>: SLEAP plugin for Bonsai for realtime inference.
-
 - <a href="https://github.com/SchwarzNeuroconLab/DeepLabStream" target="_blank">DeepLabStream  </a>: Standalone closed-loop app with SLEAP support.
 
 ### Utility libraries
