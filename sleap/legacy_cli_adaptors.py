@@ -292,7 +292,7 @@ def train_command(
     "models",
     multiple=True,
     help=(
-        "Path to trained model directory (with training_config.json). Multiple models "
+        "Path to trained model directory (with training_config json/yaml). Multiple models "
         "can be specified, each preceded by --model."
     ),
 )
