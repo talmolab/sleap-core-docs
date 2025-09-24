@@ -107,6 +107,11 @@ The cloned folder/tutorial data will be located on the Desktop under the name **
         conda activate sleap
         ```
 
+        Then you can launch the GUI with:
+        ```bash
+        sleap-label
+        ```
+
     ![](../assets/images/tutorial/open-gui.png)
 
 2. Go to **File** → **Add Videos...** to open the file browser.
