@@ -2,6 +2,9 @@
 
 SLEAP provides several types of functionality accessible through a command prompt.
 
+!!! tip "If you installed SLEAP with uv"
+    **Remember to include `uv run` before any CLI command!**
+
 ## GUI
 
 ### `sleap-label`
@@ -41,7 +44,7 @@ usage: sleap-train [-h] [--video-paths VIDEO_PATHS] [--val_labels VAL_LABELS]
                    training_job_path [labels_path]
 
 positional arguments:
-  training_job_path     Path to training job profile JSON file.
+  training_job_path     Path to training job profile JSON/YAML file.
   labels_path           Path to labels file to use for training. If specified,
                         overrides the path specified in the training job
                         config.
@@ -91,7 +94,7 @@ optional arguments:
 
 ### `sleap-track`
 
-`sleap-track` is the command-line interface for running inference using models which have already been trained. Use this for running inference on a remote machine such as an HPC cluster or Colab notebook.
+`sleap-track` is the command-line interface for running inference using models which have already been trained. Use this for running inference on a remote machine such as an HPC cluster or Google Colab notebook.
 
 If you specify how many identities there should be in a frame (i.e., the number of animals) with the `--tracking.clean_instance_count` argument, then we will use a heuristic method to connect "breaks" in the track identities where we lose one identity and spawn another. This can be used as part of the inference pipeline (if models are specified), as part of the tracking-only pipeline (if the predictions file is specified and no models are specified), or by itself on predictions with pre-tracked identities (if you specify `--tracking.tracker none`). See [`Tracking and proofreading`](../how-to-guides/tracking-and-proofreading.md) for more details on tracking.
 
@@ -314,7 +317,7 @@ optional arguments:
 `sleap-render` allows you to render videos directly from the CLI. It is used to render video clips with Instances.
 
 ```none
-usage: sleap-render [-h] [-o OUTPUT] [-f FPS] [--scale SCALE] [--crop CROP] [--frames FRAMES] [--video-index VIDEO_INDEX] data_path
+usage: sleap-render [-h] [-o OUTPUT] [-f FPS] [--scale SCALE] [--frames FRAMES] [--video-index VIDEO_INDEX] data_path
 
 positional arguments:
   data_path             Path to labels json file
@@ -329,7 +332,6 @@ optional arguments:
                         or a range separated by hyphen (e.g. 1-3). (default is entire video)
   -f FPS, --fps FPS     Frames per second for output video (default: 25)
   --scale SCALE         Output image scale (default: 1.0)
-  --crop CROP           Crop size as <width>,<height> (default: None)
   --show_edges SHOW_EDGES
                         Whether to draw lines between nodes (default: 1)
   --edge_is_wedge EDGE_IS_WEDGE
@@ -341,9 +343,6 @@ optional arguments:
   --distinctly_color DISTINCTLY_COLOR
                         Specify how to color instances. Options include: "instances",
                         "edges", and "nodes" (default: "instances")
-  --background BACKGROUND
-                        Specify the type of background to be used to save the videos.
-                        Options: original, black, white and grey. (default: "original")
 ```
 
 ## Debugging

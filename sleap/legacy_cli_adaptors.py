@@ -20,7 +20,7 @@ from sleap.sleap_io_adaptors.lf_labels_utils import load_labels_video_search
 logger = logging.getLogger(__name__)
 
 
-@click.command()
+@click.command(context_settings={"help_option_names": ["-h", "--help"]})
 @click.argument("training_job_path", required=True)
 @click.argument("labels_path", required=False)
 @click.option(
@@ -284,7 +284,7 @@ def train_command(
                 logger.info(f"p50 dist: {metrics['distance_metrics']['p50']}")
 
 
-@click.command()
+@click.command(context_settings={"help_option_names": ["-h", "--help"]})
 @click.argument("data_path", required=True)
 @click.option(
     "-m",
@@ -292,8 +292,8 @@ def train_command(
     "models",
     multiple=True,
     help=(
-        "Path to trained model directory (with training_config.json). Multiple models "
-        "can be specified, each preceded by --model."
+        "Path to trained model directory (with training_config json/yaml). "
+        "Multiple models can be specified, each preceded by --model."
     ),
 )
 @click.option(
