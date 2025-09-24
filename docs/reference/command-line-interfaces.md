@@ -292,7 +292,7 @@ See [Analysis examples](../notebooks/Analysis_examples.ipynb) for how to work wi
 
 ### `sleap-inspect`
 
-`sleap-inspect` gives you various information about a SLEAP dataset file such as a list of videos and a count of the frames with labels. If you're inspecting a predictions dataset (i.e., the output from running `sleap-track` or inference in the GUI) it will also include details about how those predictions were created (i.e., the models, the version of SLEAP, and any inference parameters).
+`sleap-inspect` gives you various information about a SLEAP dataset file such as a list of videos and a count of the frames with labels.
 
 You can also specify a model folder to get a quick summary of the configuration and metrics (if available).
 
