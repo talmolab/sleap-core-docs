@@ -30,6 +30,9 @@ optional arguments:
 
 ### `sleap-train`
 
+!!! note
+    `sleap-train` is the legacy CLI for training and internally invokes the `sleap-nn` training workflow. **We recommend using [`sleap-nn train`](https://nn.sleap.ai/latest/training/#using-cli) directly for new projects.** You do **not** need to install the full SLEAP package to use the training CLI—having just `sleap-nn` is sufficient. If SLEAP was installed or built with the neural network (nn) dependencies, then `sleap-nn train` would still work.
+
 `sleap-train` is the command-line interface for training. Use this for training on a remote machine/cluster/colab notebook instead of through the GUI.
 
 !!! warning
@@ -93,6 +96,9 @@ optional arguments:
 ## Inference and Tracking
 
 ### `sleap-track`
+
+!!! note
+    `sleap-track` is the legacy CLI for training and internally invokes the `sleap-nn` inference workflow. **We recommend using [`sleap-nn track`](https://nn.sleap.ai/latest/inference/#run-inference-with-cli) directly for new projects.** You do **not** need to install the full SLEAP package to use the training CLI—having just `sleap-nn` is sufficient. If SLEAP was installed or built with the neural network (nn) dependencies, then `sleap-nn track` would still work.
 
 `sleap-track` is the command-line interface for running inference using models which have already been trained. Use this for running inference on a remote machine such as an HPC cluster or Google Colab notebook.
 
