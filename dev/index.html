@@ -1886,7 +1886,7 @@
 <p>Single- and multi-animal pose estimation with <em>top-down</em> and <em>bottom-up</em> training strategies</p>
 </li>
 <li>
-<p>State-of-the-art pretrained and customizable neural network architectures that deliver <em>accurate predictions</em> with <em>very few</em> labels</p>
+<p>Customizable neural network architectures that deliver <em>accurate predictions</em> with <em>very few</em> labels</p>
 </li>
 <li>
 <p>Fast training: 15 to 60 mins on a single GPU for a typical dataset</p>
@@ -1900,7 +1900,22 @@
 <li>
 <p>Flexible developer API for building integrated apps and customization</p>
 </li>
+<li>
+<p>Two independent backends-- <a href="https://nn.sleap.ai"><em>sleap-nn</em></a> and <a href="https://io.sleap.ai"><em>sleap-io</em></a> for training/infernece pipelines &amp; handling SLEAP files respectively</p>
+</li>
 </ul>
+<!-- # TODO: Update training time taken DS -->
+
+<div class="admonition tip">
+<p class="admonition-title">sleap-nn backend</p>
+<p>The SLEAP GUI can be installed and used independently of the sleap-nn backend for <strong>labeling</strong>. However, for training and inference workflows, it is important that you have sleap-nn installed with the correct <strong>PyTorch and CUDA versions</strong> according to your machine (ex. CPU or GPU).</p>
+<p>Learn more about sleap-nn <a href="https://nn.sleap.ai">here</a>.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">sleap-io backend</p>
+<p>The SLEAP GUI can be installed and used independently of the sleap-io backend for <strong>labeling</strong>. However, for working with SLEAP files directly from a CLI, it is best to use sleap-io.</p>
+<p>Learn more about sleap-nn <a href="https://io.sleap.ai">here</a>.</p>
+</div>
 <h2 id="get-some-sleap">Get some SLEAP<a class="headerlink" href="#get-some-sleap" title="Permanent link">&para;</a></h2>
 <p>SLEAP is installed as a Python package. We strongly recommend using <a href="https://www.anaconda.com/docs/getting-started/miniconda/main">Miniconda</a> to install SLEAP in its own environment.</p>
 <p>You can find the latest version of SLEAP in the <a href="https://github.com/talmolab/sleap/releases">Releases</a> page.</p>
@@ -1910,11 +1925,21 @@
 If you are using <strong>SLEAP version 1.4.1 or earlier</strong>, please visit the <a href="http://legacy.sleap.ai">legacy documentation</a>.</p>
 </div>
 <h3 id="quick-install">Quick install<a class="headerlink" href="#quick-install" title="Permanent link">&para;</a></h3>
-<p><strong><code>conda</code> (Windows/Linux/GPU):</strong></p>
-<p><div class="highlight"><pre><span></span><code>conda create -y -n sleap -c conda-forge -c nvidia -c sleap/label/dev -c sleap -c anaconda sleap
+<p><strong><code>uv</code> (any OS):</strong></p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Windows/Linux/GPU</label><label for="__tabbed_1_2">MacOS/CPU only</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>sleap<span class="w"> </span>--index-url<span class="w"> </span>https://pypi.org/simple<span class="w"> </span>--extra-index-url<span class="w"> </span>https://download.pytorch.org/whl/cu128
 </code></pre></div>
-<strong><code>pip</code> (any OS except Apple silicon)</strong>:</p>
-<div class="highlight"><pre><span></span><code> pip install sleap
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>sleap<span class="w"> </span>--index-url<span class="w"> </span>https://pypi.org/simple<span class="w"> </span>--extra-index-url<span class="w"> </span>https://download.pytorch.org/whl/cpu
+</code></pre></div>
+</div>
+</div>
+</div>
+<p><strong><code>pip</code> (any OS except Apple silicon)</strong>:</p>
+<div class="highlight"><pre><span></span><code>pip install sleap
 </code></pre></div>
 <p>See the docs for <a href="installation/">full installation instructions</a>.</p>
 <h2 id="learn-to-sleap">Learn to SLEAP<a class="headerlink" href="#learn-to-sleap" title="Permanent link">&para;</a></h2>

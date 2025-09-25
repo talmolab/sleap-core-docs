@@ -2060,6 +2060,10 @@ optional arguments:
 </code></pre></div>
 <h2 id="training">Training<a class="headerlink" href="#training" title="Permanent link">&para;</a></h2>
 <h3 id="sleap-train"><code>sleap-train</code><a class="headerlink" href="#sleap-train" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>sleap-train</code> is the legacy CLI for training and internally invokes the <code>sleap-nn</code> training workflow. <strong>We recommend using <a href="https://nn.sleap.ai/latest/training/#using-cli"><code>sleap-nn train</code></a> directly for new projects.</strong> You do <strong>not</strong> need to install the full SLEAP package to use the training CLI—having just <code>sleap-nn</code> is sufficient. If SLEAP was installed or built with the neural network (nn) dependencies, then <code>sleap-nn train</code> would still work.</p>
+</div>
 <p><code>sleap-train</code> is the command-line interface for training. Use this for training on a remote machine/cluster/colab notebook instead of through the GUI.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -2118,6 +2122,10 @@ optional arguments:
 </div>
 <h2 id="inference-and-tracking">Inference and Tracking<a class="headerlink" href="#inference-and-tracking" title="Permanent link">&para;</a></h2>
 <h3 id="sleap-track"><code>sleap-track</code><a class="headerlink" href="#sleap-track" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>sleap-track</code> is the legacy CLI for training and internally invokes the <code>sleap-nn</code> inference workflow. <strong>We recommend using <a href="https://nn.sleap.ai/latest/inference/#run-inference-with-cli"><code>sleap-nn track</code></a> directly for new projects.</strong> You do <strong>not</strong> need to install the full SLEAP package to use the training CLI—having just <code>sleap-nn</code> is sufficient. If SLEAP was installed or built with the neural network (nn) dependencies, then <code>sleap-nn track</code> would still work.</p>
+</div>
 <p><code>sleap-track</code> is the command-line interface for running inference using models which have already been trained. Use this for running inference on a remote machine such as an HPC cluster or Google Colab notebook.</p>
 <p>If you specify how many identities there should be in a frame (i.e., the number of animals) with the <code>--tracking.clean_instance_count</code> argument, then we will use a heuristic method to connect "breaks" in the track identities where we lose one identity and spawn another. This can be used as part of the inference pipeline (if models are specified), as part of the tracking-only pipeline (if the predictions file is specified and no models are specified), or by itself on predictions with pre-tracked identities (if you specify <code>--tracking.tracker none</code>). See <a href="../../how-to-guides/tracking-and-proofreading/"><code>Tracking and proofreading</code></a> for more details on tracking.</p>
 <div class="highlight"><pre><span></span><code>usage: sleap-track [-h] [-m MODELS] [--frames FRAMES] [--only-labeled-frames] [--only-suggested-frames] [-o OUTPUT]
@@ -2280,7 +2288,7 @@ optional arguments:
 </code></pre></div>
 <p>See <a href="../../notebooks/Analysis_examples/">Analysis examples</a> for how to work with these outputs.</p>
 <h3 id="sleap-inspect"><code>sleap-inspect</code><a class="headerlink" href="#sleap-inspect" title="Permanent link">&para;</a></h3>
-<p><code>sleap-inspect</code> gives you various information about a SLEAP dataset file such as a list of videos and a count of the frames with labels. If you're inspecting a predictions dataset (i.e., the output from running <code>sleap-track</code> or inference in the GUI) it will also include details about how those predictions were created (i.e., the models, the version of SLEAP, and any inference parameters).</p>
+<p><code>sleap-inspect</code> gives you various information about a SLEAP dataset file such as a list of videos and a count of the frames with labels.</p>
 <p>You can also specify a model folder to get a quick summary of the configuration and metrics (if available).</p>
 <div class="highlight"><pre><span></span><code>usage: sleap-inspect [-h] [--verbose] data_path
 
