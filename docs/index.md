@@ -21,23 +21,23 @@ SLEAP is an open-source deep-learning based framework for multi-animal pose trac
 
 - Flexible developer API for building integrated apps and customization
 
-- Two independent backends-- [*sleap-nn*](https://nn.sleap.ai) and [*sleap-io*](https://io.sleap.ai) for training/infernece pipelines & handling SLEAP files respectively
+- Two independent backends-- [`sleap-nn`](https://nn.sleap.ai) and [`sleap-io`](https://io.sleap.ai) for training/infernece pipelines & handling SLEAP files respectively
 
 <!-- # TODO: Update training time taken DS -->
 
-!!! tip "sleap-nn backend"
-    The SLEAP GUI can be installed and used independently of the sleap-nn backend for **labeling**. However, for training and inference workflows, it is important that you have sleap-nn installed with the correct **PyTorch and CUDA versions** according to your machine (ex. CPU or GPU).
+!!! tip "`sleap-nn` Backend"
+    The SLEAP GUI can be installed and used independently of the `sleap-nn` backend for **labeling**. However, for training and inference workflows, it is important that you have sleap-nn installed with the correct **PyTorch and CUDA versions** according to your machine (ex. CPU or GPU).
     
-    Learn more about sleap-nn [here](https://nn.sleap.ai).
+    Learn more about `sleap-nn` [here](https://nn.sleap.ai).
 
-!!! tip "sleap-io backend"
-    The SLEAP GUI can be installed and used independently of the sleap-io backend for **labeling**. However, for working with SLEAP files directly from a CLI, it is best to use sleap-io.
+!!! tip "`sleap-io` Backend"
+    For working with SLEAP files **directly from a CLI**, it is best to use `sleap-io`.
     
-    Learn more about sleap-nn [here](https://io.sleap.ai).
+    Learn more about `sleap-io` [here](https://io.sleap.ai).
 
 ## Get some SLEAP
 
-SLEAP is installed as a Python package. We strongly recommend using [Miniconda](https://www.anaconda.com/docs/getting-started/miniconda/main) to install SLEAP in its own environment.
+SLEAP is installed as a Python package. We strongly recommend using [uv](https://docs.astral.sh/uv/) or [Miniconda](https://www.anaconda.com/docs/getting-started/miniconda/main) to install SLEAP in its own environment.
 
 You can find the latest version of SLEAP in the [Releases](https://github.com/talmolab/sleap/releases) page.
 
@@ -45,21 +45,33 @@ You can find the latest version of SLEAP in the [Releases](https://github.com/ta
     This documentation is for the **latest version of SLEAP**.  
     If you are using **SLEAP version 1.4.1 or earlier**, please visit the [legacy documentation](http://legacy.sleap.ai).
 
-### Quick install
+### Quick start
 
-**`uv` (any OS):**
+!!! tip "Sample with `uvx`"
+    Note that opening SLEAP w/ `uvx` will **not** install SLEAP onto your system, it will only 'invoke' SLEAP.
 
-=== "Windows/Linux/GPU"
-    ``` bash
-    uv pip install sleap --index-url https://pypi.org/simple --extra-index-url https://download.pytorch.org/whl/cu128
+**`uvx` (any OS):**
+
+=== "Windows/Linux (CUDA 12.8)"
+    ```bash
+    uvx --from "sleap[nn]" --index-url https://pypi.org/simple --extra-index-url https://download.pytorch.org/whl/cu128 sleap-label
+    ```
+    !!! info "Other CUDA versions"
+        For other CUDA version installation options, see [sleap-nn installation](https://nn.sleap.ai/dev/installation/#platform-specific-installation) for other supported versions.
+
+=== "macOS/CPU Only"
+    ```bash
+    uvx --from "sleap[nn]" sleap-label
     ```
 
-=== "MacOS/CPU only"
-    ``` bash
-    uv pip install sleap --index-url https://pypi.org/simple --extra-index-url https://download.pytorch.org/whl/cpu
+=== "SLEAP GUI Only"
+    ```bash
+    uvx --from "sleap" sleap-label
     ```
+    !!! warning "GUI <u>ONLY</u>"
+        Installing this version of SLEAP will **NOT** include any training/inference capabilities, as it will not include the sleap-nn backend. This should primarily be used for **labeling**.
 
-**`pip` (any OS except Apple silicon)**:
+**`pip` (any OS)**:
 
 ```
 pip install sleap
