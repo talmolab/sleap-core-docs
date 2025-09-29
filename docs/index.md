@@ -3,6 +3,10 @@
 
 SLEAP is an open-source deep-learning based framework for multi-animal pose tracking ([Pereira et al., Nature Methods, 2022](https://www.nature.com/articles/s41592-022-01426-1)). It can be used to track any type or number of animals and includes an advanced labeling/training GUI for active learning and proofreading.
 
+!!! warning "Documentation for New SLEAP Versions"
+    This documentation is for the **latest version of SLEAP**.  
+    If you are using **SLEAP version 1.4.1 or earlier**, please visit the [legacy documentation](http://legacy.sleap.ai).
+
 ## Features
 
 - Easy, one-line installation with support for all OSes
@@ -21,7 +25,7 @@ SLEAP is an open-source deep-learning based framework for multi-animal pose trac
 
 - Flexible developer API for building integrated apps and customization
 
-- Two independent backends-- [`sleap-nn`](https://nn.sleap.ai) and [`sleap-io`](https://io.sleap.ai) for training/infernece pipelines & handling SLEAP files respectively
+- Two independent backends-- [`sleap-nn`](https://nn.sleap.ai) and [`sleap-io`](https://io.sleap.ai) for training/inference pipelines & handling SLEAP files respectively
 
 <!-- # TODO: Update training time taken DS -->
 
@@ -41,10 +45,6 @@ SLEAP is installed as a Python package. We strongly recommend using [uv](https:/
 
 You can find the latest version of SLEAP in the [Releases](https://github.com/talmolab/sleap/releases) page.
 
-!!! warning "Documentation for New SLEAP Versions"
-    This documentation is for the **latest version of SLEAP**.  
-    If you are using **SLEAP version 1.4.1 or earlier**, please visit the [legacy documentation](http://legacy.sleap.ai).
-
 ### Quick start
 
 !!! tip "Sample with `uvx`"
@@ -57,7 +57,8 @@ You can find the latest version of SLEAP in the [Releases](https://github.com/ta
     uvx --from "sleap[nn]" --index-url https://pypi.org/simple --extra-index-url https://download.pytorch.org/whl/cu128 sleap-label
     ```
     !!! info "Other CUDA versions"
-        For other CUDA version installation options, see [sleap-nn installation](https://nn.sleap.ai/dev/installation/#platform-specific-installation) for other supported versions.
+        - For more information on which CUDA version to use for your system, see the [PyTorch installation](https://pytorch.org/get-started/locally/) guide. The `--extra-index-url` in the install command should match the CUDA version you need (e.g., `https://download.pytorch.org/whl/cuda118` for CUDA 11.8, `https://download.pytorch.org/whl/cuda128` for CUDA 12.8, etc.).
+        - On macOS, MPS (Metal Performance Shaders) is automatically enabled for Apple Silicon acceleration.
 
 === "macOS/CPU Only"
     ```bash
