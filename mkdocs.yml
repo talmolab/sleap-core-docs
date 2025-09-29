@@ -94,6 +94,7 @@ nav:
   - Home: index.md
   - Overview: overview.md
   - Installation: installation.md
+  - What's New in SLEAP 1.5+: whats-new.md
   - Tutorial: 
       - Overview: tutorial/overview.md
       - Setup: tutorial/setup.md

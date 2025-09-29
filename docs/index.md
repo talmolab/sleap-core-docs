@@ -3,6 +3,9 @@
 
 SLEAP is an open-source deep-learning based framework for multi-animal pose tracking ([Pereira et al., Nature Methods, 2022](https://www.nature.com/articles/s41592-022-01426-1)). It can be used to track any type or number of animals and includes an advanced labeling/training GUI for active learning and proofreading.
 
+!!! tip "New in SLEAP 1.5"
+    Check out our [What's New](whats-new.md) page to learn about the latest features including UV-based installation, PyTorch backend, and new standalone libraries!
+
 ## Features
 
 - Easy, one-line installation with support for all OSes
