@@ -3,6 +3,7 @@ Gui for merging two labels files with options to resolve conflicts using sleap-i
 """
 
 import logging
+from copy import deepcopy
 from typing import Dict, List, Optional
 
 from qtpy import QtWidgets, QtCore
@@ -79,7 +80,7 @@ class MergeDialog(QtWidgets.QDialog):
         """Perform merge analysis using sleap-io functionality."""
         try:
             # Create a copy for analysis
-            base_copy = self.base_labels.copy()
+            base_copy = deepcopy(self.base_labels)
 
             # Attempt merge with frame strategy
             merge_result = base_copy.merge(
@@ -102,9 +103,7 @@ class MergeDialog(QtWidgets.QDialog):
 
         # Count merged frames
         self.frames_merged = (
-            len(merge_result.frames_merged)
-            if hasattr(merge_result, "frames_merged")
-            else 0
+            merge_result.frames_merged if hasattr(merge_result, "frames_merged") else 0
         )
 
         # Check for conflicts (frames that couldn't be merged)
@@ -355,7 +354,12 @@ class MergeTable(QtWidgets.QTableView):
 class MergeTableModel(QtCore.QAbstractTableModel):
     """Qt table model for summarizing merged frames."""
 
-    _props = ["video", "frame", "merged instances"]
+    _props = [
+        "frames merged",
+        "instances added",
+        "instances updated",
+        "instances skipped",
+    ]
 
     def __init__(self, merge_result):
         super(MergeTableModel, self).__init__()
@@ -364,33 +368,22 @@ class MergeTableModel(QtCore.QAbstractTableModel):
 
     def _extract_merge_data(self):
         """Extract merge data from merge result."""
-        data_table = []
+        metadata = {
+            "frames_merged": self.merge_result.frames_merged
+            if hasattr(self.merge_result, "frames_merged")
+            else 0,
+            "instances_added": self.merge_result.instances_added
+            if hasattr(self.merge_result, "instances_added")
+            else 0,
+            "instances_updated": self.merge_result.instances_updated
+            if hasattr(self.merge_result, "instances_updated")
+            else 0,
+            "instances_skipped": self.merge_result.instances_skipped
+            if hasattr(self.merge_result, "instances_skipped")
+            else 0,
+        }
 
-        if hasattr(self.merge_result, "frames_merged"):
-            # Extract data from merge result object
-            for frame_info in self.merge_result.frames_merged:
-                data_table.append(
-                    {
-                        "filename": (
-                            frame_info.video.filename
-                            if hasattr(frame_info, "video")
-                            else "Unknown"
-                        ),
-                        "frame_idx": (
-                            frame_info.frame_idx
-                            if hasattr(frame_info, "frame_idx")
-                            else 0
-                        ),
-                        "instances": (
-                            frame_info.instances
-                            if hasattr(frame_info, "instances")
-                            else []
-                        ),
-                    }
-                )
-        else:
-            # Fallback for different merge result formats
-            data_table = [{"filename": "Unknown", "frame_idx": 0, "instances": []}]
+        data_table = [metadata]
 
         return data_table
 
@@ -401,12 +394,14 @@ class MergeTableModel(QtCore.QAbstractTableModel):
             prop = self._props[index.column()]
 
             if idx < self.rowCount():
-                if prop == "video":
-                    return self.data_table[idx]["filename"]
-                elif prop == "frame":
-                    return self.data_table[idx]["frame_idx"]
-                elif prop == "merged instances":
-                    return show_instance_type_counts(self.data_table[idx]["instances"])
+                if prop == "frames merged":
+                    return self.data_table[idx]["frames_merged"]
+                elif prop == "instances added":
+                    return self.data_table[idx]["instances_added"]
+                elif prop == "instances updated":
+                    return self.data_table[idx]["instances_updated"]
+                elif prop == "instances skipped":
+                    return self.data_table[idx]["instances_skipped"]
 
         return None
 

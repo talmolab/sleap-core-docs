@@ -35,6 +35,7 @@ import re
 import subprocess
 import sys
 import traceback
+from copy import deepcopy
 from enum import Enum
 from glob import glob
 from pathlib import Path, PurePath
@@ -1567,7 +1568,7 @@ def export_dataset_gui(
         labels,
         filename,
         format="slp",
-        embed=embed_option,
+        embed=embed_option if as_package else False,
         # progress_callback=update_progress if verbose else None, #TODO
     )
 
@@ -1763,8 +1764,9 @@ class ExportLabelsSubset(ExportFullPackage):
 
         # Get subset of labels to export
         labels: Labels = context.state["labels"]
+        frames_in_labels = [(video, frame) for frame in frames]
         labels_subset_unshifted: Labels = labels.extract(
-            inds=(video, frames), copy=True
+            inds=frames_in_labels, copy=True
         )
         return labels_subset_unshifted
 
@@ -2249,7 +2251,7 @@ class RemoveVideo(EditCommand):
 
     @staticmethod
     def ask(context: CommandContext, params: dict) -> bool:
-        videos = context.labels.videos.copy()
+        videos = deepcopy(context.labels.videos)
         row_idxs = context.state["selected_batch_video"]
         video_file_names = []
         total_num_labeled_frames = 0

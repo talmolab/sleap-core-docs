@@ -44,6 +44,7 @@ from tests.info.test_h5 import extract_meta_hdf5
 from sleap.sleap_io_adaptors.video_utils import get_last_frame_idx
 from sleap.sleap_io_adaptors.lf_labels_utils import (
     add_suggestion,
+    labels_load_file,
     remove_video,
     labels_add_instance,
 )
@@ -1232,7 +1233,7 @@ def test_ExportLabelsSubset(
     assert path_to_export.exists()
     assert path_to_export.is_file()
     assert path_to_export.name == name_to_export
-    labels_subset = Labels.load_file(path_to_export.as_posix())
+    labels_subset = labels_load_file(path_to_export.as_posix())
     # Should only contain video from selected clip.
     assert len(labels_subset.videos) == 1
     # Should only contain frames from selected clip.
@@ -1268,7 +1269,7 @@ def test_ExportLabelsSubset(
     path_to_export = Path(path_to_export.with_suffix(".pkg.slp"))
     assert path_to_export.exists()
     assert path_to_export.is_file()
-    labels_subset: Labels = Labels.load_file(path_to_export.as_posix())
+    labels_subset: Labels = labels_load_file(path_to_export.as_posix())
     # Should only contain video from selected clip.
     assert len(labels_subset.videos) == 1
     n_frames_expected = upper_bound - lower_bound

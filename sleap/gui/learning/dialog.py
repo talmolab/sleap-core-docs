@@ -696,7 +696,7 @@ class LearningDialog(QtWidgets.QDialog):
             "top-down-id",
             "bottom-up-id",
         ):
-            can_run = self.validate_id_model()
+            can_run = self._validate_id_model()
             if not can_run:
                 message = "Cannot run ID model training without tracks."
 
@@ -1233,6 +1233,8 @@ class TrainingEditorWidget(QtWidgets.QWidget):
 
         cfg = cfg_info.config
         key_val_dict = get_keyval_dict_from_omegaconf(cfg)
+        if key_val_dict.get("trainer_config.trainer_devices") == "auto":
+            key_val_dict["trainer_config.trainer_devices"] = None
         self.set_fields_from_key_val_dict(key_val_dict)
 
     # def _set_user_config(self):
