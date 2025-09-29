@@ -1694,6 +1694,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#sleap.sleap_io_adaptors.instance_utils.get_centroid" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_centroid
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#sleap.sleap_io_adaptors.instance_utils.get_nodes_from_instance" class="md-nav__link">
     <span class="md-ellipsis">
       get_nodes_from_instance
@@ -1817,6 +1826,14 @@
               <td>
                 <div class="doc-md-description">
                   <p>Add points for skeleton nodes that are missing in the instance.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="&lt;code class=&quot; language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;get_centroid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt; (&lt;code&gt;sleap.sleap_io_adaptors.instance_utils.get_centroid&lt;/code&gt;)" href="#sleap.sleap_io_adaptors.instance_utils.get_centroid">get_centroid</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Return instance centroid as an array of <code>(x, y)</code> coordinates.</p>
                 </div>
               </td>
             </tr>
@@ -2214,6 +2231,50 @@
         <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">new_instance</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="sleap.sleap_io_adaptors.instance_utils.get_centroid" class="doc doc-heading">
+            <code class=" language-python"><span class="n">get_centroid</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span></code>
+
+<a href="#sleap.sleap_io_adaptors.instance_utils.get_centroid" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return instance centroid as an array of <code>(x, y)</code> coordinates.</p>
+
+
+<details class="notes" open>
+  <summary>Notes</summary>
+  <p>This computes the centroid as the median of the visible points.</p>
+</details>
+
+            <details class="quote">
+              <summary>Source code in <code>sleap/sleap_io_adaptors/instance_utils.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_centroid</span><span class="p">(</span><span class="n">instance</span><span class="p">:</span> <span class="n">Instance</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return instance centroid as an array of `(x, y)` coordinates.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        This computes the centroid as the median of the visible points.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="s2">&quot;xy&quot;</span><span class="p">]</span>
+    <span class="n">centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmedian</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">centroid</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>

@@ -3614,7 +3614,7 @@ for list of nodes for (e.g.) selecting anchor node</p>
             <span class="s2">&quot;top-down-id&quot;</span><span class="p">,</span>
             <span class="s2">&quot;bottom-up-id&quot;</span><span class="p">,</span>
         <span class="p">):</span>
-            <span class="n">can_run</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_id_model</span><span class="p">()</span>
+            <span class="n">can_run</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_id_model</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">can_run</span><span class="p">:</span>
                 <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Cannot run ID model training without tracks.&quot;</span>
 
@@ -5004,7 +5004,9 @@ when :py:class:<code>LearningDialog</code> is in "inference" mode.</p>
 <span class="normal">1411</span>
 <span class="normal">1412</span>
 <span class="normal">1413</span>
-<span class="normal">1414</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">TrainingEditorWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
+<span class="normal">1414</span>
+<span class="normal">1415</span>
+<span class="normal">1416</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">TrainingEditorWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Dialog for viewing and modifying training profiles (model hyperparameters).</span>
 
@@ -5212,6 +5214,8 @@ when :py:class:<code>LearningDialog</code> is in "inference" mode.</p>
 
         <span class="n">cfg</span> <span class="o">=</span> <span class="n">cfg_info</span><span class="o">.</span><span class="n">config</span>
         <span class="n">key_val_dict</span> <span class="o">=</span> <span class="n">get_keyval_dict_from_omegaconf</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key_val_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;trainer_config.trainer_devices&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+            <span class="n">key_val_dict</span><span class="p">[</span><span class="s2">&quot;trainer_config.trainer_devices&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_fields_from_key_val_dict</span><span class="p">(</span><span class="n">key_val_dict</span><span class="p">)</span>
 
     <span class="c1"># def _set_user_config(self):</span>

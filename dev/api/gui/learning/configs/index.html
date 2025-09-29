@@ -2282,8 +2282,7 @@ this config</p>
 <span class="normal">222</span>
 <span class="normal">223</span>
 <span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="n">auto_attribs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">225</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="n">auto_attribs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ConfigFileInfo</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Object to represent a saved :py:class:`TrainingJobConfig`</span>
@@ -2443,29 +2442,28 @@ this config</p>
             <span class="n">metrics_path</span> <span class="o">=</span> <span class="n">metrics_path_nn</span>
 
         <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">metrics_path</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">data</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">&quot;metrics&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">metric_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 
             <span class="n">return_dict</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;vis.tp&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;visibility_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tp&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;vis.fp&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;visibility_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fp&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;vis.tn&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;visibility_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tn&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;vis.fn&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;visibility_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fn&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;vis.precision&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;visibility_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;precision&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;vis.recall&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;visibility_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;recall&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;dist.dists&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;distance_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dists&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;dist.avg&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;distance_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;avg&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;dist.p50&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;distance_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;p50&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;dist.p75&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;distance_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;p75&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;dist.p90&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;distance_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;p90&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;dist.p95&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;distance_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;p95&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;dist.p99&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;distance_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;p99&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;pck.mPCK&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;pck_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mPCK&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;oks.mOKS&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;mOKS&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mOKS&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;oks_voc.mAP&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;voc_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;oks_voc.mAP&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;oks_voc.mAR&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;voc_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;oks_voc.mAR&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;pck_voc.mAP&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;voc_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pck_voc.mAP&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;pck_voc.mAR&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;voc_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pck_voc.mAR&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;vis.tp&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;visibility_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tp&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;vis.fp&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;visibility_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fp&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;vis.tn&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;visibility_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tn&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;vis.fn&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;visibility_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fn&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;vis.precision&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;visibility_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;precision&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;vis.recall&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;visibility_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;recall&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;dist.dists&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;distance_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dists&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;dist.avg&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;distance_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;avg&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;dist.p50&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;distance_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;p50&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;dist.p75&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;distance_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;p75&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;dist.p90&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;distance_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;p90&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;dist.p95&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;distance_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;p95&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;dist.p99&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;distance_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;p99&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;pck.mPCK&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;pck_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mPCK&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;oks.mOKS&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;mOKS&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mOKS&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;oks_voc.mAP&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;voc_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;oks_voc.mAP&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;oks_voc.mAR&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;voc_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;oks_voc.mAR&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;pck_voc.mAP&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;voc_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pck_voc.mAP&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;pck_voc.mAR&quot;</span><span class="p">:</span> <span class="n">metric_data</span><span class="p">[</span><span class="s2">&quot;voc_metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pck_voc.mAR&quot;</span><span class="p">),</span>
             <span class="p">}</span>
             <span class="k">return</span> <span class="n">return_dict</span>
 
@@ -2780,7 +2778,8 @@ is populated.</p>
 
               <details class="quote">
                 <summary>Source code in <code>sleap/gui/learning/configs.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">229</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">228</span>
+<span class="normal">229</span>
 <span class="normal">230</span>
 <span class="normal">231</span>
 <span class="normal">232</span>
@@ -2935,8 +2934,7 @@ is populated.</p>
 <span class="normal">381</span>
 <span class="normal">382</span>
 <span class="normal">383</span>
-<span class="normal">384</span>
-<span class="normal">385</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">TrainingConfigFilesWidget</span><span class="p">(</span><span class="n">FieldComboWidget</span><span class="p">):</span>
+<span class="normal">384</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">TrainingConfigFilesWidget</span><span class="p">(</span><span class="n">FieldComboWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Widget to show list of saved :py:class:`TrainingJobConfig` files.</span>
 
@@ -3125,7 +3123,8 @@ is populated.</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/learning/configs.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">350</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">349</span>
+<span class="normal">350</span>
 <span class="normal">351</span>
 <span class="normal">352</span>
 <span class="normal">353</span>
@@ -3137,8 +3136,7 @@ is populated.</p>
 <span class="normal">359</span>
 <span class="normal">360</span>
 <span class="normal">361</span>
-<span class="normal">362</span>
-<span class="normal">363</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">doFileSelection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">362</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">doFileSelection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Shows file browser to add training profile for given model type.&quot;&quot;&quot;</span>
     <span class="n">filters</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;JSON (*.json)&quot;</span><span class="p">,</span> <span class="s2">&quot;YAML (*.yaml;*.yml)&quot;</span><span class="p">]</span>
     <span class="n">filename</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">FileDialog</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
@@ -3174,10 +3172,10 @@ is populated.</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/learning/configs.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">315</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">314</span>
+<span class="normal">315</span>
 <span class="normal">316</span>
-<span class="normal">317</span>
-<span class="normal">318</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">getConfigInfoByMenuIdx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">menu_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConfigFileInfo</span><span class="p">]:</span>
+<span class="normal">317</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">getConfigInfoByMenuIdx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">menu_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConfigFileInfo</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return `ConfigFileInfo` for menu item index.&quot;&quot;&quot;</span>
     <span class="n">cfg_idx</span> <span class="o">=</span> <span class="n">menu_idx</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menu_cfg_idx_offset</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cfg_list</span><span class="p">[</span><span class="n">cfg_idx</span><span class="p">]</span> <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">cfg_idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cfg_list</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
@@ -3203,11 +3201,11 @@ is populated.</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/learning/configs.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">320</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">319</span>
+<span class="normal">320</span>
 <span class="normal">321</span>
 <span class="normal">322</span>
-<span class="normal">323</span>
-<span class="normal">324</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">getSelectedConfigInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConfigFileInfo</span><span class="p">]:</span>
+<span class="normal">323</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">getSelectedConfigInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConfigFileInfo</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return currently selected `ConfigFileInfo` (if any, None otherwise).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -3236,7 +3234,8 @@ is populated.</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/learning/configs.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">326</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">325</span>
+<span class="normal">326</span>
 <span class="normal">327</span>
 <span class="normal">328</span>
 <span class="normal">329</span>
@@ -3249,8 +3248,7 @@ is populated.</p>
 <span class="normal">336</span>
 <span class="normal">337</span>
 <span class="normal">338</span>
-<span class="normal">339</span>
-<span class="normal">340</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">onSelectionIdxChange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">menu_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">339</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">onSelectionIdxChange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">menu_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Handler for when user selects a menu item.</span>
 
@@ -3287,13 +3285,13 @@ is populated.</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/learning/configs.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">342</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">341</span>
+<span class="normal">342</span>
 <span class="normal">343</span>
 <span class="normal">344</span>
 <span class="normal">345</span>
 <span class="normal">346</span>
-<span class="normal">347</span>
-<span class="normal">348</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setUserConfigData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg_data_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Text</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+<span class="normal">347</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setUserConfigData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg_data_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Text</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets the user config option from settings made by user.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_user_config_data_dict</span> <span class="o">=</span> <span class="n">cfg_data_dict</span>
 
@@ -3322,7 +3320,8 @@ is populated.</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/learning/configs.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">268</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">267</span>
+<span class="normal">268</span>
 <span class="normal">269</span>
 <span class="normal">270</span>
 <span class="normal">271</span>
@@ -3356,8 +3355,7 @@ is populated.</p>
 <span class="normal">299</span>
 <span class="normal">300</span>
 <span class="normal">301</span>
-<span class="normal">302</span>
-<span class="normal">303</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConfigFileInfo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="normal">302</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConfigFileInfo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Updates menu options, optionally selecting a specific config.&quot;&quot;&quot;</span>
     <span class="n">cfg_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cfg_getter</span><span class="o">.</span><span class="n">get_filtered_configs</span><span class="p">(</span>
         <span class="n">head_filter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_head_name</span><span class="p">,</span> <span class="n">only_trained</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_require_trained</span>
@@ -3559,7 +3557,8 @@ e.g., "centered_instance".</p>
 
               <details class="quote">
                 <summary>Source code in <code>sleap/gui/learning/configs.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">388</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">387</span>
+<span class="normal">388</span>
 <span class="normal">389</span>
 <span class="normal">390</span>
 <span class="normal">391</span>
@@ -3744,12 +3743,7 @@ e.g., "centered_instance".</p>
 <span class="normal">570</span>
 <span class="normal">571</span>
 <span class="normal">572</span>
-<span class="normal">573</span>
-<span class="normal">574</span>
-<span class="normal">575</span>
-<span class="normal">576</span>
-<span class="normal">577</span>
-<span class="normal">578</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="n">auto_attribs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">573</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="n">auto_attribs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TrainingConfigsGetter</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Searches for and loads :py:class:`TrainingJobConfig` files.</span>
@@ -3794,29 +3788,25 @@ e.g., "centered_instance".</p>
             <span class="p">)</span>
             <span class="n">json_files</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
                 <span class="n">sleap_utils</span><span class="o">.</span><span class="n">find_files_by_suffix</span><span class="p">(</span>
-                    <span class="n">config_dir</span><span class="p">,</span> <span class="s2">&quot;training_config.yaml&quot;</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">search_depth</span>
+                    <span class="n">config_dir</span><span class="p">,</span> <span class="s2">&quot;.yaml&quot;</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">search_depth</span>
                 <span class="p">)</span>
             <span class="p">)</span>
             <span class="n">json_files</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
                 <span class="n">sleap_utils</span><span class="o">.</span><span class="n">find_files_by_suffix</span><span class="p">(</span>
-                    <span class="n">config_dir</span><span class="p">,</span> <span class="s2">&quot;training_config.yml&quot;</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">search_depth</span>
+                    <span class="n">config_dir</span><span class="p">,</span> <span class="s2">&quot;.yml&quot;</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">search_depth</span>
                 <span class="p">)</span>
             <span class="p">)</span>
 
             <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">config_dir</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;sleap/training_profiles&quot;</span><span class="p">):</span>
                 <span class="c1"># Use hardcoded sort.</span>
                 <span class="n">BUILTIN_ORDER</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="s2">&quot;baseline.centroid.json&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;baseline_medium_rf.bottomup.json&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;baseline_medium_rf.single.json&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;baseline_medium_rf.topdown.json&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;baseline_large_rf.bottomup.json&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;baseline_large_rf.single.json&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;baseline_large_rf.topdown.json&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;pretrained.bottomup.json&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;pretrained.centroid.json&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;pretrained.single.json&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;pretrained.topdown.json&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;baseline.centroid.yaml&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;baseline_medium_rf.bottomup.yaml&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;baseline_medium_rf.single.yaml&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;baseline_medium_rf.topdown.yaml&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;baseline_large_rf.bottomup.yaml&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;baseline_large_rf.single.yaml&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;baseline_large_rf.topdown.yaml&quot;</span><span class="p">,</span>
                 <span class="p">]</span>
                 <span class="n">json_files</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">BUILTIN_ORDER</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
@@ -3972,7 +3962,8 @@ e.g., "centered_instance".</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/learning/configs.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">420</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">419</span>
+<span class="normal">420</span>
 <span class="normal">421</span>
 <span class="normal">422</span>
 <span class="normal">423</span>
@@ -4016,12 +4007,7 @@ e.g., "centered_instance".</p>
 <span class="normal">461</span>
 <span class="normal">462</span>
 <span class="normal">463</span>
-<span class="normal">464</span>
-<span class="normal">465</span>
-<span class="normal">466</span>
-<span class="normal">467</span>
-<span class="normal">468</span>
-<span class="normal">469</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">find_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ConfigFileInfo</span><span class="p">]:</span>
+<span class="normal">464</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">find_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ConfigFileInfo</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Load configs from all saved paths.&quot;&quot;&quot;</span>
     <span class="n">configs</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -4034,29 +4020,25 @@ e.g., "centered_instance".</p>
         <span class="p">)</span>
         <span class="n">json_files</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
             <span class="n">sleap_utils</span><span class="o">.</span><span class="n">find_files_by_suffix</span><span class="p">(</span>
-                <span class="n">config_dir</span><span class="p">,</span> <span class="s2">&quot;training_config.yaml&quot;</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">search_depth</span>
+                <span class="n">config_dir</span><span class="p">,</span> <span class="s2">&quot;.yaml&quot;</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">search_depth</span>
             <span class="p">)</span>
         <span class="p">)</span>
         <span class="n">json_files</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
             <span class="n">sleap_utils</span><span class="o">.</span><span class="n">find_files_by_suffix</span><span class="p">(</span>
-                <span class="n">config_dir</span><span class="p">,</span> <span class="s2">&quot;training_config.yml&quot;</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">search_depth</span>
+                <span class="n">config_dir</span><span class="p">,</span> <span class="s2">&quot;.yml&quot;</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">search_depth</span>
             <span class="p">)</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">config_dir</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;sleap/training_profiles&quot;</span><span class="p">):</span>
             <span class="c1"># Use hardcoded sort.</span>
             <span class="n">BUILTIN_ORDER</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="s2">&quot;baseline.centroid.json&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;baseline_medium_rf.bottomup.json&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;baseline_medium_rf.single.json&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;baseline_medium_rf.topdown.json&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;baseline_large_rf.bottomup.json&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;baseline_large_rf.single.json&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;baseline_large_rf.topdown.json&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;pretrained.bottomup.json&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;pretrained.centroid.json&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;pretrained.single.json&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;pretrained.topdown.json&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;baseline.centroid.yaml&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;baseline_medium_rf.bottomup.yaml&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;baseline_medium_rf.single.yaml&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;baseline_medium_rf.topdown.yaml&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;baseline_large_rf.bottomup.yaml&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;baseline_large_rf.single.yaml&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;baseline_large_rf.topdown.yaml&quot;</span><span class="p">,</span>
             <span class="p">]</span>
             <span class="n">json_files</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">BUILTIN_ORDER</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
@@ -4093,7 +4075,12 @@ e.g., "centered_instance".</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/learning/configs.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">471</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">466</span>
+<span class="normal">467</span>
+<span class="normal">468</span>
+<span class="normal">469</span>
+<span class="normal">470</span>
+<span class="normal">471</span>
 <span class="normal">472</span>
 <span class="normal">473</span>
 <span class="normal">474</span>
@@ -4120,12 +4107,7 @@ e.g., "centered_instance".</p>
 <span class="normal">495</span>
 <span class="normal">496</span>
 <span class="normal">497</span>
-<span class="normal">498</span>
-<span class="normal">499</span>
-<span class="normal">500</span>
-<span class="normal">501</span>
-<span class="normal">502</span>
-<span class="normal">503</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_filtered_configs</span><span class="p">(</span>
+<span class="normal">498</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_filtered_configs</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">head_filter</span><span class="p">:</span> <span class="n">Text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">only_trained</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ConfigFileInfo</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns filtered subset of loaded configs.&quot;&quot;&quot;</span>
@@ -4180,9 +4162,9 @@ e.g., "centered_instance".</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/learning/configs.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">505</span>
-<span class="normal">506</span>
-<span class="normal">507</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_first</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConfigFileInfo</span><span class="p">]:</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">500</span>
+<span class="normal">501</span>
+<span class="normal">502</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_first</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConfigFileInfo</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get first loaded config.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_configs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_configs</span> <span class="k">else</span> <span class="kc">None</span>
 </code></pre></div></td></tr></table></div>
@@ -4207,9 +4189,9 @@ e.g., "centered_instance".</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/learning/configs.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">509</span>
-<span class="normal">510</span>
-<span class="normal">511</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">insert_first</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg_info</span><span class="p">:</span> <span class="n">ConfigFileInfo</span><span class="p">):</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">504</span>
+<span class="normal">505</span>
+<span class="normal">506</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">insert_first</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg_info</span><span class="p">:</span> <span class="n">ConfigFileInfo</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Insert config at beginning of list.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_configs</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cfg_info</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -4238,7 +4220,12 @@ e.g., "centered_instance".</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/learning/configs.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">563</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">558</span>
+<span class="normal">559</span>
+<span class="normal">560</span>
+<span class="normal">561</span>
+<span class="normal">562</span>
+<span class="normal">563</span>
 <span class="normal">564</span>
 <span class="normal">565</span>
 <span class="normal">566</span>
@@ -4248,12 +4235,7 @@ e.g., "centered_instance".</p>
 <span class="normal">570</span>
 <span class="normal">571</span>
 <span class="normal">572</span>
-<span class="normal">573</span>
-<span class="normal">574</span>
-<span class="normal">575</span>
-<span class="normal">576</span>
-<span class="normal">577</span>
-<span class="normal">578</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">573</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">make_from_labels_filename</span><span class="p">(</span>
     <span class="bp">cls</span><span class="p">,</span> <span class="n">labels_filename</span><span class="p">:</span> <span class="n">Text</span><span class="p">,</span> <span class="n">head_filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Text</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;TrainingConfigsGetter&quot;</span><span class="p">:</span>
@@ -4291,7 +4273,12 @@ e.g., "centered_instance".</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/learning/configs.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">513</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">508</span>
+<span class="normal">509</span>
+<span class="normal">510</span>
+<span class="normal">511</span>
+<span class="normal">512</span>
+<span class="normal">513</span>
 <span class="normal">514</span>
 <span class="normal">515</span>
 <span class="normal">516</span>
@@ -4334,12 +4321,7 @@ e.g., "centered_instance".</p>
 <span class="normal">553</span>
 <span class="normal">554</span>
 <span class="normal">555</span>
-<span class="normal">556</span>
-<span class="normal">557</span>
-<span class="normal">558</span>
-<span class="normal">559</span>
-<span class="normal">560</span>
-<span class="normal">561</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">try_loading_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConfigFileInfo</span><span class="p">]:</span>
+<span class="normal">556</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">try_loading_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConfigFileInfo</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Attempts to load config file and wrap in `ConfigFileInfo` object.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;yaml&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;yml&quot;</span><span class="p">):</span>
         <span class="c1"># Get the head from the model (i.e., what the model will predict)</span>
@@ -4410,7 +4392,8 @@ e.g., "centered_instance".</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/learning/configs.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">409</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">408</span>
+<span class="normal">409</span>
 <span class="normal">410</span>
 <span class="normal">411</span>
 <span class="normal">412</span>
@@ -4418,8 +4401,7 @@ e.g., "centered_instance".</p>
 <span class="normal">414</span>
 <span class="normal">415</span>
 <span class="normal">416</span>
-<span class="normal">417</span>
-<span class="normal">418</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">417</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Re-searches paths and loads any previously unloaded config files.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_configs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_configs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_configs</span><span class="p">()</span>

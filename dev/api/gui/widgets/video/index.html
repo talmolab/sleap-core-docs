@@ -6887,7 +6887,8 @@ a video frame (i.e., moving, rotating, marking nodes).</p>
 <span class="normal">2227</span>
 <span class="normal">2228</span>
 <span class="normal">2229</span>
-<span class="normal">2230</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">QtInstance</span><span class="p">(</span><span class="n">QGraphicsObject</span><span class="p">):</span>
+<span class="normal">2230</span>
+<span class="normal">2231</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">QtInstance</span><span class="p">(</span><span class="n">QGraphicsObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QGraphicsObject for skeleton instances.</span>
 
@@ -7248,7 +7249,8 @@ a video frame (i.e., moving, rotating, marking nodes).</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Duplicate the instance and add it to the scene.&quot;&quot;&quot;</span>
         <span class="c1"># Add instance to the context</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">context</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;self.player.context is None, cannot duplicate instance&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;debug mode&quot;</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;self.player.context is None, cannot duplicate instance&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="c1"># Copy the instance and add it to the context</span>
@@ -7435,11 +7437,13 @@ a video frame (i.e., moving, rotating, marking nodes).</p>
 <span class="normal">2207</span>
 <span class="normal">2208</span>
 <span class="normal">2209</span>
-<span class="normal">2210</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">duplicate_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">2210</span>
+<span class="normal">2211</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">duplicate_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Duplicate the instance and add it to the scene.&quot;&quot;&quot;</span>
     <span class="c1"># Add instance to the context</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">context</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;self.player.context is None, cannot duplicate instance&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;debug mode&quot;</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;self.player.context is None, cannot duplicate instance&quot;</span><span class="p">)</span>
         <span class="k">return</span>
 
     <span class="c1"># Copy the instance and add it to the context</span>
@@ -7559,15 +7563,15 @@ a video frame (i.e., moving, rotating, marking nodes).</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/widgets/video.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2212</span>
-<span class="normal">2213</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2213</span>
 <span class="normal">2214</span>
 <span class="normal">2215</span>
 <span class="normal">2216</span>
 <span class="normal">2217</span>
 <span class="normal">2218</span>
 <span class="normal">2219</span>
-<span class="normal">2220</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">mouseMoveEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="normal">2220</span>
+<span class="normal">2221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">mouseMoveEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom event handler to emit signal on event.&quot;&quot;&quot;</span>
     <span class="n">is_move</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flags</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">QGraphicsItem</span><span class="o">.</span><span class="n">ItemIsMovable</span>
     <span class="n">is_ctrl_pressed</span> <span class="o">=</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">modifiers</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ControlModifier</span><span class="p">)</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ControlModifier</span>
@@ -7635,15 +7639,15 @@ a video frame (i.e., moving, rotating, marking nodes).</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/widgets/video.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2222</span>
-<span class="normal">2223</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2223</span>
 <span class="normal">2224</span>
 <span class="normal">2225</span>
 <span class="normal">2226</span>
 <span class="normal">2227</span>
 <span class="normal">2228</span>
 <span class="normal">2229</span>
-<span class="normal">2230</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">mouseReleaseEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="normal">2230</span>
+<span class="normal">2231</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">mouseReleaseEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom event handler for mouse release.&quot;&quot;&quot;</span>
     <span class="c1"># self.ungrabMouse() causes QGraphicsItem::ungrabMouse: warning</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flags</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">QGraphicsItem</span><span class="o">.</span><span class="n">ItemIsMovable</span><span class="p">:</span>
@@ -10390,8 +10394,7 @@ the very same <code>Point</code> object that's defined outside our class.</p>
 
               <details class="quote">
                 <summary>Source code in <code>sleap/gui/widgets/video.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2426</span>
-<span class="normal">2427</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2427</span>
 <span class="normal">2428</span>
 <span class="normal">2429</span>
 <span class="normal">2430</span>
@@ -10420,7 +10423,8 @@ the very same <code>Point</code> object that's defined outside our class.</p>
 <span class="normal">2453</span>
 <span class="normal">2454</span>
 <span class="normal">2455</span>
-<span class="normal">2456</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">QtTextWithBackground</span><span class="p">(</span><span class="n">QGraphicsTextItem</span><span class="p">):</span>
+<span class="normal">2456</span>
+<span class="normal">2457</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">QtTextWithBackground</span><span class="p">(</span><span class="n">QGraphicsTextItem</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Inherits methods/behavior of `QGraphicsTextItem`, but with background box.</span>
 
@@ -10483,9 +10487,9 @@ the very same <code>Point</code> object that's defined outside our class.</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/widgets/video.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2437</span>
-<span class="normal">2438</span>
-<span class="normal">2439</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">boundingRect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2438</span>
+<span class="normal">2439</span>
+<span class="normal">2440</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">boundingRect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Method required by Qt.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">QtTextWithBackground</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">boundingRect</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
@@ -10510,13 +10514,13 @@ the very same <code>Point</code> object that's defined outside our class.</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/widgets/video.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2441</span>
-<span class="normal">2442</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2442</span>
 <span class="normal">2443</span>
 <span class="normal">2444</span>
 <span class="normal">2445</span>
 <span class="normal">2446</span>
-<span class="normal">2447</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">getBackgroundColor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">2447</span>
+<span class="normal">2448</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">getBackgroundColor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return background color appropriate for the text color.&quot;&quot;&quot;</span>
     <span class="n">text_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaultTextColor</span><span class="p">()</span>
     <span class="n">background_color</span> <span class="o">=</span> <span class="s2">&quot;white&quot;</span> <span class="k">if</span> <span class="n">text_color</span><span class="o">.</span><span class="n">lightnessF</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.4</span> <span class="k">else</span> <span class="s2">&quot;black&quot;</span>
@@ -10545,14 +10549,14 @@ the very same <code>Point</code> object that's defined outside our class.</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/widgets/video.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2449</span>
-<span class="normal">2450</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2450</span>
 <span class="normal">2451</span>
 <span class="normal">2452</span>
 <span class="normal">2453</span>
 <span class="normal">2454</span>
 <span class="normal">2455</span>
-<span class="normal">2456</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">paint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">painter</span><span class="p">,</span> <span class="n">option</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="normal">2456</span>
+<span class="normal">2457</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">paint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">painter</span><span class="p">,</span> <span class="n">option</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Method required by Qt.&quot;&quot;&quot;</span>
     <span class="n">brush</span> <span class="o">=</span> <span class="n">painter</span><span class="o">.</span><span class="n">brush</span><span class="p">()</span>
     <span class="n">background_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getBackgroundColor</span><span class="p">()</span>
@@ -13727,8 +13731,7 @@ scale the overall bounding box.</p>
 
               <details class="quote">
                 <summary>Source code in <code>sleap/gui/widgets/video.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2233</span>
-<span class="normal">2234</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2234</span>
 <span class="normal">2235</span>
 <span class="normal">2236</span>
 <span class="normal">2237</span>
@@ -13917,7 +13920,8 @@ scale the overall bounding box.</p>
 <span class="normal">2420</span>
 <span class="normal">2421</span>
 <span class="normal">2422</span>
-<span class="normal">2423</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">VisibleBoundingBox</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsRectItem</span><span class="p">):</span>
+<span class="normal">2423</span>
+<span class="normal">2424</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">VisibleBoundingBox</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsRectItem</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;QGraphicsRectItem for user instance bounding boxes.</span>
 
 <span class="sd">    This object defines a scalable bounding box that encases an instance and handles</span>
@@ -14141,8 +14145,7 @@ scale the overall bounding box.</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/widgets/video.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2329</span>
-<span class="normal">2330</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2330</span>
 <span class="normal">2331</span>
 <span class="normal">2332</span>
 <span class="normal">2333</span>
@@ -14207,7 +14210,8 @@ scale the overall bounding box.</p>
 <span class="normal">2392</span>
 <span class="normal">2393</span>
 <span class="normal">2394</span>
-<span class="normal">2395</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">mouseMoveEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="normal">2395</span>
+<span class="normal">2396</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">mouseMoveEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom event handler for moving an adjustable corner box.</span>
 
 <span class="sd">    This function resizes the bounding box as the user drags one of its corners.</span>
@@ -14298,8 +14302,7 @@ stores relevant information about the bounding box before the transformation.</p
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/widgets/video.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2303</span>
-<span class="normal">2304</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2304</span>
 <span class="normal">2305</span>
 <span class="normal">2306</span>
 <span class="normal">2307</span>
@@ -14322,7 +14325,8 @@ stores relevant information about the bounding box before the transformation.</p
 <span class="normal">2324</span>
 <span class="normal">2325</span>
 <span class="normal">2326</span>
-<span class="normal">2327</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="normal">2327</span>
+<span class="normal">2328</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom event handler for pressing on an adjustable corner box.</span>
 
 <span class="sd">    This function recognizes that the user has begun resizing the instance and</span>
@@ -14373,8 +14377,7 @@ function to update the entire instance.</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/widgets/video.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2397</span>
-<span class="normal">2398</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2398</span>
 <span class="normal">2399</span>
 <span class="normal">2400</span>
 <span class="normal">2401</span>
@@ -14399,7 +14402,8 @@ function to update the entire instance.</p>
 <span class="normal">2420</span>
 <span class="normal">2421</span>
 <span class="normal">2422</span>
-<span class="normal">2423</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">mouseReleaseEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="normal">2423</span>
+<span class="normal">2424</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">mouseReleaseEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom event handler for releasing an adjustable corner box.</span>
 
 <span class="sd">    This function recognizes the end of a scaling operation by transforming the</span>
@@ -14448,15 +14452,15 @@ function to update the entire instance.</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/widgets/video.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2293</span>
-<span class="normal">2294</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2294</span>
 <span class="normal">2295</span>
 <span class="normal">2296</span>
 <span class="normal">2297</span>
 <span class="normal">2298</span>
 <span class="normal">2299</span>
 <span class="normal">2300</span>
-<span class="normal">2301</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setRect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rect</span><span class="p">:</span> <span class="n">QRectF</span><span class="p">):</span>
+<span class="normal">2301</span>
+<span class="normal">2302</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setRect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rect</span><span class="p">:</span> <span class="n">QRectF</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Update edge boxes along with instance box&quot;&quot;&quot;</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setRect</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span>
     <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">getCoords</span><span class="p">()</span>
@@ -14840,8 +14844,7 @@ without clipping; uint16 will be right-shifted to 8-bit.</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/widgets/video.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2486</span>
-<span class="normal">2487</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2487</span>
 <span class="normal">2488</span>
 <span class="normal">2489</span>
 <span class="normal">2490</span>
@@ -14872,7 +14875,8 @@ without clipping; uint16 will be right-shifted to 8-bit.</p>
 <span class="normal">2515</span>
 <span class="normal">2516</span>
 <span class="normal">2517</span>
-<span class="normal">2518</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_instances</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="n">frame_idx</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">video</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="normal">2518</span>
+<span class="normal">2519</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_instances</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="n">frame_idx</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">video</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Demo function for plotting instances.&quot;&quot;&quot;</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">sleap.gui.color</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColorManager</span>
 
@@ -14927,8 +14931,7 @@ without clipping; uint16 will be right-shifted to 8-bit.</p>
 
             <details class="quote">
               <summary>Source code in <code>sleap/gui/widgets/video.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2459</span>
-<span class="normal">2460</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2460</span>
 <span class="normal">2461</span>
 <span class="normal">2462</span>
 <span class="normal">2463</span>
@@ -14951,7 +14954,8 @@ without clipping; uint16 will be right-shifted to 8-bit.</p>
 <span class="normal">2480</span>
 <span class="normal">2481</span>
 <span class="normal">2482</span>
-<span class="normal">2483</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">video_demo</span><span class="p">(</span><span class="n">video</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">standalone</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="normal">2483</span>
+<span class="normal">2484</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">video_demo</span><span class="p">(</span><span class="n">video</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">standalone</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Demo function for showing video.&quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">video</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">labels</span><span class="p">:</span>
