@@ -8,9 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://talmolab.github.io/sleap-core-docs/dev/contribute/">
+        <link rel="canonical" href="https://talmolab.github.io/sleap-core-docs/dev/whats-new/">
       
       
+        <link rel="prev" href="../installation/">
+      
+      
+        <link rel="next" href="../tutorial/overview/">
       
       
       <link rel="icon" href="../assets/favicon.ico">
@@ -18,7 +22,7 @@
     
     
       
-        <title>Contributing to SLEAP - SLEAP Documentation</title>
+        <title>What's New in SLEAP 1.5+ - SLEAP Documentation</title>
       
     
     
@@ -74,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#contributing-to-sleap" class="md-skip">
+        <a href="#whats-new-in-sleap-15" class="md-skip">
           Skip to content
         </a>
       
@@ -109,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Contributing to SLEAP
+              What's New in SLEAP 1.5+
             
           </span>
         </div>
@@ -295,10 +299,32 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../whats-new/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    What's New in SLEAP 1.5+
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -309,6 +335,125 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#major-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Major Changes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Major Changes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uv-based-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      UV-Based Installation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pytorch-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      PyTorch Backend
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#standalone-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Standalone Libraries
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Standalone Libraries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sleap-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      SLEAP-IO
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sleap-nn" class="md-nav__link">
+    <span class="md-ellipsis">
+      SLEAP-NN
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#torch-backend-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Torch Backend Changes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Torch Backend Changes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#new-backbones" class="md-nav__link">
+    <span class="md-ellipsis">
+      New Backbones
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#legacy-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Legacy Support
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1660,46 +1805,56 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#code-of-conduct" class="md-nav__link">
+  <a href="#major-changes" class="md-nav__link">
     <span class="md-ellipsis">
-      Code of Conduct
+      Major Changes
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#contributing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Contributing
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Contributing">
+    <nav class="md-nav" aria-label="Major Changes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#issues" class="md-nav__link">
+  <a href="#uv-based-installation" class="md-nav__link">
     <span class="md-ellipsis">
-      Issues
+      UV-Based Installation
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#discussions" class="md-nav__link">
+  <a href="#pytorch-backend" class="md-nav__link">
     <span class="md-ellipsis">
-      Discussions
+      PyTorch Backend
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#pull-requests" class="md-nav__link">
+  <a href="#standalone-libraries" class="md-nav__link">
     <span class="md-ellipsis">
-      Pull Requests
+      Standalone Libraries
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Standalone Libraries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sleap-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      SLEAP-IO
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sleap-nn" class="md-nav__link">
+    <span class="md-ellipsis">
+      SLEAP-NN
     </span>
   </a>
   
@@ -1709,21 +1864,35 @@
     </nav>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
-  <a href="#style-guides" class="md-nav__link">
+  <a href="#torch-backend-changes" class="md-nav__link">
     <span class="md-ellipsis">
-      Style Guides
+      Torch Backend Changes
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Style Guides">
+    <nav class="md-nav" aria-label="Torch Backend Changes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#thank-you-for-contributing-to-sleap" class="md-nav__link">
+  <a href="#new-backbones" class="md-nav__link">
     <span class="md-ellipsis">
-      Thank you for contributing to SLEAP!
+      New Backbones
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#legacy-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Legacy Support
     </span>
   </a>
   
@@ -1750,55 +1919,40 @@
 
 
 
-<h1 id="contributing-to-sleap">Contributing to SLEAP<a class="headerlink" href="#contributing-to-sleap" title="Permanent link">&para;</a></h1>
-<p>As our community grows it is important to adhere to a set of contribution guidelines. These guidelines may change as needed. Please feel free to propose changes to source code in a pull request! </p>
-<h2 id="code-of-conduct">Code of Conduct<a class="headerlink" href="#code-of-conduct" title="Permanent link">&para;</a></h2>
-<p>Everyone contributing to SLEAP is governed by the <a href="../code-of-conduct/">SLEAP Code of Conduct</a>. As such, all are expected to abide by this code. Please report any unacceptable behavior to <code>talmo@salk.edu</code>.</p>
-<h2 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h2>
-<p>Github has made it easy to separate issues from discussions. Generally speaking, if something warrants a pull request (e.g. bug fixes, TODOs) it should be submitted as an issue. Conversely, general questions about usage and improvement ideas should go into discussions. These both act as staging areas before adding the items to the SLEAP Roadmap. Once added to the Roadmap, items can be given priority, status, assignee(s), etc. </p>
-<h3 id="issues">Issues<a class="headerlink" href="#issues" title="Permanent link">&para;</a></h3>
+<h1 id="whats-new-in-sleap-15">What's New in SLEAP 1.5<a class="headerlink" href="#whats-new-in-sleap-15" title="Permanent link">&para;</a></h1>
+<p>SLEAP 1.5 represents a major milestone with significant architectural improvements, performance enhancements, and new installation methods. Here are the key changes:</p>
+<h2 id="major-changes">Major Changes<a class="headerlink" href="#major-changes" title="Permanent link">&para;</a></h2>
+<h3 id="uv-based-installation">UV-Based Installation<a class="headerlink" href="#uv-based-installation" title="Permanent link">&para;</a></h3>
+<p>SLEAP 1.5+ now uses <a href="https://docs.astral.sh/uv/"><strong>uv</strong></a> for installation, making it much faster than previous methods. Get up and running in seconds with our streamlined installation process.</p>
+<h3 id="pytorch-backend">PyTorch Backend<a class="headerlink" href="#pytorch-backend" title="Permanent link">&para;</a></h3>
+<p>Neural network backend switched from TensorFlow to PyTorch, providing:</p>
 <ul>
-<li>Check <a href="https://github.com/talmolab/sleap/issues">open/closed issues</a>, <a href="https://github.com/talmolab/sleap/discussions/categories/ideas">ideas</a>, and <a href="https://github.com/talmolab/sleap/discussions/categories/help">the help page</a> to make sure issue doesn't already exist / has been solved.</li>
-<li>Create new issue using the <a href="https://github.com/talmolab/sleap/blob/arlo/contributing_guide/.github/ISSUE_TEMPLATE/bug_report.md">issue template</a>.</li>
+<li><strong>Much faster training and inference speeds</strong></li>
+<li><strong>Modern deep learning capabilities</strong></li>
+<li><strong>Improved developer experience</strong></li>
+<li><strong>Multi-GPU training</strong></li>
 </ul>
-<h3 id="discussions">Discussions<a class="headerlink" href="#discussions" title="Permanent link">&para;</a></h3>
+<h3 id="standalone-libraries">Standalone Libraries<a class="headerlink" href="#standalone-libraries" title="Permanent link">&para;</a></h3>
+<p>SLEAP GUI is now supported by two new packages for modular workflows:</p>
+<h4 id="sleap-io"><a href="https://io.sleap.ai">SLEAP-IO</a><a class="headerlink" href="#sleap-io" title="Permanent link">&para;</a></h4>
+<p>I/O backend for handling labels, processing <code>.slp</code> files, and data manipulation. Essential for any SLEAP workflow and can be used independently for data processing tasks.</p>
+<h4 id="sleap-nn"><a href="https://nn.sleap.ai">SLEAP-NN</a><a class="headerlink" href="#sleap-nn" title="Permanent link">&para;</a></h4>
+<p>PyTorch-based neural network backend for training and inference. Perfect for custom training pipelines, remote processing, and headless server deployments.</p>
+<h2 id="torch-backend-changes">Torch Backend Changes<a class="headerlink" href="#torch-backend-changes" title="Permanent link">&para;</a></h2>
+<h3 id="new-backbones">New Backbones<a class="headerlink" href="#new-backbones" title="Permanent link">&para;</a></h3>
+<p>SLEAP 1.5 introduces three powerful new backbone architectures (check <a href="https://nn.sleap.ai/latest/models/#backbone-architectures">here</a> for more details):</p>
 <ul>
-<li>This is a place to go to ask questions and propose new ideas.</li>
-<li>3 categories: Help, Ideas, General</li>
-<li><strong>Help</strong> - Having trouble with software, user experience issue, etc.</li>
-<li><strong>Ideas</strong> - Enhancements, things that would make the user experience nicer but not necessarily a problem with the code.</li>
-<li><strong>General</strong> - If it doesn't fall into help/ideas it goes here as long as it isn't bug fix (issue).</li>
+<li><strong>UNet</strong> - Classic encoder-decoder architecture for precise pose estimation</li>
+<li><strong>SwinT</strong> - Swin Transformer for state-of-the-art performance</li>
+<li><strong>ConvNeXt</strong> - Modern convolutional architecture with improved efficiency</li>
 </ul>
-<h3 id="pull-requests">Pull Requests<a class="headerlink" href="#pull-requests" title="Permanent link">&para;</a></h3>
-<ol>
-<li>Install source code <a href="../installation/#installation-methods"><code>develop</code> branch</a> and follow instructions to create conda env, etc.</li>
-<li>Create a fork from the <code>develop</code> branch.</li>
-<li>Either work on the <code>develop</code> branch or create a new branch (recommended if tackling multiple issues at a time).</li>
-<li>If creating a branch, use your name followed by a relevant keyword for your changes, eg: <code>git checkout -b john/some_issue</code></li>
-<li>Make some changes/additions to the source code that tackle the issue(s).</li>
-<li>Write <a href="https://github.com/talmolab/sleap/tree/develop/tests">tests</a>.</li>
-<li>Can either write tests before creating a draft PR, or submit draft PR (to get code coverage statistics via codecov) and then write tests to narrow down error prone lines.</li>
-<li>The test(s) should go into relevant subtest folders to the proposed change(s).</li>
-<li>Test(s) should aim to hit every point in the proposed change(s) - cover edge cases to best of your ability.</li>
-<li>Try to hit code coverage points.</li>
-<li>Add files, commit, and push to origin.</li>
-<li>Create a draft PR on <a href="https://github.com/talmolab/sleap/pulls">Github</a> (follow instructions in template).</li>
-<li>Make sure the tests pass and code coverage is good.</li>
-<li>If either the tests or code coverage fail, repeat steps 3-5.</li>
-<li>Once the draft PR looks good, convert to a finalized PR (hit the <code>ready for review</code> button).</li>
-<li>IMPORTANT: Only convert to a finalized PR when you believe your changes are ready to be merged.</li>
-<li>Optionally assign a reviewer on the right of the screen - otherwise a member of the SLEAP developer team will self-assign themselves.</li>
-<li>If the reviewer requests changes, repeat steps 3-5 and <code>Re-request review</code>.</li>
-<li>Once the reviewer signs off they will squash + merge the PR into the <code>develop</code> branch.</li>
-<li>New feautures will be available on the <code>main</code> branch when a new release of SLEAP is released.</li>
-</ol>
-<h2 id="style-guides">Style Guides<a class="headerlink" href="#style-guides" title="Permanent link">&para;</a></h2>
+<h3 id="legacy-support">Legacy Support<a class="headerlink" href="#legacy-support" title="Permanent link">&para;</a></h3>
+<p>We've maintained full backward compatibility:</p>
 <ul>
-<li><strong>Lint</strong> - <a href="https://black.readthedocs.io/en/stable/">Black</a> version 21.6b0 (see <a href="https://github.com/talmolab/sleap/blob/develop/dev_requirements.txt">dev_requirements</a> for any changes).</li>
-<li><strong>Code</strong> - Generally follow <a href="https://peps.python.org/pep-0008/">PEP8</a>. Type hinting is encouraged.</li>
-<li><strong>Documentation</strong> - Use <a href="https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings">Google-style comments and docstrings</a> to document code.</li>
+<li><strong>GUI Support</strong>: SLEAP now uses a new YAML-based config file structure, but you can still upload and work with old SLEAP JSON files in the GUI. For details on converting legacy SLEAP 1.4 config/JSON files to the new YAML format, see our <a href="https://nn.sleap.ai/latest/config/#converting-legacy-sleap-14-configjson-to-sleap-nn-yaml">conversion guide</a>.</li>
+<li><strong>TensorFlow Model Inference</strong>: Continue to support running inference on old TensorFlow models (UNet backbone only). Check <a href="https://nn.sleap.ai/latest/inference/#legacy-sleap-model-support">using legacy models</a> for more details.</li>
 </ul>
-<h4 id="thank-you-for-contributing-to-sleap">Thank you for contributing to SLEAP!<a class="headerlink" href="#thank-you-for-contributing-to-sleap" title="Permanent link">&para;</a></h4>
+<p><em>For a complete list of changes, see our <a href="changelog.md">Changelog</a>.</em></p>
 
 
 
