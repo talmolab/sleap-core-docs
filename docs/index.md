@@ -54,7 +54,7 @@ You can find the latest version of SLEAP in the [Releases](https://github.com/ta
 ### Quick start
 
 !!! tip "Sample with `uvx`"
-    Note that opening SLEAP w/ `uvx` will **not** install SLEAP onto your system, it will only 'invoke' SLEAP.
+    Note that opening SLEAP w/ `uvx` will **not** install SLEAP onto your system, it will only **'invoke'** SLEAP.
 
 **`uvx` (any OS):**
 

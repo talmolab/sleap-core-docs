@@ -28,7 +28,7 @@ SLEAP can be installed as a Python package on Windows, Linux, and Mac OS. For a 
         Installing this version of SLEAP will **NOT** include any training/inference capabilities, as it will not include the sleap-nn backend. This should primarily be used for **labeling**.
 
 !!! tip "Sample with `uvx`"
-    Note that opening SLEAP w/ `uvx` will **not** install SLEAP onto your system, it will only 'invoke' SLEAP.
+    Note that opening SLEAP w/ `uvx` will **not** install SLEAP onto your system, it will only **'invoke'** SLEAP.
 
 For more in-depth installation instructions, see the [installation methods](#installation-methods). The newest version of SLEAP can always be found in the [Releases page](https://github.com/talmolab/sleap/releases).
 
