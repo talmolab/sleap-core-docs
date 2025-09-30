@@ -2,8 +2,8 @@
 
 SLEAP provides several types of functionality accessible through a command prompt.
 
-!!! tip "If you installed SLEAP with uv"
-    **Remember to include `uv run` before any CLI command!**
+!!! tip "Tip"
+    If you installed SLEAP with `uv pip` or locally w/ `uv sync`, **remember to include `uv run` before any CLI command!**
 
 ## GUI
 
